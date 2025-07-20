@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENAM - Mapa de Virtudes</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* Variáveis CSS para Cores e Espaçamentos */
+        :root {
+            --color-primary: #4CAF50; /* Verde principal para botões de ação */
+            --color-primary-hover: #45a049;
+            --color-secondary: #007BFF; /* Azul para botão de voltar */
+            --color-secondary-hover: #0056b3;
+            --color-danger: #dc3545; /* Vermelho para sair/perigo */
+            --color-danger-hover: #c82333;
+            --color-dark: #333; /* Texto principal */
+            --color-medium: #666; /* Texto secundário */
+            --color-light: #f0f0f0; /* Fundo */
+            --color-white: #fff;
+            --color-grey-light: #e9e9e9;
+            --color-border: #ccc;
+            --color-dashed-border: #aaa;
+
+            --spacing-xs: 5px;
+            --spacing-sm: 8px;
+            --spacing-md: 10px;
+            --spacing-lg: 15px;
+            --spacing-xl: 20px;
+            --spacing-xxl: 30px;
+
+            --border-radius-sm: 5px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 10px;
+            --border-radius-xl: 15px;
+            --border-radius-full: 50%;
+
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Estilos Gerais */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Garante que não haverá rolagem do body */
+        }
+
+        /* Estilos da Caixa de Identificação e Instruções */
+        #player-id-overlay, #instructions-overlay, #final-congrats-overlay { /* Combined overlay styles */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        #player-id-box, #instructions-box, #final-congrats-box { /* Combined box styles */
+            background-color: var(--color-white);
+            padding: var(--spacing-xl); /* Ajustado para ser um pouco menor */
+            border-radius: var(--border-radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            animation: fadeIn 0.5s ease-out;
+            max-width: 380px; /* Ajustado para ser menor */
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        #instructions-box {
+            max-width: 550px; /* Larger max-width for instructions */
+            padding: var(--spacing-xl);
+        }
+
+        #final-congrats-box {
+            max-width: 500px; /* Ajustado para ser menor */
+            padding: var(--spacing-xl); /* Ajustado para ser menor */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #player-id-box h2, #instructions-box h2, #final-congrats-box h2 {
+            margin-top: 0;
+            color: var(--color-dark);
+        }
+
+        #final-congrats-box img {
+            max-width: 80%; /* Ajustado para ser menor */
+            height: auto;
+            border-radius: var(--border-radius-md);
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        #instructions-box p, #final-congrats-box p {
+            text-align: left;
+            color: var(--color-dark);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        #instructions-box ul {
+            text-align: left;
+            list-style: none; /* Remove default bullet points */
+            padding: 0;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        #instructions-box ul li {
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-dark);
+            position: relative;
+            padding-left: 0; /* Ajustado para remover o padding extra */
+        }
+
+
+        #player-name-input {
+            width: 100%;
+            padding: 12px;
+            margin: var(--spacing-lg) 0;
+            border: 2px solid var(--color-border);
+            border-radius: var(--border-radius-md);
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        #start-game-button, #understand-button, #congrats-button { /* Combined button styles */
+            padding: 12px var(--spacing-xxl);
+            border: none;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #start-game-button:hover, #understand-button:hover, #congrats-button:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* Estilos do Jogo */
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* Adjusted for new logo placement */
+            align-items: center;
+            padding: var(--spacing-md) var(--spacing-xl);
+            background-color: var(--color-white);
+            box-shadow: var(--shadow-sm);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            min-height: 70px;
+        }
+        header .header-logo { /* New class for individual logos */
+            max-height: 50px;
+            width: auto;
+        }
+        .main-title {
+            color: var(--color-dark);
+            margin: 0 var(--spacing-lg);
+            font-size: clamp(1.2em, 2.5vw, 2em);
+            white-space: nowrap;
+            flex-grow: 1; /* Allows title to take up remaining space */
+            text-align: center; /* Center the title */
+        }
+
+        .game-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
+            padding-bottom: var(--spacing-xs);
+            max-height: calc(100vh - 70px);
+            justify-content: space-between;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            width: 90%;
+            max-width: 1200px;
+            flex-grow: 1;
+            gap: var(--spacing-sm); /* Espaçamento reduzido entre a barra lateral e a área do jogo */
+            max-height: calc(100vh - (70px + var(--spacing-lg) + var(--spacing-md) + var(--spacing-xs) + 60px));
+            min-height: 0;
+        }
+
+        #sidebar {
+            width: 280px; /* Largura aumentada para acomodar o texto da virtude */
+            max-width: 280px; /* Largura máxima aumentada */
+            padding: var(--spacing-md);
+            background-color: var(--color-grey-light);
+            border: 2px solid var(--color-border);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: fit-content;
+            max-height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+            margin-right: var(--spacing-lg);
+            margin-left: 0;
+        }
+
+        #sidebar h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: var(--color-dark);
+            word-wrap: break-word;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Contêiner para todos os selos - Alinha-os em coluna */
+        #seal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-md); /* Espaço reduzido entre cada 'seal-entry' */
+            margin-bottom: var(--spacing-md);
+            flex-grow: 1;
+            justify-content: flex-start;
+            padding-bottom: 20px;
+        }
+
+        /* Novo contêiner para cada selo individual (círculo + texto) */
+        .seal-entry {
+            display: flex;
+            align-items: center; /* Alinha o círculo e o texto verticalmente no meio */
+            gap: var(--spacing-sm); /* Espaço entre o círculo e o texto da virtude */
+            width: 100%;
+            justify-content: flex-start; /* Alinha os itens à esquerda dentro do seu slot */
+            padding-left: var(--spacing-sm); /* Pequeno padding para afastar da borda da sidebar */
+            box-sizing: border-box;
+        }
+
+        /* O círculo do selo */
+        .seal-circle {
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0; /* Impede que o círculo encolha */
+            background-color: var(--color-white);
+            border: 2px dashed var(--color-dashed-border);
+            border-radius: var(--border-radius-full);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--color-medium);
+            overflow: hidden;
+            position: relative; /* Para a imagem dentro */
+        }
+
+        .seal-circle img {
+            width: 85%;
+            height: 85%;
+            object-fit: contain;
+            border-radius: var(--border-radius-full);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* O texto da virtude ao lado do selo */
+        .seal-virtue-text {
+            font-size: 1.1em; /* Aumentado para destaque */
+            color: var(--color-dark);
+            font-weight: bold; /* Adicionado negrito */
+            white-space: normal; /* Permite que o texto quebre linha se necessário */
+            overflow: hidden; /* Esconde qualquer texto que exceda */
+            text-overflow: ellipsis; /* Adiciona '...' se o texto for muito longo */
+            flex-grow: 1; /* Permite que o texto ocupe o espaço restante */
+            text-align: left; /* Alinha o texto à esquerda */
+        }
+
+
+        #exit-game-button {
+            margin-top: auto;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            background-color: var(--color-danger);
+            color: var(--color-white);
+            font-size: 0.8em;
+            font-weight: bold;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #exit-game-button:hover {
+            background-color: var(--color-danger-hover);
+        }
+
+        #game-area {
+            position: relative;
+            border: 5px solid var(--color-dark);
+            background: url("CENAM.png") center/100% 100% no-repeat;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            width: 100%;
+            height: auto;
+            max-height: calc(100vh - 180px);
+            flex-grow: 1;
+        }
+        #player {
+            width: 5%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            transition: top 0.1s linear, left 0.1s linear;
+        }
+        #player img {
+            width: 200%;
+            height: 200%;
+            object-fit: contain;
+        }
+        .door {
+            width: 8%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+            position: absolute;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+        }
+        .door img {
+            width: 100%;
+            height: 100%;
+        }
+        .door-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: var(--color-white);
+            padding: 3px var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            user-select: none;
+        }
+        #completion-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: var(--color-white);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1000;
+        }
+        #completion-message h2 {
+            font-size: 3em;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px var(--color-white), 0 0 20px var(--color-white), 0 0 30px #00ff7f, 0 0 40px #00ff7f;
+            }
+            to {
+                text-shadow: 0 0 20px var(--color-white), 0 0 30px #4dff91, 0 0 40px #4dff91, 0 0 50px #4dff91;
+            }
+        }
+        #completion-message a {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-lg) var(--spacing-xxl);
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            text-decoration: none;
+            font-size: 1.2em;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* Estilo para o link de voltar à página inicial */
+        .back-to-home {
+            margin-top: var(--spacing-xs);
+            margin-bottom: var(--spacing-xs);
+            padding: var(--spacing-sm) 18px;
+            background-color: var(--color-secondary);
+            color: var(--color-white);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .back-to-home:hover {
+            background-color: var(--color-secondary-hover);
+        }
+
+        /* Media Queries para Responsividade */
+        @media (max-width: 992px) {
+            header .header-logo {
+                max-height: 45px;
+            }
+            .main-title {
+                font-size: clamp(1em, 3vw, 1.8em);
+            }
+            #sidebar {
+                width: 220px; /* Ajuste para telas médias */
+                max-width: 220px;
+                padding: var(--spacing-sm);
+            }
+            #sidebar h3 {
+                font-size: 15px;
+            }
+            #seal-container {
+                gap: var(--spacing-sm); /* Espaçamento menor em telas médias */
+            }
+            .seal-entry {
+                gap: var(--spacing-xs); /* Espaçamento menor dentro do entry */
+            }
+            .seal-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.1em;
+            }
+            .seal-virtue-text {
+                font-size: 0.95em; /* Ajuste para telas médias */
+            }
+            .game-container {
+                max-width: 90%;
+                gap: var(--spacing-md); /* Mantém um espaçamento razoável */
+                max-height: calc(100vh - (70px + var(--spacing-md) + var(--spacing-sm) + 60px));
+                min-height: 0;
+            }
+            #game-area {
+                max-height: calc(100vh - 180px);
+            }
+            .back-to-home {
+                margin-top: 3px;
+                margin-bottom: 3px;
+                padding: 6px var(--spacing-lg);
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: var(--spacing-sm);
+                min-height: auto;
+            }
+            header .header-logo {
+                max-height: 35px;
+                margin-bottom: var(--spacing-xs);
+            }
+            .main-title {
+                margin: var(--spacing-xs) 0;
+                font-size: clamp(0.9em, 4vw, 1.2em);
+                white-space: wrap;
+            }
+            .game-wrapper {
+                padding-bottom: 3px;
+            }
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+                gap: var(--spacing-lg);
+                max-width: 500px;
+                max-height: calc(100vh - (70px + var(--spacing-md) + var(--spacing-sm) + 3px + 60px));
+                min-height: unset;
+            }
+            #sidebar {
+                width: 98%; /* Ocupa quase toda a largura em telas pequenas */
+                max-width: 400px;
+                padding: var(--spacing-sm);
+                margin-bottom: var(--spacing-xs);
+                margin-right: 0;
+            }
+            #sidebar h3 {
+                font-size: 1em;
+                margin-bottom: var(--spacing-sm);
+            }
+            #seal-container {
+                gap: var(--spacing-xs); /* Espaçamento ainda menor em telas pequenas */
+                margin-bottom: var(--spacing-sm);
+            }
+            .seal-entry {
+                gap: var(--spacing-xs);
+            }
+            .seal-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 0.9em;
+            }
+            .seal-virtue-text {
+                font-size: 0.85em; /* Ajuste para telas menores */
+            }
+            #exit-game-button {
+                font-size: 0.75em;
+                padding: 5px var(--spacing-md);
+            }
+            #game-area {
+                width: 95%;
+                max-width: 500px;
+                border-width: 2px;
+                max-height: calc(100vh - 180px);
+            }
+            .door-label {
+                font-size: 9px;
+                bottom: -12px;
+                padding: 2px var(--spacing-xs);
+            }
+            #completion-message h2 {
+                font-size: 1.8em;
+            }
+            #completion-message a {
+                padding: var(--spacing-sm) var(--spacing-lg);
+                font-size: 0.9em;
+            }
+            #instructions-box, #final-congrats-box {
+                padding: var(--spacing-md);
+            }
+            #instructions-box h2, #final-congrats-box h2 {
+                font-size: 1em;
+            }
+            #instructions-box p, #instructions-box ul li, #final-congrats-box p {
+                font-size: 0.8em;
+            }
+            #understand-button, #congrats-button {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #player-id-box {
+                padding: var(--spacing-lg) var(--spacing-xl);
+            }
+            #player-id-box h2 {
+                font-size: 1.1em;
+            }
+            #player-name-input {
+                padding: var(--spacing-sm);
+                font-size: 0.85em;
+            }
+            #start-game-button {
+                padding: var(--spacing-sm) var(--spacing-lg);
+                font-size: 0.9em;
+            }
+            header .header-logo {
+                max-height: 30px;
+            }
+            .main-title {
+                font-size: clamp(0.8em, 5vw, 1em);
+            }
+            #sidebar {
+                width: 98%;
+                padding: var(--spacing-xs);
+            }
+            #sidebar h3 {
+                font-size: 0.9em;
+            }
+            .seal-entry {
+                gap: var(--spacing-xs);
+            }
+            .seal-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 0.8em;
+            }
+            .seal-virtue-text {
+                font-size: 0.8em; /* Ajuste para telas menores */
+            }
+            #exit-game-button {
+                font-size: 0.7em;
+                padding: 4px var(--spacing-sm);
+            }
+            #game-area {
+                width: 98%;
+                max-width: 380px;
+                max-height: calc(100vh - 180px);
+            }
+            .door-label {
+                font-size: 8px;
+                bottom: -10px;
+                padding: 1px 4px;
+            }
+            #completion-message h2 {
+                font-size: 1.8em;
+            }
+            #completion-message a {
+                padding: var(--spacing-sm) var(--spacing-lg);
+                font-size: 0.9em;
+            }
+            #instructions-box, #final-congrats-box {
+                padding: var(--spacing-sm);
+            }
+            #instructions-box h2, #final-congrats-box h2 {
+                font-size: 1em;
+            }
+            #instructions-box p, #instructions-box ul li, #final-congrats-box p {
+                font-size: 0.8em;
+            }
+            #understand-button, #congrats-button {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="player-id-overlay">
+        <div id="player-id-box">
+            <h2>Bem-vindo(a) ao CENAM!</h2>
+            <p>Para começar sua aventura, por favor, digite seu nome:</p>
+            <input type="text" id="player-name-input" placeholder="Seu nome">
+            <button id="start-game-button">Começar Jogo</button>
+        </div>
+    </div>
+
+    <div id="instructions-overlay">
+        <div id="instructions-box">
+            <h2>Como Jogar</h2>
+            <p>Olá, <span id="player-name-in-instructions"></span>! Boas-vindas à **AVENTURA DAS VIRTUDES**! Seu objetivo é explorar o mapa e coletar os <strong>Selos da Virtude</strong>. Cada selo está em uma porta que leva a uma atividade divertida. Ao concluir a atividade, você ganhará o selo correspondente!</p>
+            <ul>
+                <li><strong>Movimentação:</strong> Use as <strong>setas do teclado</strong> (↑ ↓ ← →) para mover seu avatar pelo mapa.</li>
+                <li><strong>Interação:</strong> Use as <strong>setas do teclado</strong> para se mover até as <strong>portas</strong>, ou clique diretamente nelas. Ao se aproximar/clicar, você será levado(a) à atividade da virtude.</li>
+                <li><strong>Progresso:</strong> Acompanhe seus selos coletados na <strong>barra lateral à direita</strong>. Quando todos os selos forem seus, uma surpresa final te aguarda!</li>
+            </ul>
+            <p>Boa sorte e divirta-se!</p>
+            <button id="understand-button">Entendi!</button>
+        </div>
+    </div>
+
+    <div id="final-congrats-overlay">
+        <div id="final-congrats-box">
+            <h2 id="final-congrats-title"></h2>
+            <img src="puzzle.png" alt="Herói Final">
+            <p id="final-congrats-message"></p>
+            <button id="congrats-button">Continuar</button>
+        </div>
+    </div>
+
+    <header>
+        <img src="Capa.png" alt="Logo CENAM" class="header-logo">
+        <h1 class="main-title">Mapa das Virtudes</h1>
+        <img src="logo.png" alt="Logo 2025" class="header-logo">
+    </header>
+
+    <div class="game-wrapper">
+        <div class="game-container">
+            <div id="sidebar">
+                <h3 id="sidebar-title">Conquistas</h3>
+                <div id="seal-container">
+                    </div>
+                <button id="exit-game-button">Sair do Jogo</button>
+            </div>
+
+            <div id="game-area">
+                <div id="player">
+                    <img src="" alt="Jogador">
+                </div>
+
+                <div class="door" id="door-1" data-seal-id="1" data-url="rotina.html?seal_to_earn=1">
+                    <img src="porta.png" alt="Porta 1">
+                    <span class="door-label">Porta 1</span>
+                </div>
+                <div class="door" id="door-2" data-seal-id="2" data-url="jogo2_fila.html?seal_to_earn=2">
+                    <img src="porta.png" alt="Porta 2">
+                    <span class="door-label">Porta 2</span>
+                </div>
+                <div class="door" id="door-3" data-seal-id="3" data-url="memo.html?seal_to_earn=3">
+                    <img src="porta.png" alt="Porta 3">
+                    <span class="door-label">Porta 3</span>
+                </div>
+                <div class="door" id="door-4" data-seal-id="4" data-url="puzzle.html?seal_to_earn=4">
+                    <img src="porta.png" alt="Porta 4">
+                    <span class="door-label">Porta 4</span>
+                </div>
+                <div class="door" id="door-5" data-seal-id="5" data-url="baloes.html?seal_to_earn=5">
+                    <img src="porta.png" alt="Porta 5">
+                    <span class="door-label">Porta 5</span>
+                </div>
+            </div>
+        </div>
+        <a href="index.html" class="back-to-home">Voltar à Página Inicial</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementos do DOM
+            const playerOverlay = document.getElementById('player-id-overlay');
+            const nameInput = document.getElementById('player-name-input');
+            const startButton = document.getElementById('start-game-button');
+            const instructionsOverlay = document.getElementById('instructions-overlay');
+            const understandButton = document.getElementById('understand-button');
+            const finalCongratsOverlay = document.getElementById('final-congrats-overlay');
+            const congratsButton = document.getElementById('congrats-button');
+            const player = document.getElementById('player');
+            const playerImage = player.querySelector('img');
+            const gameArea = document.getElementById('game-area');
+            const doors = document.querySelectorAll('.door');
+            const sealContainer = document.getElementById('seal-container');
+            const sidebarTitle = document.getElementById('sidebar-title');
+            const exitButton = document.getElementById('exit-game-button');
+            const finalCongratsTitle = document.getElementById('final-congrats-title'); // Novo elemento
+            const finalCongratsMessage = document.getElementById('final-congrats-message'); // Novo elemento
+            const playerNameInInstructions = document.getElementById('player-name-in-instructions'); // Novo elemento para o nome no modal de instruções
+
+            // Configurações do Jogo
+            const PLAYER_SPEED = 1.5;
+            const AUTO_MOVE_SPEED = 0.8;
+            const COLLISION_THRESHOLD = 3;
+            const TOTAL_SEALS = 5;
+
+            // Mapeamento de ID do selo para o nome da virtude e a imagem do herói correspondente
+            // Todas as imagens estão na mesma pasta do HTML
+            const SEAL_DATA = {
+                '1': { name: 'Responsabilidade', image: 'HESP.png' }, // Exemplo: rotina.html
+                '2': { name: 'Respeito', image: 'HRESP.png' },      // Exemplo: jogo2_fila.html
+                '3': { name: 'Paciência', image: 'HPAC.png' },      // Exemplo: memo.html
+                '4': { name: 'Perseverança', image: 'HPERS.png' },    // Exemplo: puzzle.html
+                '5': { name: 'Autocontrole', image: 'HAC.png' }      // Exemplo: baloes.html
+            };
+
+            // Imagens aleatórias para o jogador inicial
+            const RANDOM_PLAYER_IMAGES = ['HAC.png', 'HESP.png', 'HPERS.png', 'HRESP.png', 'HPAC.png'];
+
+            // Variáveis de Estado do Jogador e Jogo
+            let playerX;
+            let playerY;
+            let movingToDoor = false;
+            let animationFrameId;
+
+            // Posições fixas das portas (em porcentagens relativas à game-area)
+            const DOOR_FIXED_POSITIONS = [
+                { sealId: '1', top: 45, left: 3 },
+                { sealId: '2', top: 40, left: 14 },
+                { sealId: '3', top: 60, left: 96 },
+                { sealId: '4', top: 48, left: 88 },
+                { sealId: '5', top: 39, left: 60 }
+            ];
+
+            // Função para lidar com o fechamento do modal de instruções
+            const handleCloseInstructions = () => {
+                instructionsOverlay.style.display = 'none';
+                localStorage.setItem('instructionsShown', 'true');
+                document.removeEventListener('keydown', handleInstructionsEnterKey); // Remove o listener do Enter
+                initGame(localStorage.getItem('playerName')); // Inicia o jogo
+            };
+
+            // Função para lidar com a tecla Enter no modal de instruções
+            const handleInstructionsEnterKey = (event) => {
+                if (event.key === 'Enter' && instructionsOverlay.style.display === 'flex') {
+                    handleCloseInstructions(); // Chama a função de fechar
+                }
+            };
+
+            /**
+             * Inicializa o jogo com o nome do jogador.
+             * @param {string} playerName - O nome do jogador.
+             */
+            function initGame(playerName) {
+                sidebarTitle.textContent = `Conquistas de ${playerName}`;
+                const randomIndex = Math.floor(Math.random() * RANDOM_PLAYER_IMAGES.length);
+                playerImage.src = RANDOM_PLAYER_IMAGES[randomIndex]; // Caminho direto
+                placeElements();
+                updateSealDisplay();
+                checkGameCompletion(playerName); // Passa o nome do jogador
+                console.log('Game initialized for player:', playerName); // Debug
+
+                document.addEventListener('keydown', handleKeyDown);
+                doors.forEach(door => {
+                    door.addEventListener('click', () => {
+                        if (!movingToDoor) {
+                            moveToDoor(door);
+                        }
+                    });
+                });
+                exitButton.addEventListener('click', resetGame);
+            }
+
+            /**
+             * Lida com as teclas de movimento do jogador.
+             * @param {KeyboardEvent} e - O evento de teclado.
+             */
+            function handleKeyDown(e) {
+                if (movingToDoor) return;
+
+                let newPlayerX = playerX;
+                let newPlayerY = playerY;
+
+                const minX = 5;
+                const maxX = 95;
+                const minY = 5;
+                const maxY = 95;
+
+                switch (e.key) {
+                    case 'ArrowUp': newPlayerY -= PLAYER_SPEED; break;
+                    case 'ArrowDown': newPlayerY += PLAYER_SPEED; break;
+                    case 'ArrowLeft': newPlayerX -= PLAYER_SPEED; break;
+                    case 'ArrowRight': newPlayerX += PLAYER_SPEED; break;
+                    default: return;
+                }
+
+                newPlayerX = Math.max(minX, Math.min(maxX, newPlayerX));
+                newPlayerY = Math.max(minY, Math.min(maxY, newPlayerY));
+
+                player.style.left = `${newPlayerX}%`;
+                player.style.top = `${newPlayerY}%`;
+
+                playerX = newPlayerX;
+                playerY = newPlayerY;
+
+                // Check for door collision after movement
+                let collidedDoor = null;
+                for (const door of doors) {
+                    const targetSealId = door.getAttribute('data-seal-id');
+                    const targetPosition = DOOR_FIXED_POSITIONS.find(p => p.sealId === targetSealId);
+                    if (targetPosition) {
+                        const doorLeftPercent = targetPosition.left;
+                        const doorTopPercent = targetPosition.top;
+
+                        const dx = doorLeftPercent - playerX;
+                        const dy = doorTopPercent - playerY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < COLLISION_THRESHOLD * 2) { // Use a slightly larger threshold for entry
+                            collidedDoor = door;
+                            break;
+                        }
+                    }
+                }
+
+                if (collidedDoor) {
+                    moveToDoor(collidedDoor);
+                }
+            }
+
+            /**
+             * Posiciona o jogador e as portas no mapa.
+             */
+            function placeElements() {
+                playerX = 50;
+                playerY = 85;
+                player.style.left = `${playerX}%`;
+                player.style.top = `${playerY}%`;
+
+                doors.forEach(door => {
+                    const sealId = door.getAttribute('data-seal-id');
+                    const position = DOOR_FIXED_POSITIONS.find(p => p.sealId === sealId);
+                    if (position) {
+                        door.style.left = `${position.left}%`;
+                        door.style.top = `${position.top}%`;
+                    }
+                });
+            }
+
+            /**
+             * Atualiza a exibição dos selos conquistados na barra lateral.
+             */
+            function updateSealDisplay() {
+                sealContainer.innerHTML = '';
+                // Carrega os selos do localStorage para a exibição
+                let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                // Garante que o array está limpo de valores nulos/indefinidos e transforma em string para comparação
+                collectedSeals = collectedSeals.filter(id => id && SEAL_DATA[id]).map(String);
+
+
+                for (let i = 1; i <= TOTAL_SEALS; i++) {
+                    const sealEntry = document.createElement('div'); // Novo wrapper para cada selo (círculo + texto)
+                    sealEntry.className = 'seal-entry';
+
+                    const sealCircle = document.createElement('div'); // O círculo do selo
+                    sealCircle.className = 'seal-circle';
+
+                    const virtueText = document.createElement('span'); // O texto da virtude
+                    virtueText.className = 'seal-virtue-text';
+                    // O texto da virtude SÓ é preenchido se o selo foi coletado
+                    if (collectedSeals.includes(String(i))) {
+                        const sealImage = document.createElement('img');
+                        sealImage.src = SEAL_DATA[String(i)].image; // Imagem do herói correspondente
+                        sealImage.alt = `Selo ${SEAL_DATA[String(i)].name}`;
+                        sealCircle.appendChild(sealImage);
+                        virtueText.textContent = SEAL_DATA[String(i)].name; // Define o texto da virtude
+                    } else {
+                        sealCircle.textContent = i; // Mostra o número se não conquistado
+                        virtueText.textContent = ''; // Garante que o texto está vazio se não conquistado
+                    }
+
+                    sealEntry.appendChild(sealCircle);
+                    sealEntry.appendChild(virtueText);
+                    sealContainer.appendChild(sealEntry);
+                }
+            }
+
+            /**
+             * Move o jogador automaticamente até a porta e redireciona.
+             * @param {HTMLElement} targetDoor - A porta alvo.
+             */
+            function moveToDoor(targetDoor) {
+                movingToDoor = true;
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+
+                // O data-url agora inclui o parâmetro seal_to_earn
+                const targetUrl = targetDoor.getAttribute('data-url');
+                const targetSealId = targetDoor.getAttribute('data-seal-id');
+                const targetPosition = DOOR_FIXED_POSITIONS.find(p => p.sealId === targetSealId);
+
+                if (!targetPosition) {
+                    console.error('Posição da porta não encontrada para o movimento automático.');
+                    movingToDoor = false;
+                    return;
+                }
+
+                // Posição do centro da porta (em porcentagens relativas à game-area)
+                const doorLeftPercent = targetPosition.left;
+                const doorTopPercent = targetPosition.top;
+
+                const animateMove = () => {
+                    const dx = doorLeftPercent - playerX;
+                    const dy = doorTopPercent - playerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < COLLISION_THRESHOLD) {
+                        cancelAnimationFrame(animationFrameId);
+                        movingToDoor = false;
+                        player.style.left = `${doorLeftPercent}%`;
+                        player.style.top = `${doorTopPercent}%`;
+                        // Redireciona com o ID do selo para a página da atividade
+                        window.location.href = targetUrl;
+                        return;
+                    }
+
+                    const stepX = (dx / distance) * AUTO_MOVE_SPEED;
+                    const stepY = (dy / distance) * AUTO_MOVE_SPEED;
+
+                    playerX += stepX;
+                    playerY += stepY;
+
+                    player.style.left = `${playerX}%`;
+                    player.style.top = `${playerY}%`;
+
+                    animationFrameId = requestAnimationFrame(animateMove);
+                };
+
+                animateMove();
+            }
+
+            /**
+             * Verifica se todos os selos foram conquistados e exibe o modal final.
+             * @param {string} playerName - O nome do jogador.
+             */
+            function checkGameCompletion(playerName) {
+                let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                // Garante que o array está limpo de valores nulos/indefinidos e transforma em string para comparação
+                collectedSeals = collectedSeals.filter(id => id && SEAL_DATA[id]).map(String);
+
+                console.log('checkGameCompletion called.');
+                console.log('Collected Seals:', collectedSeals);
+                console.log('Number of Collected Seals:', collectedSeals.length);
+                console.log('Total Seals Required:', TOTAL_SEALS);
+                console.log('Final Congrats Shown Flag:', localStorage.getItem('finalCongratsShown'));
+
+                if (collectedSeals.length === TOTAL_SEALS) {
+                    console.log('All seals collected!');
+                    if (!localStorage.getItem('finalCongratsShown')) {
+                        console.log('Displaying final congrats modal!');
+                        finalCongratsTitle.textContent = `Parabéns, ${playerName}!`;
+                        finalCongratsMessage.textContent = `Você coletou todos os Selos da Virtude e se tornou um(a) verdadeiro(a) Herói(na) na Aventura das Virtudes! Sua jornada de aprendizado e crescimento é uma inspiração para todos.`;
+                        finalCongratsOverlay.style.display = 'flex';
+                        localStorage.setItem('finalCongratsShown', 'true');
+                    } else {
+                        console.log('Final congrats modal already shown.');
+                    }
+                } else {
+                    console.log('Not all seals collected yet.');
+                }
+            }
+
+            /**
+             * Reseta o jogo e limpa o progresso salvo.
+             */
+            function resetGame() {
+                // Substituído alert() e confirm() por uma mensagem customizada
+                const customConfirm = (message, onConfirm, onCancel) => {
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                        background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                        align-items: center; z-index: 9999;
+                    `;
+                    const box = document.createElement('div');
+                    box.style.cssText = `
+                        background-color: white; padding: 25px; border-radius: 10px;
+                        text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                        max-width: 350px; width: 90%;
+                    `;
+                    const msg = document.createElement('p');
+                    msg.textContent = message;
+                    msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
+
+                    const btnContainer = document.createElement('div');
+                    btnContainer.style.cssText = 'display: flex; justify-content: center; gap: 15px;';
+
+                    const confirmBtn = document.createElement('button');
+                    confirmBtn.textContent = 'Sim';
+                    confirmBtn.style.cssText = `
+                        padding: 10px 20px; border: none; border-radius: 5px;
+                        background-color: var(--color-danger); color: white;
+                        font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                    `;
+                    confirmBtn.onmouseover = () => confirmBtn.style.backgroundColor = 'var(--color-danger-hover)';
+                    confirmBtn.onmouseout = () => confirmBtn.style.backgroundColor = 'var(--color-danger)';
+                    confirmBtn.onclick = () => { document.body.removeChild(overlay); onConfirm(); };
+
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.textContent = 'Não';
+                    cancelBtn.style.cssText = `
+                        padding: 10px 20px; border: none; border-radius: 5px;
+                        background-color: var(--color-secondary); color: white;
+                        font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                    `;
+                    cancelBtn.onmouseover = () => cancelBtn.style.backgroundColor = 'var(--color-secondary-hover)';
+                    cancelBtn.onmouseout = () => cancelBtn.style.backgroundColor = 'var(--color-secondary)';
+                    cancelBtn.onclick = () => { document.body.removeChild(overlay); if (onCancel) onCancel(); };
+
+                    btnContainer.appendChild(confirmBtn);
+                    btnContainer.appendChild(cancelBtn);
+                    box.appendChild(msg);
+                    box.appendChild(btnContainer);
+                    overlay.appendChild(box);
+                    document.body.appendChild(overlay);
+                };
+
+                customConfirm('Tem certeza que deseja sair? Seu progresso será perdido e você precisará se identificar novamente.', () => {
+                    localStorage.removeItem('collectedSeals');
+                    localStorage.removeItem('playerName');
+                    localStorage.removeItem('instructionsShown');
+                    localStorage.removeItem('finalCongratsShown'); // Reseta a flag do modal final
+                    window.location.href = window.location.pathname;
+                });
+            }
+
+            // --- Lógica de Inicialização ---
+            // Carrega os selos do localStorage no início
+            let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+
+            // Processa selo recém-ganho da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const earnedSealId = urlParams.get('seal_earned');
+
+            // Verifica se um selo foi ganho E se ele ainda não está na lista
+            if (earnedSealId && SEAL_DATA[earnedSealId] && !collectedSeals.includes(earnedSealId)) {
+                collectedSeals.push(earnedSealId);
+                localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
+                // Remove o parâmetro da URL para evitar adicionar o selo novamente se a página for recarregada
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // Gerencia os modais de identificação e instruções
+            const playerName = localStorage.getItem('playerName');
+            const instructionsShown = localStorage.getItem('instructionsShown');
+
+            // Esconde todos os overlays por padrão, e mostramos apenas o necessário.
+            playerOverlay.style.display = 'none';
+            instructionsOverlay.style.display = 'none';
+            finalCongratsOverlay.style.display = 'none';
+
+            if (!playerName) { // Se o nome do jogador NÃO está salvo
+                playerOverlay.style.display = 'flex'; // Mostra o modal de identificação
+                const handleStartGame = () => {
+                    const enteredName = nameInput.value.trim();
+                    if (enteredName === '') {
+                        // Substituído alert() por uma mensagem customizada
+                        const customAlert = (message) => {
+                            const overlay = document.createElement('div');
+                            overlay.style.cssText = `
+                                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                                background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                                align-items: center; z-index: 9999;
+                            `;
+                            const box = document.createElement('div');
+                            box.style.cssText = `
+                                background-color: white; padding: 25px; border-radius: 10px;
+                                text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                                max-width: 300px; width: 90%;
+                            `;
+                            const msg = document.createElement('p');
+                            msg.textContent = message;
+                            msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
+
+                            const okBtn = document.createElement('button');
+                            okBtn.textContent = 'OK';
+                            okBtn.style.cssText = `
+                                padding: 10px 20px; border: none; border-radius: 5px;
+                                background-color: var(--color-primary); color: white;
+                                font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                            `;
+                            okBtn.onmouseover = () => okBtn.style.backgroundColor = 'var(--color-primary-hover)';
+                            okBtn.onmouseout = () => okBtn.style.backgroundColor = 'var(--color-primary)';
+                            okBtn.onclick = () => { document.body.removeChild(overlay); };
+
+                            box.appendChild(msg);
+                            box.appendChild(okBtn);
+                            overlay.appendChild(box);
+                            document.body.appendChild(overlay);
+                        };
+                        customAlert('Por favor, digite seu nome para começar!');
+                        return;
+                    }
+                    localStorage.setItem('playerName', enteredName);
+                    playerOverlay.style.display = 'none'; // Esconde o modal de identificação
+                    playerNameInInstructions.textContent = enteredName; // Define o nome no modal de instruções
+                    instructionsOverlay.style.display = 'flex'; // Mostra o modal de instruções
+                    understandButton.addEventListener('click', handleCloseInstructions); // Adiciona o listener de clique
+                    document.addEventListener('keydown', handleInstructionsEnterKey); // Adiciona o listener para Enter
+                };
+
+                startButton.addEventListener('click', handleStartGame);
+                nameInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        handleStartGame();
+                    }
+                });
+
+            } else if (!instructionsShown) { // Se o nome está salvo, mas as instruções NÃO foram mostradas
+                playerNameInInstructions.textContent = playerName; // Define o nome no modal de instruções
+                instructionsOverlay.style.display = 'flex'; // Mostra o modal de instruções
+                understandButton.addEventListener('click', handleCloseInstructions); // Adiciona o listener de clique
+                document.addEventListener('keydown', handleInstructionsEnterKey); // Adiciona o listener para Enter
+
+            } else { // Se o nome e as instruções JÁ foram vistos
+                // Inicia o jogo diretamente, sem exibir modais iniciais
+                initGame(playerName);
+            }
+
+            // Event listener para o botão "Continuar" do modal de parabéns final
+            congratsButton.addEventListener('click', () => {
+                finalCongratsOverlay.style.display = 'none';
+                // Após fechar o modal de parabéns, o jogo continua no mapa.
+                // Se desejar redirecionar para uma tela final ou início, faça aqui:
+                // window.location.href = 'pagina_final.html';
+            });
+        });
+    </script>
+</body>
+</html>

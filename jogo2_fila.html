@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Organização de Alunos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos Gerais do Corpo da Página */
+        body {
+            font-family: 'Inter', sans-serif; /* Usando Inter como solicitado */
+            display: flex;
+            flex-direction: column; /* Organiza cabeçalho, conteúdo principal e mensagens em coluna */
+            align-items: center;
+            justify-content: flex-start; /* Alinha ao topo */
+            min-height: 100vh; /* Ocupa a altura total da viewport */
+            margin: 0;
+            background-color: #f0f4f8; /* Cor de fundo suave */
+            color: #334e68; /* Cor do texto principal */
+            position: relative; /* Necessário para posicionar as mensagens */
+        }
+
+        /* Área do Cabeçalho para Emblema e Logo */
+        #header-area {
+            width: 95%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        #header-area h1 {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+            font-size: 2.5em;
+            color: #1a4d6f;
+            width: fit-content;
+            white-space: nowrap;
+            z-index: 5; /* Abaixo dos placeholders para não sobrepor */
+        }
+
+        #emblem-placeholder, #logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background-color: #d1ecf1;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7em;
+            color: #2e6690;
+            border: 1px dashed #a8dadc;
+            z-index: 10; /* Garante que fiquem acima do título */
+        }
+        /* Estilos para imagens dentro dos placeholders de cabeçalho */
+        #emblem-placeholder img, #logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        /* Contêiner Principal que envolve a Área do Jogador e o Jogo */
+        #main-content-wrapper {
+            display: flex;
+            width: 95%;
+            max-width: 1200px;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        /* Área da Esquerda: Jogador e Contadores */
+        #sidebar-left {
+            flex: 0 0 180px;
+            background-color: #e6f7ff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            gap: 15px;
+            height: auto;
+        }
+
+        #player-figure-placeholder {
+            width: 90px;
+            height: 90px;
+            background-color: #cce5ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75em;
+            color: #0056b3;
+            border: 1px dashed #90caf9;
+            margin-bottom: 5px;
+            overflow: hidden; /* Garante que a imagem se ajuste ao círculo */
+        }
+        #player-figure-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem cobrir o espaço sem distorcer, cortando se necessário */
+            border-radius: 50%;
+        }
+
+        /* Estilo para o Relógio */
+        #timer-area {
+            width: 100%;
+            background-color: #f9fcff;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #d1ecf1;
+            font-size: 1em;
+            font-weight: bold;
+            color: #2e6690;
+            margin-top: -5px; /* Ajusta o espaçamento entre a figura e o relógio */
+        }
+
+        #timer-area p {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #timer-area span {
+            color: #1a4d6f;
+        }
+
+        #counters-area {
+            width: 100%;
+            background-color: #f9fcff;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #d1ecf1;
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #2e6690;
+        }
+
+        #counters-area p {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #counters-area span {
+            color: #1a4d6f;
+        }
+
+        /* Estilo do Botão Reiniciar */
+        #reset-button-container {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        #reset-button-container button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        #reset-button-container button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Contêiner Principal do Jogo */
+        #game-container {
+            flex-grow: 1;
+            min-height: 450px;
+            width: auto;
+            max-width: 980px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        h2 {
+            color: #2e6690;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.7em;
+        }
+
+        /* Área onde os Alunos Estarão Espalhados */
+        #students-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            border: 3px dashed #a8dadc;
+            min-height: 200px;
+            margin-bottom: 20px;
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.07);
+            align-content: start;
+            justify-items: center;
+            background-image: url("CENAM.png"); /* IMAGEM DO CENÁRIO PÁTIO AQUI */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Estilo Individual do Aluno */
+        .student {
+            width: 45px;
+            height: 45px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: grab;
+            font-weight: bold;
+            font-size: 0.9em;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .student:hover {
+            opacity: 0.9;
+        }
+
+        .student:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Área das Filas do Ônibus */
+        #bus-queues-area {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            border: 3px solid #007bff;
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo de Cada Fila de Ônibus - Coluna Única com imagem de fundo */
+        .bus-queue {
+            border: 1px solid #90caf9;
+            min-height: 220px;
+            background-color: #f9fcff;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column; /* Alunos em coluna */
+            align-items: center; /* Centraliza horizontalmente os alunos */
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            background-image: url("bus int.png"); /* IMAGEM DO ÔNIBUS AQUI */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .bus-queue.drag-over {
+            background-color: rgba(209, 236, 241, 0.8);
+            border-color: #0056b3;
+            box-shadow: 0 0 18px rgba(0, 123, 255, 0.6);
+        }
+
+        .bus-queue h3 {
+            margin-top: 0;
+            border-bottom: 2px solid; /* Borda será colorida via JS */
+            padding-bottom: 5px;
+            width: 90%;
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        /* Estilo para o link de voltar ao mapa */
+        #back-to-map-link {
+            display: block; /* Ocupa sua própria linha */
+            margin-top: 25px; /* Espaço acima do link */
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        #back-to-map-link a {
+            text-decoration: none;
+            color: #007bff;
+            padding: 10px 20px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            display: inline-block; /* Permite padding e transform */
+        }
+
+        #back-to-map-link a:hover {
+            background-color: #007bff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Modal de Conclusão do Jogo (Fundo) */
+        #completion-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Conteúdo do Modal de Conclusão (O que aparece dentro do modal) */
+        #completion-message .modal-content-final {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 25px;
+            font-size: 1.5em;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            animation: fadeInScale 0.5s forwards;
+            display: flex; /* Adicionado para centralizar a imagem do selo */
+            flex-direction: column; /* Coluna para texto, imagem e botão */
+            align-items: center; /* Centraliza itens horizontalmente */
+            gap: 15px;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        /* Mensagem de Ônibus Completo (agora como as outras mensagens de erro) */
+        #bus-complete-message {
+            visibility: hidden; /* Controlado via JS com classes */
+            opacity: 0; /* Controlado via JS com classes */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #e0f7fa; /* Cor para "Ônibus completo" */
+            color: #0056b3; /* Cor do texto para "Ônibus completo" */
+            border: 1px solid #a8dadc;
+            border-radius: 8px;
+            padding: 15px 25px;
+            font-size: 1.2em; /* Um pouco menor que o erro, mas ainda visível */
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+            text-align: center;
+        }
+
+        #bus-complete-message.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+
+        /* Modal de Instruções */
+        #instructions-modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            animation: fadeInScale 0.5s forwards;
+        }
+
+        .modal-content h2 {
+            color: #007bff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .modal-content p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .modal-content button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #completion-message p {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        #completion-message button {
+            padding: 10px 25px;
+            font-size: 1em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        #completion-message button:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+
+        #completion-seal {
+            width: 100px;
+            height: 100px;
+            background-color: #ffeb3b; /* Cor de placeholder para o selo */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7em;
+            color: #b79c0a;
+            border: 2px dashed #ffc107;
+            margin-top: 10px;
+            margin-bottom: 15px; /* Espaçamento abaixo do selo */
+            overflow: hidden;
+        }
+
+        #completion-seal img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* --- Estilo da Mensagem de Erro --- */
+        #error-message {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+            text-align: center;
+        }
+
+        #error-message.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            #header-area {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                position: static;
+            }
+            #header-area h1 {
+                position: static;
+                transform: none;
+                margin-top: 10px;
+            }
+            #emblem-logo-container {
+                gap: 15px;
+            }
+            #main-content-wrapper {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            #sidebar-left {
+                width: 80%;
+                max-width: 350px;
+                height: auto;
+                justify-content: flex-start;
+            }
+            #game-container {
+                width: 90%;
+            }
+            #bus-queues-area {
+                grid-template-columns: repeat(2, minmax(140px, 1fr));
+                gap: 10px;
+            }
+            .bus-queue {
+                min-height: 180px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.6em;
+            }
+            h2 {
+                font-size: 1.3em;
+            }
+            #students-area {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+                gap: 5px;
+                padding: 5px;
+                min-height: 150px;
+            }
+            .student {
+                width: 45px;
+                height: 45px;
+                font-size: 0.8em;
+            }
+            #bus-queues-area {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 10px;
+            }
+            .bus-queue {
+                min-height: 180px;
+                padding: 8px;
+                gap: 4px;
+            }
+            .bus-queue h3 {
+                font-size: 1em;
+            }
+            #game-container {
+                padding: 10px;
+            }
+            #completion-message .modal-content-final {
+                font-size: 1.2em;
+                padding: 15px;
+            }
+            #completion-message button {
+                font-size: 0.9em;
+                padding: 8px 18px;
+            }
+            #error-message, #bus-complete-message { /* Aplica para ambas as mensagens */
+                width: 90%;
+                padding: 12px;
+                font-size: 0.8em;
+            }
+            #emblem-placeholder, #logo-placeholder {
+                width: 60px;
+                height: 60px;
+                font-size: 0.5em;
+            }
+            #player-figure-placeholder {
+                width: 70px;
+                height: 70px;
+            }
+            #completion-seal {
+                width: 70px;
+                height: 70px;
+            }
+            #back-to-map-link a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-area">
+        <div id="emblem-placeholder">
+            <img src="Capa.png" alt="Emblema">
+        </div>
+        <h1>Organize os Alunos nas Filas do Ônibus</h1>
+        <div id="logo-placeholder">
+            <img src="logo.png" alt="Logo">
+        </div>
+    </div>
+
+    <div id="main-content-wrapper">
+        <div id="sidebar-left">
+            <div id="player-figure-placeholder">
+                <img src="HRESP.png" alt="Figura do Jogador" id="playerImage">
+            </div>
+            <div id="timer-area">
+                <p>Tempo: <span id="time-spent">0s</span></p>
+            </div>
+            <div id="counters-area">
+                <p>Certo: <span id="correct-count">0</span></p>
+                <p>Errado: <span id="incorrect-count">0</span></p>
+            </div>
+            <div id="reset-button-container">
+                <button onclick="resetGame()">Reiniciar Jogo</button>
+            </div>
+        </div>
+
+        <div id="game-container">
+            <h2>Alunos Espalhados</h2>
+            <div id="students-area">
+                </div>
+
+            <h2>Filas do Ônibus</h2>
+            <div id="bus-queues-area">
+                <div class="bus-queue" id="bus-queue-1">
+                    <h3>Ônibus CENAM 1</h3>
+                </div>
+                <div class="bus-queue" id="bus-queue-2">
+                    <h3>Ônibus CENAM 2</h3>
+                </div>
+                <div class="bus-queue" id="bus-queue-3">
+                    <h3>Ônibus CENAM 3</h3>
+                </div>
+                <div class="bus-queue" id="bus-queue-4">
+                    <h3>Ônibus CENAM 4</h3>
+                </div>
+            </div>
+            <div id="back-to-map-link">
+                <a href="mapa.html?seal_earned=2">Voltar ao Mapa</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="completion-message">
+        <div class="modal-content-final">
+            <p>Você conseguiu!! Organizou todos os alunos na fila, agora o ônibus já poderá ir embora!</p>
+            <div id="completion-seal">
+                </div>
+            <button onclick="goToMapaPage()">Voltar à Página Anterior</button>
+        </div>
+    </div>
+
+    <div id="bus-complete-message">
+        <p>Ônibus completo, organize o próximo!</p>
+    </div>
+
+    <div id="error-message">
+        <p></p>
+    </div>
+
+    <audio id="bus-complete-sound" src="Buzina.mp3" preload="auto"></audio>
+
+    <audio id="bus-depart-sound" src="busbye.mp3" preload="auto"></audio>
+
+    <div id="instructions-modal">
+        <div class="modal-content">
+            <h2>Bem-vindo(a) ao Jogo de Organização de Alunos!</h2>
+            <p><strong>Instruções do Jogo:</strong> Arraste os alunos do pátio da escola para as filas de ônibus. É importante observar que cada aluno tem o número do seu ônibus e seu lugar na fila. Mova os alunos na ordem correta para o ônibus certo. Evite "cortar fila" ou colocar alunos no ônibus errado!</p>
+            <p>Seja rápido e organize as filas para que os ônibus possam partir em segurança!</p>
+            <button onclick="closeInstructionsModal()">Começar Jogo</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Constantes e Elementos do DOM ---
+        const SEAL_ID_FOR_THIS_GAME = '2'; // ID do selo para este jogo (Respeito)
+
+        const NUM_STUDENTS = 36;
+        const NUM_QUEUES = 4;
+        const STUDENTS_PER_QUEUE = NUM_STUDENTS / NUM_QUEUES; // 36 / 4 = 9
+
+        const studentsArea = document.getElementById('students-area');
+        const busQueues = document.querySelectorAll('.bus-queue');
+        const completionMessage = document.getElementById('completion-message');
+        const completionSeal = document.getElementById('completion-seal');
+        const errorMessage = document.getElementById('error-message');
+        const busCompleteMessage = document.getElementById('bus-complete-message');
+        const busCompleteSound = document.getElementById('bus-complete-sound');
+        const busDepartSound = document.getElementById('bus-depart-sound');
+        const playerImage = document.getElementById('playerImage'); // Alterado para playerImage
+
+        const correctCountSpan = document.getElementById('correct-count');
+        const incorrectCountSpan = document.getElementById('incorrect-count');
+        const timeSpentSpan = document.getElementById('time-spent');
+
+        const instructionsModal = document.getElementById('instructions-modal');
+
+        let draggedStudent = null;
+        let originalParent = null;
+        let errorTimeout;
+        let busCompleteTimeout;
+
+        let correctAttempts = 0;
+        let incorrectAttempts = 0;
+
+        const busCompletionStatus = new Map();
+        let busColorAssignments = new Map();
+
+        let timerInterval;
+        let startTime;
+        let timeElapsed = 0;
+        let timerRunning = false;
+
+        /**
+         * Inicia o relógio da atividade.
+         */
+        function startTimer() {
+            if (!timerRunning) {
+                startTime = Date.now() - (timeElapsed * 1000);
+                timerInterval = setInterval(updateTimer, 1000);
+                timerRunning = true;
+            }
+        }
+
+        /**
+         * Para o relógio da atividade.
+         */
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+        }
+
+        /**
+         * Atualiza o display do relógio.
+         */
+        function updateTimer() {
+            timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            timeSpentSpan.textContent = `${minutes}m ${seconds}s`;
+        }
+
+        /**
+         * Reseta o relógio para 0 e para a contagem.
+         */
+        function resetTimer() {
+            stopTimer();
+            timeElapsed = 0;
+            timeSpentSpan.textContent = '0s';
+            timerRunning = false;
+        }
+
+        /**
+         * Gera uma cor hexadecimal aleatória.
+         * @returns {string} Uma string de cor hexadecimal (ex: "#RRGGBB").
+         */
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        /**
+         * Atualiza o status visual do jogador (se o selo foi conquistado).
+         * Verifica o localStorage para a lista de selos coletados.
+         */
+        function updatePlayerSealStatus() {
+            const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+            if (collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
+                playerImage.classList.add('unlocked');
+            } else {
+                playerImage.classList.remove('unlocked');
+            }
+        }
+
+        /**
+         * Gera e embaralha os elementos dos alunos, atribuindo a cada um
+         * um ônibus e posição intencionados, e uma cor correspondente ao ônibus.
+         */
+        function generateStudents() {
+            let allStudentsData = [];
+            let studentCounter = 0;
+
+            for (let busNum = 1; busNum <= NUM_QUEUES; busNum++) {
+                for (let pos = 1; pos <= STUDENTS_PER_QUEUE; pos++) {
+                    allStudentsData.push({
+                        id: `student-${++studentCounter}`,
+                        intendedBus: busNum,
+                        intendedPos: pos,
+                        color: busColorAssignments.get(busNum)
+                    });
+                }
+            }
+
+            for (let i = allStudentsData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allStudentsData[i], allStudentsData[j]] = [allStudentsData[j], allStudentsData[i]];
+            }
+
+            while (studentsArea.firstChild) {
+                studentsArea.removeChild(studentsArea.firstChild);
+            }
+
+            allStudentsData.forEach((studentData) => {
+                const studentDiv = document.createElement('div');
+                studentDiv.classList.add('student');
+                studentDiv.setAttribute('draggable', 'true');
+                studentDiv.id = studentData.id;
+                studentDiv.textContent = studentData.intendedPos;
+                studentDiv.dataset.intendedBus = studentData.intendedBus;
+                studentDiv.dataset.intendedPos = studentData.intendedPos;
+                studentDiv.dataset.originalColor = studentData.color;
+                studentDiv.style.backgroundColor = studentData.color;
+
+                studentDiv.addEventListener('dragstart', handleDragStart);
+                studentDiv.addEventListener('dragend', handleDragEnd);
+
+                studentsArea.appendChild(studentDiv);
+            });
+        }
+
+        /**
+         * Manipulador de evento para o início do arrastar.
+         * @param {DragEvent} e - O evento de arrastar.
+         */
+        function handleDragStart(e) {
+            startTimer();
+            draggedStudent = e.target;
+            originalParent = draggedStudent.parentElement;
+            e.dataTransfer.setData('text/plain', e.target.id);
+            setTimeout(() => {
+                draggedStudent.style.opacity = '0.5';
+            }, 0);
+        }
+
+        /**
+         * Manipulador de evento para o fim do arrastar.
+         */
+        function handleDragEnd() {
+            if (draggedStudent) {
+                draggedStudent.style.opacity = '1';
+            }
+            draggedStudent = null;
+            originalParent = null;
+        }
+
+        /**
+         * Manipulador de evento para quando um item está sendo arrastado sobre um alvo de soltura.
+         * @param {DragEvent} e - O evento de arrastar.
+         */
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        /**
+         * Manipulador de evento para quando um item arrastado sai de um alvo de soltura.
+         * @param {DragEvent} e - O evento de arrastar.
+         */
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        /**
+         * Exibe uma mensagem de erro temporariamente.
+         * @param {string} message - A mensagem a ser exibida.
+         */
+        function showErrorMessage(message) {
+            hideBusCompleteMessage(); // Garante que a mensagem de ônibus completo suma
+            errorMessage.querySelector('p').textContent = message;
+            errorMessage.classList.add('show');
+            if (errorTimeout) {
+                clearTimeout(errorTimeout);
+            }
+            errorTimeout = setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 2000);
+        }
+
+        /**
+         * Exibe a mensagem de "Ônibus completo" temporariamente.
+         */
+        function showBusCompleteMessage() {
+            if (errorMessage.classList.contains('show')) { // Se a mensagem de erro estiver ativa, esconde-a
+                errorMessage.classList.remove('show');
+                if (errorTimeout) clearTimeout(errorTimeout);
+            }
+
+            busCompleteMessage.classList.add('show');
+            if (busCompleteTimeout) {
+                clearTimeout(busCompleteTimeout);
+            }
+            busCompleteTimeout = setTimeout(() => {
+                busCompleteMessage.classList.remove('show');
+            }, 2500);
+        }
+
+        /**
+         * Oculta a mensagem de "Ônibus completo".
+         */
+        function hideBusCompleteMessage() {
+            busCompleteMessage.classList.remove('show');
+            if (busCompleteTimeout) {
+                clearTimeout(busCompleteTimeout);
+            }
+        }
+
+        /**
+         * Toca o som de ônibus completo.
+         */
+        function playBusCompleteSound() {
+            if (busCompleteSound) {
+                busCompleteSound.currentTime = 0;
+                busCompleteSound.play().catch(e => console.error("Erro ao tocar áudio de buzina:", e));
+            }
+        }
+
+        /**
+         * Toca o som de ônibus partindo.
+         */
+        function playBusDepartSound() {
+            if (busDepartSound) {
+                busDepartSound.currentTime = 0;
+                busDepartSound.play().catch(e => console.error("Erro ao tocar áudio de partida:", e));
+            }
+        }
+
+        /**
+         * Atualiza a numeração dos alunos dentro de uma fila específica.
+         * O texto do aluno será sua posição (1 a 9) e a cor será a cor do ônibus.
+         * @param {HTMLElement} queueElement - O elemento da fila de ônibus.
+         */
+        function updateQueueNumbers(queueElement) {
+            const queueNumber = parseInt(queueElement.id.replace('bus-queue-', ''));
+            const studentsInQueue = Array.from(queueElement.querySelectorAll('.student'));
+            const busColor = busColorAssignments.get(queueNumber);
+
+            const queueTitle = queueElement.querySelector('h3');
+            if (queueTitle) {
+                queueTitle.style.color = busColor;
+                queueTitle.style.borderColor = busColor;
+            }
+
+            studentsInQueue.forEach((student, index) => {
+                student.textContent = `${index + 1}`;
+                student.style.backgroundColor = student.dataset.originalColor;
+            });
+        }
+
+        /**
+         * Reseta o texto e a cor de um aluno quando ele está na área de alunos espalhados.
+         * O texto volta a ser a posição pretendida (1 a 9) e a cor a cor do ônibus.
+         * @param {HTMLElement} studentElement - O elemento do aluno.
+         */
+        function resetStudentAppearance(studentElement) {
+            const intendedPos = studentElement.dataset.intendedPos;
+            studentElement.textContent = `${intendedPos}`;
+            studentElement.style.backgroundColor = studentElement.dataset.originalColor;
+        }
+
+        /**
+         * Atualiza os contadores de acertos e erros na interface.
+         */
+        function updateCounters() {
+            correctCountSpan.textContent = correctAttempts;
+            incorrectCountSpan.textContent = incorrectAttempts;
+        }
+
+        /**
+         * Verifica se uma fila de ônibus específica está completa e na ordem correta.
+         * Se sim, exibe a mensagem de ônibus completo e toca o som.
+         * @param {HTMLElement} queueElement - O elemento da fila de ônibus a ser verificado.
+         * @returns {boolean} True se a fila estiver completa e correta, false caso contrário.
+         */
+        function checkIndividualBusCompletion(queueElement) {
+            const queueNumber = parseInt(queueElement.id.replace('bus-queue-', ''));
+            const studentsInQueue = Array.from(queueElement.querySelectorAll('.student'));
+
+            if (studentsInQueue.length !== STUDENTS_PER_QUEUE) {
+                busCompletionStatus.set(queueNumber, false);
+                return false;
+            }
+
+            for (let i = 0; i < studentsInQueue.length; i++) {
+                const student = studentsInQueue[i];
+                const studentIntendedBus = parseInt(student.dataset.intendedBus);
+                const studentIntendedPos = parseInt(student.dataset.intendedPos);
+
+                if (studentIntendedBus !== queueNumber || studentIntendedPos !== (i + 1)) {
+                    busCompletionStatus.set(queueNumber, false);
+                    return false;
+                }
+            }
+
+            if (!busCompletionStatus.get(queueNumber)) {
+                showBusCompleteMessage();
+                playBusCompleteSound();
+                busCompletionStatus.set(queueNumber, true);
+            }
+            return true;
+        }
+
+        /**
+         * Manipulador de evento para a soltura de um item.
+         * Implementa a lógica para permitir a soltura apenas na fila correta e retornar o aluno se for inválido.
+         * @param {DragEvent} e - O evento de arrastar.
+         */
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            if (!draggedStudent) return;
+
+            const targetElement = e.currentTarget;
+            const studentIntendedBus = parseInt(draggedStudent.dataset.intendedBus);
+            const studentIntendedPos = parseInt(draggedStudent.dataset.intendedPos);
+
+            let moveSuccessful = false;
+
+            if (targetElement.classList.contains('bus-queue')) {
+                const queueNumber = parseInt(targetElement.id.replace('bus-queue-', ''));
+                const studentsInTargetQueue = Array.from(targetElement.querySelectorAll('.student'));
+
+                if (studentIntendedBus !== queueNumber) {
+                    showErrorMessage("Esse aluno não pertence a esse ônibus! Tente novamente");
+                    incorrectAttempts++;
+                }
+                else if (studentsInTargetQueue.length === 0) {
+                    if (studentIntendedPos === 1) {
+                        moveSuccessful = true;
+                        correctAttempts++;
+                    } else {
+                        showErrorMessage('Obedeça a fila, é proibido "cortar fila"');
+                        incorrectAttempts++;
+                    }
+                } else {
+                    const lastStudentInQueue = studentsInTargetQueue[studentsInTargetQueue.length - 1];
+                    const lastStudentIntendedPos = parseInt(lastStudentInQueue.dataset.intendedPos);
+
+                    if (studentIntendedPos === lastStudentIntendedPos + 1) {
+                        if (studentsInTargetQueue.length < STUDENTS_PER_QUEUE) {
+                            moveSuccessful = true;
+                            correctAttempts++;
+                        } else {
+                            showErrorMessage("Fila cheia, não é possível adicionar mais alunos!");
+                            incorrectAttempts++;
+                        }
+                    } else {
+                        showErrorMessage('Obedeça a fila, é proibido "cortar fila"');
+                        incorrectAttempts++;
+                    }
+                }
+
+                if (moveSuccessful) {
+                    targetElement.appendChild(draggedStudent);
+                    updateQueueNumbers(targetElement);
+                    if (originalParent && originalParent.classList.contains('bus-queue') && originalParent !== targetElement) {
+                        updateQueueNumbers(originalParent);
+                        const originalQueueNumber = parseInt(originalParent.id.replace('bus-queue-', ''));
+                        busCompletionStatus.set(originalQueueNumber, false);
+                    }
+                    checkIndividualBusCompletion(targetElement);
+                } else {
+                    if (originalParent) {
+                        originalParent.appendChild(draggedStudent);
+                        if (originalParent.classList.contains('bus-queue')) {
+                            updateQueueNumbers(originalParent);
+                        }
+                    }
+                }
+            } else if (targetElement.id === 'students-area') {
+                if (draggedStudent.parentElement !== studentsArea) {
+                    targetElement.appendChild(draggedStudent);
+                    resetStudentAppearance(draggedStudent);
+                    if (originalParent && originalParent.classList.contains('bus-queue')) {
+                        updateQueueNumbers(originalParent);
+                        const originalQueueNumber = parseInt(originalParent.id.replace('bus-queue-', ''));
+                        busCompletionStatus.set(originalQueueNumber, false);
+                    }
+                    correctAttempts++;
+                }
+            } else {
+                showErrorMessage("Ônibus errado! Tente na fila de outro ônibus!");
+                incorrectAttempts++;
+                if (originalParent) {
+                    originalParent.appendChild(draggedStudent);
+                    if (originalParent.classList.contains('bus-queue')) {
+                        updateQueueNumbers(originalParent);
+                    }
+                }
+            }
+
+            updateCounters();
+            checkCompletion();
+        }
+
+        /**
+         * Configura os event listeners para as filas de ônibus e a área de alunos.
+         */
+        function setupDropZones() {
+            busQueues.forEach(queue => {
+                queue.addEventListener('dragover', handleDragOver);
+                queue.addEventListener('dragleave', handleDragLeave);
+                queue.addEventListener('drop', handleDrop);
+            });
+
+            studentsArea.addEventListener('dragover', handleDragOver);
+            studentsArea.addEventListener('dragleave', handleDragLeave);
+            studentsArea.addEventListener('drop', handleDrop);
+        }
+
+        /**
+         * Verifica se a tarefa de ordenação está completa.
+         * A tarefa é considerada completa quando cada fila tem 9 alunos E todos os alunos
+         * em cada fila correspondem ao número do ônibus E estão na ordem correta (1 a 9).
+         */
+        function checkCompletion() {
+            let allQueuesCompleted = true;
+
+            busQueues.forEach(queue => {
+                if (!checkIndividualBusCompletion(queue)) {
+                    allQueuesCompleted = false;
+                }
+            });
+
+            if (allQueuesCompleted) {
+                stopTimer();
+                completionMessage.style.display = 'flex';
+                playBusDepartSound();
+
+                // Define a imagem do selo no modal de conclusão
+                const sealImageElement = document.createElement('img');
+                sealImageElement.src = 'HRESP.png'; // Imagem do selo para Respeito
+                sealImageElement.alt = 'Selo de Conquista de Respeito';
+                while (completionSeal.firstChild) {
+                    completionSeal.removeChild(completionSeal.firstChild);
+                }
+                completionSeal.appendChild(sealImageElement);
+            } else {
+                completionMessage.style.display = 'none';
+            }
+        }
+
+        /**
+         * Redireciona para a página mapa.html e salva o estado de conclusão no localStorage.
+         */
+        function goToMapaPage() {
+            // Redireciona com o ID do selo para o mapa.html
+            window.location.href = `mapa.html?seal_earned=${SEAL_ID_FOR_THIS_GAME}`;
+        }
+
+        /**
+         * Reinicia o jogo, movendo todos os alunos de volta para a área inicial
+         * e embaralhando-os. Reseta contadores e relógio.
+         */
+        function resetGame() {
+            // Substituído alert() e confirm() por uma mensagem customizada
+            const customConfirm = (message, onConfirm, onCancel) => {
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                    align-items: center; z-index: 9999;
+                `;
+                const box = document.createElement('div');
+                box.style.cssText = `
+                    background-color: white; padding: 25px; border-radius: 10px;
+                    text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    max-width: 350px; width: 90%;
+                `;
+                const msg = document.createElement('p');
+                msg.textContent = message;
+                msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
+
+                const btnContainer = document.createElement('div');
+                btnContainer.style.cssText = 'display: flex; justify-content: center; gap: 15px;';
+
+                const confirmBtn = document.createElement('button');
+                confirmBtn.textContent = 'Sim';
+                confirmBtn.style.cssText = `
+                    padding: 10px 20px; border: none; border-radius: 5px;
+                    background-color: #dc3545; color: white;
+                    font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                `;
+                confirmBtn.onmouseover = () => confirmBtn.style.backgroundColor = '#c82333';
+                confirmBtn.onmouseout = () => confirmBtn.style.backgroundColor = '#dc3545';
+                confirmBtn.onclick = () => { document.body.removeChild(overlay); onConfirm(); };
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = 'Não';
+                cancelBtn.style.cssText = `
+                    padding: 10px 20px; border: none; border-radius: 5px;
+                    background-color: #007bff; color: white;
+                    font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                `;
+                cancelBtn.onmouseover = () => cancelBtn.style.backgroundColor = '#0056b3';
+                cancelBtn.onmouseout = () => cancelBtn.style.backgroundColor = '#007bff';
+                cancelBtn.onclick = () => { document.body.removeChild(overlay); if (onCancel) onCancel(); };
+
+                btnContainer.appendChild(confirmBtn);
+                btnContainer.appendChild(cancelBtn);
+                box.appendChild(msg);
+                box.appendChild(btnContainer);
+                overlay.appendChild(box);
+                document.body.appendChild(overlay);
+            };
+
+            customConfirm('Tem certeza que deseja reiniciar a partida? Seu progresso nesta atividade será perdido.', () => {
+                completionMessage.style.display = 'none';
+                hideBusCompleteMessage();
+                errorMessage.classList.remove('show');
+                if (errorTimeout) {
+                    clearTimeout(errorTimeout);
+                }
+
+                correctAttempts = 0;
+                incorrectAttempts = 0;
+                updateCounters();
+                resetTimer();
+
+                busColorAssignments = new Map();
+                for (let busNum = 1; busNum <= NUM_QUEUES; busNum++) {
+                    busColorAssignments.set(busNum, getRandomColor());
+                }
+
+                generateStudents();
+
+                busQueues.forEach(queue => {
+                    while(queue.querySelector('.student')) {
+                        queue.removeChild(queue.querySelector('.student'));
+                    }
+                    const queueNumber = parseInt(queue.id.replace('bus-queue-', ''));
+                    busCompletionStatus.set(queueNumber, false);
+                    updateQueueNumbers(queue);
+                });
+
+                checkCompletion();
+            });
+        }
+
+        /**
+         * Exibe o modal de instruções.
+         */
+        function showInstructionsModal() {
+            instructionsModal.style.display = 'flex';
+        }
+
+        /**
+         * Fecha o modal de instruções.
+         */
+        function closeInstructionsModal() {
+            instructionsModal.style.display = 'none';
+            // Inicia o timer quando o modal de instruções é fechado
+            startTimer();
+        }
+
+        // --- Inicialização do Jogo ---
+        document.addEventListener('DOMContentLoaded', () => {
+            busColorAssignments = new Map();
+            for (let busNum = 1; busNum <= NUM_QUEUES; busNum++) {
+                busColorAssignments.set(busNum, getRandomColor());
+            }
+
+            generateStudents();
+            setupDropZones();
+            updateCounters();
+            resetTimer();
+            completionMessage.style.display = 'none';
+            hideBusCompleteMessage();
+
+            busQueues.forEach(queue => {
+                const queueNumber = parseInt(queue.id.replace('bus-queue-', ''));
+                busCompletionStatus.set(queueNumber, false);
+                updateQueueNumbers(queue);
+            });
+
+            updatePlayerSealStatus(); // Atualiza o status do selo do jogador ao carregar
+            showInstructionsModal();
+        });
+    </script>
+</body>
+</html>

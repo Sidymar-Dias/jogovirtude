@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Memória</title>
+    <style>
+        /* Estilos globais para o corpo da página */
+        body {
+            font-family: 'Inter', Arial, sans-serif; /* Usando Inter como fonte principal */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e0f2f7; /* Um azul claro suave para o fundo */
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh; /* Garante que o body ocupe a altura total da viewport */
+            box-sizing: border-box; /* Inclui padding e borda no tamanho total */
+        }
+
+        /* Estilos do cabeçalho */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: #ffffff;
+            border-radius: 15px; /* Cantos arredondados */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        /* Itens dentro do cabeçalho (emblema, logo) */
+        .header-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-item img {
+            max-height: 60px; /* Tamanho ajustado para imagens do cabeçalho */
+            border-radius: 8px; /* Cantos arredondados para as imagens */
+        }
+
+        h1 {
+            margin: 0;
+            color: #2c3e50; /* Cor escura para o título */
+            font-size: 2.5em; /* Tamanho maior para o título do jogo */
+            text-align: center;
+            flex-grow: 1; /* Permite que o título ocupe o espaço central */
+        }
+
+        /* Container principal do jogo (sidebar + área do jogo) */
+        .game-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite que os elementos quebrem a linha em telas menores */
+            justify-content: center; /* Centraliza em telas menores */
+            width: 100%;
+            max-width: 1200px;
+            gap: 25px;
+            flex-grow: 1; /* Permite que o container cresça e ocupe o espaço restante */
+        }
+
+        /* Estilos da barra lateral */
+        .sidebar {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 280px; /* Largura fixa para a sidebar */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            /* Removido justify-content: space-between; para não empurrar o link para baixo */
+        }
+
+        .player-info {
+            margin-bottom: 25px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Avatar do jogador */
+        .player-avatar {
+            width: 120px;
+            height: 120px;
+            background-color: #ecf0f1; /* Fundo cinza claro */
+            border-radius: 50%; /* Círculo perfeito */
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            overflow: hidden;
+            border: 3px solid #3498db; /* Borda azul para o avatar */
+        }
+
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que a imagem preencha o círculo */
+        }
+
+        .score-info p {
+            margin: 8px 0;
+            font-size: 1.2em;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        /* Área do jogo das cartas */
+        .game-area {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-grow: 1; /* Permite que a área do jogo ocupe o espaço restante */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Colunas responsivas */
+            gap: 20px;
+            justify-content: center;
+            align-content: center;
+            max-width: calc(100% - 300px); /* Ajusta a largura máxima para acomodar a sidebar */
+            box-sizing: border-box;
+            min-height: 400px; /* Garante uma altura mínima para o game-area */
+        }
+
+        /* Estilos individuais das cartas */
+        .card {
+            width: 130px; /* Tamanho padrão da carta */
+            height: 130px;
+            background-color: #2ecc71; /* Verde esmeralda para o verso */
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            color: white;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Transição com efeito elástico */
+            transform-style: preserve-3d; /* Necessário para a animação 3D de virar */
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Quando a carta é virada */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Faces da carta (frente e verso) */
+        .card .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Esconde a face quando virada */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card .card-front {
+            background-color: #2ecc71; /* Verde esmeralda */
+            color: white;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card .card-back {
+            background-color: #ecf0f1; /* Fundo claro para a imagem */
+            transform: rotateY(180deg); /* Vira o verso para a posição inicial */
+        }
+
+        .card .card-back img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain; /* Garante que a imagem se encaixe */
+        }
+
+        /* Cartas combinadas */
+        .card.matched .card-back {
+            opacity: 0.7; /* Cartas combinadas ficam um pouco transparentes */
+            /* filter: grayscale(100%); Opcional: para deixar as cartas combinadas em preto e branco */
+        }
+
+        /* Controles do jogo (botão de reiniciar) */
+        .game-controls {
+            width: 100%;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .game-controls button, .game-controls a {
+            background-color: #3498db; /* Azul vibrante */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px; /* Cantos arredondados para botões */
+            cursor: pointer;
+            font-size: 1.1em;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .game-controls button:hover, .game-controls a:hover {
+            background-color: #2980b9; /* Azul mais escuro ao passar o mouse */
+            transform: translateY(-2px); /* Efeito de "levantar" */
+        }
+
+        /* Estilos do link de retorno ao mapa principal */
+        .return-to-map {
+            width: 100%;
+            text-align: center;
+            margin-top: 25px; /* Espaçamento superior para separar da área do jogo */
+            padding-top: 20px; /* Espaçamento superior interno */
+            border-top: 1px dashed #bdc3c7; /* Linha tracejada */
+            box-sizing: border-box; /* Inclui padding e borda no tamanho total */
+        }
+
+        .return-to-map a {
+            background-color: #f39c12; /* Laranja vibrante para o botão de retorno */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-decoration: none;
+            display: inline-block; /* Permite aplicar padding e margin como um bloco */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .return-to-map a:hover {
+            background-color: #e67e22; /* Laranja mais escuro ao passar o mouse */
+            transform: translateY(-2px);
+        }
+
+        /* Estilos para os modais (janelas pop-up) */
+        .modal, .congratulations-modal {
+            display: none; /* Escondido por padrão */
+            position: fixed; /* Fixado na tela */
+            z-index: 1000; /* Acima de outros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); /* Fundo semi-transparente */
+            justify-content: center;
+            align-items: center;
+            padding: 20px; /* Padding para evitar que o conteúdo toque as bordas */
+            box-sizing: border-box;
+        }
+
+        .modal-content, .congratulations-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 35px;
+            border-radius: 15px; /* Cantos arredondados */
+            width: 90%;
+            max-width: 550px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            animation: fadeIn 0.4s ease-out; /* Animação de entrada */
+        }
+
+        /* Animação para o modal */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+        }
+
+        .modal-content h2, .congratulations-modal-content h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .modal-content p, .congratulations-modal-content p {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .congratulations-modal-content img {
+            max-width: 180px; /* Tamanho maior para o selo no modal */
+            margin-top: 25px;
+            margin-bottom: 25px;
+            border: 4px solid #f39c12; /* Borda dourada para o selo */
+            border-radius: 50%; /* Selo redondo */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .header-item {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-width: 400px; /* Limita a largura da sidebar em mobile */
+            }
+
+            .game-area {
+                width: 100%;
+                max-width: 100%;
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Cartas menores em mobile */
+                gap: 10px;
+                min-height: auto; /* Remove altura mínima fixa em mobile para melhor adaptação */
+            }
+
+            .card {
+                width: 100px;
+                height: 100px;
+                font-size: 2em;
+            }
+
+            .player-avatar {
+                width: 90px;
+                height: 90px;
+            }
+
+            .return-to-map {
+                margin-top: 25px; /* Ajusta a margem superior em telas menores */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 80px;
+                height: 80px;
+                font-size: 1.5em;
+            }
+
+            .player-avatar {
+                width: 90px;
+                height: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-item">
+            <img src="Capa.png" alt="Emblema do Jogo" id="emblema" onerror="this.onerror=null;this.src='https://placehold.co/60x60/3498db/ffffff?text=Emblema';">
+        </div>
+        <h1>Jogo da Memória</h1>
+        <div class="header-item">
+            <img src="logo.png" alt="Logo do Jogo" id="logo" onerror="this.onerror=null;this.src='https://placehold.co/60x60/2ecc71/ffffff?text=Logo';">
+        </div>
+    </header>
+
+    <div class="game-container">
+        <aside class="sidebar">
+            <div class="player-info">
+                <div class="player-avatar" id="playerAvatar">
+                    <img src="HPAC.png" alt="Avatar do Jogador" onerror="this.onerror=null;this.src='https://placehold.co/120x120/ccc/666?text=Avatar';">
+                </div>
+            </div>
+            <div class="score-info">
+                <p>Acertos: <span id="correctCount">0</span></p>
+                <p>Erros: <span id="wrongCount">0</span></p>
+            </div>
+            <div class="game-controls">
+                <button id="restartGame">Reiniciar Jogo</button>
+            </div>
+        </aside>
+
+        <main class="game-area" id="gameArea">
+            </main>
+
+        <div class="return-to-map">
+            <a href="mapa.html?seal_earned=3">Retornar ao Mapa Principal</a>
+        </div>
+    </div>
+
+    <div id="instructionsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeInstructions">&times;</span>
+            <h2>Como Jogar</h2>
+            <p>Seja bem-vindo(a) ao Jogo da Memória!</p>
+            <p>O objetivo é encontrar todos os pares de cartas idênticas. Clique em uma carta para virá-la e depois clique em outra.</p>
+            <ul>
+                <li>Se as cartas forem iguais, elas permanecerão viradas e você ganha um acerto.</li>
+                <li>Se forem diferentes, elas se virarão novamente após um breve momento e você não marcará ponto!.</li>
+            </ul>
+            <p>Seu progresso será registrado nos contadores de acertos e erros. Ao encontrar todos os 10 pares, você ganhará um selo da conquista!</p>
+            <button id="startGameButton" class="game-controls-button">Começar Jogo!</button>
+        </div>
+    </div>
+
+    <div id="congratulationsModal" class="congratulations-modal">
+        <div class="congratulations-modal-content">
+            <h2>Parabéns pela Conquista!</h2>
+            <p>Você encontrou todos os pares com sucesso!</p>
+            <img src="HPAC.png" alt="Selo Conquistado" id="congratulationsSeal" onerror="this.onerror=null;this.src='https://placehold.co/180x180/f39c12/ffffff?text=Selo';">
+            <p>Você ganhou um selo por sua dedicação!</p>
+            <a href="mapa.html?seal_earned=3" class="game-controls-button">Voltar para a Página do Mapa</a>
+        </div>
+    </div>
+
+    <script>
+        // Referências aos elementos HTML
+        const gameArea = document.getElementById('gameArea');
+        const correctCountSpan = document.getElementById('correctCount');
+        const wrongCountSpan = document.getElementById('wrongCount');
+        const restartGameButton = document.getElementById('restartGame');
+        const instructionsModal = document.getElementById('instructionsModal');
+        const closeInstructionsButton = document.getElementById('closeInstructions');
+        const startGameButton = document.getElementById('startGameButton');
+        const congratulationsModal = document.getElementById('congratulationsModal');
+        const playerAvatarElement = document.getElementById('playerAvatar'); // Para o avatar do jogador
+        const congratulationsSeal = document.getElementById('congratulationsSeal'); // Para a imagem no modal de parabéns
+
+
+        // Variáveis de estado do jogo
+        let cards = []; // Array de todas as cartas no tabuleiro
+        let flippedCards = []; // Array das cartas atualmente viradas (máximo de 2)
+        let matchedPairs = 0; // Contagem de pares encontrados
+        let correctGuesses = 0; // Contagem de acertos
+        let wrongGuesses = 0; // Contagem de erros
+        let lockBoard = false; // Impede cliques durante a verificação de pares
+
+        // Caminhos das imagens das cartas (10 pares).
+        // Certifique-se de que estas imagens existam na mesma pasta do arquivo HTML.
+        const cardImages = [
+            'logo.png', 'trocaroupa.png', 'Empreende.png',
+            'HAC.png', 'HPERS.png', 'HRESP.png',
+            'HESP.png', 'puzzle.png', 'banho.png', 'estudar.png'
+        ];
+
+        // *** IMPORTANTE: ID DO SELO QUE ESTE JOGO CONQUISTA NO MAPA GERAL ***
+        // Este ID deve corresponder ao 'data-seal-id' da porta que leva a este jogo no seu mapa.html
+        const SEAL_ID_FOR_THIS_GAME = '3'; // ID do selo para Paciência
+        const SEAL_IMAGE_PATH = 'HPAC.png'; // Caminho da imagem que será o selo para Paciência
+
+        // Define a imagem do selo no modal de parabéns
+        congratulationsSeal.src = SEAL_IMAGE_PATH;
+
+        /**
+         * Embaralha um array usando o algoritmo Fisher-Yates (Knuth shuffle).
+         * @param {Array} array - O array a ser embaralhado.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Troca os elementos
+            }
+        }
+
+        /**
+         * Cria e popula o tabuleiro do jogo com as cartas embaralhadas.
+         */
+        function createBoard() {
+            gameArea.innerHTML = ''; // Limpa qualquer carta existente no tabuleiro
+
+            // Duplica as imagens para formar os pares e as embaralha
+            let gameCards = [...cardImages, ...cardImages];
+            shuffleArray(gameCards);
+
+            // Cria um elemento div para cada carta
+            gameCards.forEach((imageName, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                // Salva o nome da imagem (sem a extensão) no dataset para comparação
+                card.dataset.name = imageName.split('.')[0];
+                card.dataset.index = index; // Adiciona um índice único para cada carta
+
+                // Cria a face frontal da carta (verso)
+                const cardFront = document.createElement('div');
+                cardFront.classList.add('card-face', 'card-front');
+                cardFront.textContent = '?'; // Caractere simples para o verso
+
+                // Cria a face traseira da carta (imagem)
+                const cardBack = document.createElement('div');
+                cardBack.classList.add('card-face', 'card-back');
+                const imgElement = document.createElement('img');
+                // Caminho da imagem: diretamente o nome do arquivo, pois está na mesma pasta
+                imgElement.src = imageName;
+                imgElement.alt = card.dataset.name;
+                imgElement.onerror = function() {
+                    // Fallback para imagens ausentes: placeholder simples
+                    this.src = `https://placehold.co/90x90/ccc/666?text=${card.dataset.name}`;
+                };
+                cardBack.appendChild(imgElement);
+
+                // Adiciona as faces à carta e a carta à área do jogo
+                card.appendChild(cardFront);
+                card.appendChild(cardBack);
+
+                // Adiciona o event listener de clique para virar a carta
+                card.addEventListener('click', flipCard);
+                gameArea.appendChild(card);
+            });
+
+            cards = document.querySelectorAll('.card'); // Atualiza a lista de cartas
+            resetGameVariables(); // Reinicia as variáveis do jogo
+        }
+
+        /**
+         * Vira uma carta quando clicada.
+         */
+        function flipCard() {
+            // Se o tabuleiro estiver bloqueado ou a mesma carta for clicada novamente, ou já estiver virada, sai
+            if (lockBoard || this === flippedCards[0] || this.classList.contains('flipped')) return;
+
+            this.classList.add('flipped'); // Adiciona a classe para virar visualmente a carta
+            flippedCards.push(this); // Adiciona a carta ao array de cartas viradas
+
+            // Se duas cartas foram viradas, verifica se há um par
+            if (flippedCards.length === 2) {
+                lockBoard = true; // Bloqueia o tabuleiro para evitar cliques extras
+                checkForMatch();
+            }
+        }
+
+        /**
+         * Verifica se as duas cartas viradas formam um par.
+         */
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            // Compara os nomes das imagens das cartas
+            const isMatch = card1.dataset.name === card2.dataset.name;
+
+            // Se for um par, desabilita as cartas; caso contrário, desvira-as
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        /**
+         * Ações quando um par é encontrado: desabilita as cartas e atualiza o placar.
+         */
+        function disableCards() {
+            // Remove os event listeners para que as cartas combinadas não possam ser clicadas novamente
+            flippedCards[0].removeEventListener('click', flipCard);
+            flippedCards[1].removeEventListener('click', flipCard);
+            // Adiciona a classe 'matched' para estilos visuais de cartas combinadas
+            flippedCards[0].classList.add('matched');
+            flippedCards[1].classList.add('matched');
+
+            matchedPairs++; // Incrementa a contagem de pares encontrados
+            correctGuesses++; // Incrementa os acertos
+            updateScore(); // Atualiza o placar na interface
+
+            resetFlippedCards(); // Reseta as cartas viradas e desbloqueia o tabuleiro
+
+            // Verifica se todos os pares foram encontrados para finalizar o jogo
+            if (matchedPairs === cardImages.length) {
+                setTimeout(() => {
+                    // Substituído alert() por uma mensagem customizada
+                    const customAlert = (message, onConfirm) => {
+                        const overlay = document.createElement('div');
+                        overlay.style.cssText = `
+                            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                            background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                            align-items: center; z-index: 9999;
+                        `;
+                        const box = document.createElement('div');
+                        box.style.cssText = `
+                            background-color: white; padding: 25px; border-radius: 10px;
+                            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                            max-width: 300px; width: 90%;
+                        `;
+                        const msg = document.createElement('p');
+                        msg.textContent = message;
+                        msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
+
+                        const okBtn = document.createElement('button');
+                        okBtn.textContent = 'OK';
+                        okBtn.style.cssText = `
+                            padding: 10px 20px; border: none; border-radius: 5px;
+                            background-color: #28a745; color: white;
+                            font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                        `;
+                        okBtn.onmouseover = () => okBtn.style.backgroundColor = '#218838';
+                        okBtn.onmouseout = () => okBtn.style.backgroundColor = '#28a745';
+                        okBtn.onclick = () => { document.body.removeChild(overlay); if (onConfirm) onConfirm(); };
+
+                        box.appendChild(msg);
+                        box.appendChild(okBtn);
+                        overlay.appendChild(box);
+                        document.body.appendChild(overlay);
+                    };
+                    customAlert('Parabéns! Você encontrou todos os pares!', () => {
+                        congratulationsModal.style.display = 'flex'; // Mostra o modal de parabéns
+                    });
+                }, 800); // Pequeno atraso para a animação da carta
+            }
+        }
+
+        /**
+         * Ações quando as cartas não formam um par: desvira as cartas e atualiza o placar.
+         */
+        function unflipCards() {
+            wrongGuesses++; // Incrementa os erros
+            updateScore(); // Atualiza o placar
+            setTimeout(() => {
+                // Remove a classe 'flipped' para virar as cartas de volta
+                flippedCards[0].classList.remove('flipped');
+                flippedCards[1].classList.remove('flipped');
+                resetFlippedCards(); // Reseta as cartas viradas e desbloqueia o tabuleiro
+            }, 1000); // Atraso de 1 segundo para o jogador ver as cartas
+        }
+
+        /**
+         * Reseta o array de cartas viradas e desbloqueia o tabuleiro.
+         */
+        function resetFlippedCards() {
+            flippedCards = [];
+            lockBoard = false;
+        }
+
+        /**
+         * Atualiza a exibição dos contadores de acertos e erros.
+         */
+        function updateScore() {
+            correctCountSpan.textContent = correctGuesses;
+            wrongCountSpan.textContent = wrongGuesses;
+        }
+
+        /**
+         * Reinicia todas as variáveis de estado do jogo.
+         */
+        function resetGameVariables() {
+            flippedCards = [];
+            matchedPairs = 0;
+            correctGuesses = 0;
+            wrongGuesses = 0;
+            lockBoard = false;
+            updateScore(); // Atualiza o placar para zero
+        }
+
+        /**
+         * Inicia o jogo após o usuário fechar o modal de instruções.
+         */
+        function startGame() {
+            createBoard(); // Cria o tabuleiro inicial
+            instructionsModal.style.display = 'none'; // Esconde o modal de instruções
+        }
+
+        /**
+         * Atualiza o status do avatar do jogador com base nos selos coletados.
+         * Se o selo deste jogo foi coletado, adiciona a classe 'unlocked' ao avatar.
+         */
+        function updatePlayerAvatarStatus() {
+            const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+            const avatarImg = playerAvatarElement.querySelector('img');
+            if (collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
+                avatarImg.classList.add('unlocked'); // Adiciona uma classe para estilizar o avatar como "desbloqueado"
+            } else {
+                avatarImg.classList.remove('unlocked');
+            }
+        }
+
+        // --- Event Listeners ---
+
+        // Botão para reiniciar o jogo
+        restartGameButton.addEventListener('click', () => {
+            // Substituído confirm() por uma mensagem customizada
+            const customConfirm = (message, onConfirm, onCancel) => {
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                    align-items: center; z-index: 9999;
+                `;
+                const box = document.createElement('div');
+                box.style.cssText = `
+                    background-color: white; padding: 25px; border-radius: 10px;
+                    text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    max-width: 350px; width: 90%;
+                `;
+                const msg = document.createElement('p');
+                msg.textContent = message;
+                msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
+
+                const btnContainer = document.createElement('div');
+                btnContainer.style.cssText = 'display: flex; justify-content: center; gap: 15px;';
+
+                const confirmBtn = document.createElement('button');
+                confirmBtn.textContent = 'Sim';
+                confirmBtn.style.cssText = `
+                    padding: 10px 20px; border: none; border-radius: 5px;
+                    background-color: #dc3545; color: white;
+                    font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                `;
+                confirmBtn.onmouseover = () => confirmBtn.style.backgroundColor = '#c82333';
+                confirmBtn.onmouseout = () => confirmBtn.style.backgroundColor = '#dc3545';
+                confirmBtn.onclick = () => { document.body.removeChild(overlay); onConfirm(); };
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = 'Não';
+                cancelBtn.style.cssText = `
+                    padding: 10px 20px; border: none; border-radius: 5px;
+                    background-color: #007bff; color: white;
+                    font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                `;
+                cancelBtn.onmouseover = () => cancelBtn.style.backgroundColor = '#0056b3';
+                cancelBtn.onmouseout = () => cancelBtn.style.backgroundColor = '#007bff';
+                cancelBtn.onclick = () => { document.body.removeChild(overlay); if (onCancel) onCancel(); };
+
+                btnContainer.appendChild(confirmBtn);
+                btnContainer.appendChild(cancelBtn);
+                box.appendChild(msg);
+                box.appendChild(btnContainer);
+                overlay.appendChild(box);
+                document.body.appendChild(overlay);
+            };
+
+            customConfirm('Tem certeza que deseja reiniciar a partida? Seu progresso nesta atividade será perdido.', () => {
+                createBoard(); // Reinicia o tabuleiro
+            });
+        });
+
+        // Botão para fechar o modal de instruções (o jogo não começa automaticamente)
+        closeInstructionsButton.addEventListener('click', () => {
+            instructionsModal.style.display = 'none';
+        });
+
+        // Botão "Começar Jogo!" dentro do modal de instruções
+        startGameButton.addEventListener('click', startGame);
+
+        // Ao carregar a página, exibe o modal de instruções e carrega o avatar
+        window.addEventListener('load', () => {
+            instructionsModal.style.display = 'flex'; // Abre o modal de instruções
+
+            // Tenta carregar a imagem do avatar do jogador do localStorage, se existir.
+            // Se não houver, usa 'HPAC.png' como padrão (na mesma pasta).
+            // A classe 'unlocked' é adicionada/removida pela função updatePlayerAvatarStatus()
+            const avatarImg = playerAvatarElement.querySelector('img');
+            avatarImg.src = 'HPAC.png'; // Define a imagem padrão (ou a que você deseja para este jogo)
+            avatarImg.alt = 'Jogador';
+            avatarImg.onerror = function() {
+                this.src = 'https://placehold.co/120x120/ccc/666?text=Avatar';
+            };
+            updatePlayerAvatarStatus(); // Atualiza o status do avatar com base nos selos coletados
+        });
+    </script>
+</body>
+</html>

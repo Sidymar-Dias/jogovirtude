@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desenvolvimento do Projeto - Despertando Virtudes</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+        }
+        header .logo {
+            max-height: 60px; /* Ajuste o tamanho das logos conforme necessário */
+            width: auto;
+        }
+        header .logo-center {
+            max-height: 80px; /* Logo central um pouco maior */
+            width: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            padding: 20px 0;
+            margin-top: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .section h2 {
+            color: #0056b3;
+            margin-top: 0;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .section h3 {
+            color: #007bff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .section p, .section ul {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify; /* Alinhamento justificado para o texto */
+        }
+        .section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            text-align: left; /* Listas geralmente ficam melhor sem justificar */
+        }
+        .section ul li {
+            margin-bottom: 5px;
+        }
+        .section img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Garante que a imagem ocupe a largura total disponível */
+            margin: 15px auto; /* Centraliza a imagem */
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .anexos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 250px mínimo, ajusta para colunas iguais */
+            gap: 20px; /* Espaço entre as imagens */
+            margin-top: 20px;
+            justify-items: center; /* Centraliza itens na grid */
+        }
+        .anexos-grid img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin: 0; /* Reseta margin da regra geral de img */
+        }
+        .back-to-home {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: fit-content; /* Ajusta a largura ao conteúdo */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .back-to-home:hover {
+            background-color: #0056b3;
+        }
+
+        /* Media Queries para responsividade */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            header .logo, header .logo-center {
+                margin-bottom: 10px;
+            }
+            header .logo:first-child {
+                order: 1;
+            }
+            header .logo-center {
+                order: 2;
+            }
+            header .logo:last-child {
+                order: 3;
+            }
+            .anexos-grid {
+                grid-template-columns: 1fr; /* Uma coluna em telas menores */
+            }
+        }
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 15px;
+            }
+            h1 {
+                font-size: 24px;
+                padding: 15px 0;
+            }
+            .container {
+                padding: 15px;
+                width: 95%;
+            }
+            .section h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="Capa.png" alt="Emblema Esquerdo" class="logo">
+        
+        <img src="logo1.png" alt="Logo SME" class="logo-center">
+        
+        <img src="logo.png" alt="Logo CENAM" class="logo">
+    </header>
+
+    <h1>Desenvolvimento do Projeto Despertando Virtudes</h1>
+
+    <div class="container">
+        <div class="section">
+            <h2>Identificação do Projeto</h2>
+             <ul>
+                <li><strong>Nome da escola:</strong> CENAM – Centro de Atendimento Multidisciplinar Hebert de Souza</li>
+                <li><strong>Diretora:</strong> Karla Pinto Chaves Oliveira</li>
+                <li><strong>Diretora Adjunta:</strong> Karina Diniz Guerra França</li>
+                <li><strong>Coordenadores:</strong> Cleunice Oliveira Alves e Silva, Sidymar Oliveira Dias</li>
+                <li><strong>Professores responsáveis pelo Projeto:</strong> Elenilda Aparecida Vitoria Brito, Fabrícia Georgia de Almeida Florindo, Jocsamphernes Nunes Caetano, Marcelo Rodrigues Furtunato, Mauro Tarcísio Machado Guimaraes, Pedro Paulo Dias da Silva, Rhayda Mellissa Sousa Fontes dos Santos, Rozeli da Silva Costa Reis</li>
+                <li><strong>Turmas participantes do Projeto:</strong> Safira, Água, Ar, Terra, Rubi e Esmeralda</li>
+                <li><strong>Título do Projeto:</strong> Despertando Virtudes</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Justificativa</h2>
+            <p>Nos dias atuais, percebemos que muitos comportamentos inadequados entre os estudantes têm impactado negativamente o ambiente escolar, dificultando o processo de aprendizagem e prejudicando a convivência harmoniosa. Muitas dessas atitudes refletem a ausência de valores e virtudes imprescindíveis para a formação de cidadãos responsáveis, respeitosos e empáticos.</p>
+            <p>Diante desse cenário, este projeto tem como objetivo promover o desenvolvimento de virtudes essenciais para o convívio em sociedade. Acreditamos que, ao valorizar e ensinar esses princípios aos estudantes, podemos transformar atitudes e construir uma cultura escolar mais positiva, onde o respeito mútuo e a convivência pacífica sejam prioridades.</p>
+            <p>A implementação de ações educativas voltadas às virtudes justifica-se pela necessidade de fortalecer o caráter moral dos estudantes, contribuindo para a redução de comportamentos inadequados e criando um ambiente mais harmonioso, acolhedor e estimulante para todos. Assim, buscamos não apenas melhorar o comportamento, mas também formar indivíduos mais conscientes de seus papéis na sociedade, capazes de agir com ética, responsabilidade e integridade. Ao incentivar atitudes positivas, pretendemos contribuir para o desenvolvimento de habilidades sociais que serão fundamentais ao longo da vida.</p>
+            <p>Para consolidar esses aprendizados de forma divertida e envolvente, o projeto também prevê a criação de um jogo virtual que reforçará as virtudes e valores abordados. O objetivo é que o jogo simule situações do cotidiano, ajudando os estudantes a compreenderem a importância de manter comportamentos positivos de maneira interativa, educativa e permanente. Assim, a tecnologia se torna uma aliada poderosa na transformação de conceitos essenciais em experiências agradáveis e memoráveis.</p>
+        </div>
+
+        <div class="section">
+            <h2>Objetivos</h2>
+            <h3>Objetivo Geral</h3>
+            <ul>
+                <li>Promover a conscientização e a prática de hábitos de convivência respeitosos e de autocuidado entre os alunos, utilizando atividades educativas que culminem na criação de um jogo virtual que reforce esses valores.</li>
+            </ul>
+            <h3>Objetivos Específicos</h3>
+            <ul>
+                <li>Sensibilizar os alunos sobre a importância da gentileza e do respeito no ambiente escolar e na sociedade.</li>
+                <li>Evidenciar os benefícios físicos, emocionais e sociais, bem como incentivar a adoção de hábitos de cuidado pessoal e coletivo, promovendo ações práticas e educativas.</li>
+                <li>Estimular a criação de um código de conduta para o convívio escolar saudável, transformando as relações interpessoais de forma positiva.</li>
+                <li>Desenvolver habilidades de trabalho em equipe, criatividade e uso de tecnologias digitais através de atividades colaborativas.</li>
+                <li>Criar hábitos positivos, fortalecendo vínculos para formar cidadãos éticos e compassivos prontos para transformar o mundo ao seu redor.</li>
+                <li>Criar um jogo virtual interativo que reforce os conceitos de convivência respeitosa e harmônica, tornando o aprendizado mais lúdico e envolvente.</li>
+                <li>Avaliar o impacto das atividades na mudança de atitudes dos alunos em relação à prática dos valores.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Metodologia</h2>
+            <p>O projeto "Despertando Virtudes" foi estruturado em diversas ações e etapas para garantir o engajamento e a aprendizagem dos alunos:</p>
+            
+            <h3>Escolha do nome do projeto</h3>
+            <p>Para garantir a participação e o engajamento dos alunos, eles terão a oportunidade de contribuir na escolha do nome do projeto, podendo optar entre três opções previamente apresentadas a eles na abertura oficial do projeto. A votação será realizada de forma democrática por meio de um formulário eletrônico, disponibilizado via Google Forms. O resultado será divulgado no primeiro dia útil após a coleta, garantindo transparência e agilidade no processo.</p>
+            <h3>Mural do comportamento (boas atitudes / atitudes de atenção)</h3>
+            <p>Cada grupo deverá confeccionar, coletivamente, o seu “mural do comportamento”, que deverá constar duas colunas: boas atitudes e atitudes de atenção. Em cada coluna, o grupo deverá desenhar, fixar figuras ou escrever frases que evidenciem as atitudes. O material confeccionado deverá ser exposto em uma área de fácil visualização para os alunos do grupo. Ao final de cada semana, os professores deverão ofertar aos alunos um momento coletivo para feedback e reflexão.</p>
+            <h3>Virtudes abordadas</h3>
+            <p>O projeto terá como foco o desenvolvimento de cinco virtudes essenciais: autocontrole, paciência, perseverança, responsabilidade e respeito. Para tornar esse processo mais envolvente, cada virtude será representada por um personagem heroico, dotado de seus próprios superpoderes — que correspondem às competências empreendedoras — e habilidades específicas a serem cultivadas, conforme detalhado no Anexo 1 (a ser anexado externamente a este documento).</p>
+            <h3>Heróis CENAM</h3>
+            <p>O projeto incluirá um sorteio para atribuir, de forma aleatória, uma virtude específica a cada grupo. Em formulários individuais, cada aluno terá a oportunidade de criar um personagem que represente a virtude sorteada para seu grupo (Anexo 2 - a ser anexado externamente a este documento). Esses desenhos serão analisados em grupo, e os três melhores serão selecionados. Posteriormente, passarão por uma nova avaliação na escola, na qual serão escolhidos os heróis que integrarão a equipe de heróis. Esses personagens simbolizarão a versão 3.0 do projeto “EMPREENDE CENAM”, fortalecendo a conexão entre as virtudes e a criatividade dos estudantes.</p>
+            <h3>Conquista Individual e Coletiva</h3>
+            <p>Em sala de aula, próximo ao mural do comportamento, será afixado o quadro intitulado “Conquista Individual” (Anexo 3 - a ser anexado externamente a este documento). Ao final de cada semana, durante a roda de conversa do grupo, os alunos que demonstrarem comportamentos exemplares, de acordo com as orientações estabelecidas, receberão um adesivo correspondente às virtudes em questão. Aqueles cujo comportamento ainda não esteja em conformidade com os padrões esperados receberão um adesivo de alerta, com o objetivo de incentivá-los à reflexão e à revisão de suas atitudes. Tais registros serão utilizados posteriormente para contabilizar o desempenho coletivo, contribuindo para a aquisição dos adesivos de carinhas. Caso o comportamento exemplar seja observado em mais de 80% dos alunos, o grupo será premiado com a colocação da carinha feliz no quadro “Conquista Coletiva”, que será exibido em um local de destaque no pátio, proporcionando visibilidade a todos. A organização será feita ao longo de cinco semanas, dedicadas às cinco virtudes (Anexo 4 - a ser anexado externamente a este documento). Essa iniciativa visa valorizar o esforço coletivo e incentivar a prática contínua dessas virtudes entre os estudantes.</p>
+            <h3>Investigação do bem</h3>
+            <p>Ao longo de cada semana, uma virtude será submetida à “investigação do bem”, uma oportunidade especial em que um “espião” — um membro da nossa comunidade escolar — observará atentamente o comprometimento dos grupos com os valores estabelecidos. Quando o desempenho for positivo e demonstrar alinhamento com a virtude em questão, o grupo será retribuído com o “super-herói”, reconhecendo seu esforço e dedicação de forma especial.</p>
+            <h3>Conversão do quadro “Conquista Coletiva” para DINDINAM</h3>
+            <p>Ao final da 5ª semana, realizaremos a conversão dos heróis conquistados em DINDINAM, a moeda própria criada na primeira versão do projeto “EMPREENDE CENAM”. Cada herói obtido equivale a 10 DINDINANS, enquanto o “super-herói” conquistado na “investigação do bem” vale 50 DINDINANS. Para incentivar a participação e o esforço de todos, cada grupo poderá acumular até, no máximo, 500 DINDINANS.</p>
+            <h3>Recompensa do DINDINAM</h3>
+            <p>Após a distribuição dos DINDINANS, cada grupo terá a oportunidade de conquistar sua recompensa especial (Anexo 4 - a ser anexado externamente a este documento). Essa recompensa será escolhida de forma coletiva e democrática, levando em consideração a opinião de todos os integrantes, por meio de rodas de conversa, votações ou outros métodos de decisão. Assim, todos participam ativamente na escolha da atividade que será realizada, fortalecendo o espírito de colaboração e autonomia do grupo.</p>
+            <h3>Criação do jogo</h3>
+            <p>O jogo será desenvolvido utilizando os softwares Scratch, VS Code e Code Blocks, contando com o suporte de Inteligência Artificial por meio do ChatGPT e Gemini. Os alunos dos grupos Safira, Água, Ar e Terra poderão contribuir sugerindo elementos visuais para enriquecer o jogo. Além disso, o projeto incluirá recursos de acessibilidade para garantir uma experiência inclusiva a todos os usuários. O grupo Rubi, composto por alunos com baixa visão e cegueira, será responsável pela elaboração da audiodescrição dos jogos. Já o grupo Esmeralda, formado por alunos com deficiência auditiva e surdez, ficará encarregado da criação de legendas em Libras.</p>
+            <h3>Criação de materiais de apoio</h3>
+            <p>Ao longo do projeto, os alunos terão a oportunidade de criar uma variedade de materiais de divulgação que evidenciem as boas ações e a prática das virtudes, como cartilhas, panfletos, banners, vídeos curtos e postagens para redes sociais. Essa diversidade de formatos permitirá que eles explorem diferentes formas de comunicação e expressão criativa. Posteriormente, todos esses materiais serão reunidos na elaboração de um e-book, que servirá como um registro digital das ações realizadas e como uma fonte de inspiração para a comunidade escolar e além.</p>
+            <h3>Coleta de depoimentos e avaliação final</h3>
+            <p>Alunos, professores e colaboradores terão a oportunidade de participar de uma coletânea de depoimentos, um momento especial para refletirem sobre a experiência do projeto e compartilharem suas impressões. Essa atividade será realizada ao final do ciclo, permitindo que todos expressem suas opiniões de forma livre e sincera. Para isso, será disponibilizado um formulário online de avaliação, que contará com duas opções de resposta: “Curti” e “Não Curti”, facilitando uma análise rápida e objetiva do feedback recebido. Além dessas opções, haverá um campo aberto onde os participantes poderão sugerir melhorias, propor novas ações ou compartilhar ideias para futuras edições do projeto. O objetivo dessa avaliação é promover um espaço de diálogo e aprendizado, além de identificar pontos fortes e oportunidades de aprimoramento, garantindo que as próximas etapas sejam cada vez mais envolventes e significativas para toda a comunidade escolar.</p>
+            <h3>Feira do Empreendedorismo 2025</h3>
+            <p>Ao final do processo, está prevista a realização da Feira do Empreendedorismo, um evento de grande destaque promovido pela Prefeitura Municipal de Ipatinga em parceria com o SEBRAE. Essa feira tem como propósito divulgar as ações realizadas nas escolas municipais que fomentaram a autonomia e o protagonismo infantil e juvenil no campo do empreendedorismo, celebrando o potencial criativo e inovador de nossos estudantes. Para participar, nossos alunos passarão por um processo de seleção, com o objetivo de representar a nossa escola neste importante evento. Os selecionados terão a oportunidade de realizar uma apresentação-piloto na escola, na qual terão a chance de expor o projeto diante de uma banca de avaliadores. Essa etapa servirá como uma oportunidade de aprimoramento, pois os avaliadores farão uma análise detalhada das informações apresentadas, oferecendo sugestões construtivas para fortalecer a comunicação e a qualidade da apresentação. Este momento não apenas valoriza o esforço e a criatividade dos nossos estudantes, mas também promove uma experiência enriquecedora de aprendizado, estimulando o desenvolvimento de habilidades essenciais para o futuro.</p>
+            </div>
+
+        <div class="section">
+            <h2>Resultados Esperados</h2>
+            <p>Com a implementação deste projeto, esperamos alcançar os seguintes resultados:</p>
+            <ul>
+                <li>Aumento da conscientização dos alunos sobre a importância da gentileza, do respeito e do cuidado no ambiente escolar e na comunidade.</li>
+                <li>Melhora no comportamento dos estudantes, com atitudes mais respeitosas e colaborativas.</li>
+                <li>Desenvolvimento de habilidades de trabalho em equipe, criatividade e uso de tecnologias digitais.</li>
+                <li>Criação de um jogo virtual educativo que reforça os valores de convivência respeitosa e higiene, promovendo o aprendizado de forma lúdica.</li>
+                <li>Estímulo à autonomia e à responsabilidade dos alunos na promoção de um ambiente escolar mais saudável e harmonioso.</li>
+                <li>Fortalecimento do vínculo entre estudantes, professores e comunidade escolar através de ações colaborativas.</li>
+                <li>Evidências de mudança de atitudes positivas relacionadas à convivência, refletidas em comportamentos diários.</li>
+                <li>Produção de materiais digitais que podem ser utilizados em futuras ações educativas e de sensibilização.</li>
+                <li>Engajamento dos alunos na construção de soluções criativas para problemas sociais relacionados à convivência.</li>
+                <li>Consolidação de uma cultura escolar voltada ao respeito, à gentileza e ao cuidado com a higiene pessoal e coletiva.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Cronograma</h2>
+            <p>O projeto "Despertando Virtudes" terá uma duração total de <strong>14 semanas</strong>, distribuídas da seguinte forma:</p>
+            
+            <h3>Semana 1: Ações preliminares</h3>
+            <ul>
+                <li>Identificação das necessidades locais e recursos disponíveis.</li>
+                <li>Reunião com a consultoria do SEBRAE e assessoria da PMI para discussão de ideias, esclarecimento das dúvidas e alinhamento das expectativas.</li>
+            </ul>
+            <h3>Semana 2: Levantamento de informações</h3>
+            <ul>
+                <li>Análise dos registros da reunião com a consultoria do SEBRAE e assessoria da PMI para redefinição dos planos de ações.</li>
+                <li>Levantamento dos objetivos, recursos disponíveis e ações necessárias.</li>
+            </ul>
+            <h3>Semana 3: Planejamento e definição das ações</h3>
+            <ul>
+                <li>Elaboração do plano de ação inicial do projeto.</li>
+                <li>Reunião com os professores de Empreendedorismo para apresentação do plano de ação inicial e alinhamento das ações.</li>
+            </ul>
+            <h3>Semana 4: Planejamento e testagem dos recursos disponíveis</h3>
+            <ul>
+                <li>Elaboração e redação do projeto.</li>
+                <li>Pesquisa e verificação dos softwares disponíveis para criação dos jogos.</li>
+                <li>Apresentação do projeto para o corpo docente e demais colaboradores da escola.</li>
+            </ul>
+            <h3>Semana 5: Planejamento e testagem dos recursos disponíveis</h3>
+            <ul>
+                <li>Elaboração e redação do projeto.</li>
+                <li>Pesquisa e verificação dos softwares disponíveis para criação dos jogos.</li>
+            </ul>
+            <h3>Semana 6: Planejamento e preparação para a abertura oficial do projeto</h3>
+            <ul>
+                <li>Elaboração e redação do projeto.</li>
+                <li>Preparação do material expositivo para apresentação do projeto aos alunos.</li>
+            </ul>
+            <h3>Semana 7: Sensibilização, construção coletiva e desenvolvimento de conteúdo</h3>
+            <ul>
+                <li>Apresentação do projeto aos alunos, explicando objetivos e ações.</li>
+                <li>Dinâmicas de sensibilização sobre a importância da prática das virtudes.</li>
+                <li>Discussões em grupo sobre hábitos de convivência e cuidado no dia a dia.</li>
+                <li>Levantamento de ideias para o jogo virtual (temas, conceitos).</li>
+                <li>Organização das equipes de trabalho e definição de papéis na construção do “mural do comportamento” (boas atitudes / atitudes de atenção) e do quadro “conquista coletiva”.</li>
+                <li>Confecção do mural do comportamento (boas atitudes / atitudes de atenção).</li>
+                <li>Desenho do personagem para participar do concurso.</li>
+                <li>Votação para escolha do nome do projeto.</li>
+                <li>Feedback dos resultados alcançados até o momento e levantamento de estratégias para melhoria do comportamento do grupo.</li>
+                <li>Revisão e ajustes nos quadros “conquista individual” e “conquista coletiva” (pontuação semanal).</li>
+            </ul>
+            <h3>Semana 8: Concurso dos heróis e planejamento do jogo</h3>
+            <ul>
+                <li>Evento para a escolha dos heróis CENAM.</li>
+                <li>Escolha e planejamento das funcionalidades e recursos dos jogos.</li>
+                <li>Criação dos elementos visuais para o jogo.</li>
+                <li>Feedback dos resultados alcançados até o momento e levantamento de estratégias para melhoria do comportamento do grupo.</li>
+                <li>Revisão e ajustes nos quadros “conquista individual” e “conquista coletiva” (pontuação semanal).</li>
+            </ul>
+            <h3>Semana 9: Criação do jogo virtual</h3>
+            <ul>
+                <li>Seleção dos elementos para o jogo.</li>
+                <li>Início da programação e design do jogo (uso de plataformas simples e ferramentas de criação de jogo).</li>
+                <li>Testes iniciais e ajustes técnicos.</li>
+                <li>Feedback dos resultados alcançados até o momento e levantamento de estratégias para melhoria do comportamento do grupo.</li>
+                <li>Revisão e ajustes nos quadros “conquista individual” e “conquista coletiva” (pontuação semanal).</li>
+            </ul>
+            <h3>Semana 10: Implementação, análise e aprimoramento do jogo</h3>
+            <ul>
+                <li>Finalização do desenvolvimento do jogo virtual.</li>
+                <li>Experimentação do jogo criado.</li>
+                <li>Ajustes técnicos no jogo.</li>
+                <li>Criação de materiais de apoio para a apresentação dos jogos (instruções, guias).</li>
+                <li>Feedback dos resultados alcançados até o momento e levantamento de estratégias para melhoria do comportamento do grupo.</li>
+                <li>Revisão e ajustes nos quadros “conquista individual” e “conquista coletiva” (pontuação semanal).</li>
+            </ul>
+            <h3>Semana 11: Criação de materiais de acessibilidade e atividades de sensibilização</h3>
+            <ul>
+                <li>Criação de materiais de acessibilidade dos jogos (audiodescrição e janela de Libras).</li>
+                <li>Preparação de atividades para acompanhar o uso dos jogos – cartilhas, cartazes, etc.</li>
+                <li>Realização de atividades complementares, como rodas de conversa sobre convivência e higiene.</li>
+                <li>Dinâmicas de reforço dos valores trabalhados, usando o jogo como ferramenta.</li>
+                <li>Avaliação preliminar do impacto do projeto até aqui.</li>
+                <li>Revisão e ajustes nos quadros “conquista individual” e “conquista coletiva” (pontuação semanal).</li>
+            </ul>
+            <h3>Semana 12: Avaliação, reflexão e produção de materiais finais</h3>
+            <ul>
+                <li>Produção de materiais digitais (vídeos, cartazes, áudios) para divulgar os aprendizados.</li>
+                <li>Reflexão coletiva sobre o que foi aprendido e os próximos passos.</li>
+                <li>Planejamento de ações futuras para manter os bons hábitos.</li>
+                <li>Conversão dos adesivos no quadro “conquista coletiva” adquiridos para DINDINAM.</li>
+            </ul>
+            <h3>Semana 13: Encerramento e celebração</h3>
+            <ul>
+                <li>Apresentação final do jogo e materiais produzidos.</li>
+                <li>Avaliação final do projeto com professores, alunos e comunidade.</li>
+                <li>Registro de todo o processo e elaboração de um relatório final.</li>
+                <li>Coleta e organização dos dados para exposição do projeto na Feira do Empreendedorismo.</li>
+                <li>Aquisição da recompensa com o DINDINAM.</li>
+                <li>Encerramento oficial do projeto com uma atividade comemorativa (recompensa escolhida por grupo).</li>
+            </ul>
+            <h3>Semana 14: Ajustes finais para a Feira do Empreendedorismo</h3>
+            <ul>
+                <li>Organização do material adquirido para exposição.</li>
+                <li>Treino da oratória: apresentação dos alunos para a banca examinadora.</li>
+                <li>Exposição do projeto na Feira do Empreendedorismo.</li>
+            </ul>
+            </div>
+
+        <div class="section">
+            <h2>Abrangência</h2>
+            <ul>
+                <li><strong>Nº de professores diretamente envolvidos no projeto:</strong> [Preencher]</li>
+                <li><strong>Nº de alunos diretamente envolvidos no projeto:</strong> [Preencher]</li>
+                <li><strong>Nº de pessoas indiretamente envolvidas no projeto:</strong> [Preencher]</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Tipo de Projeto Escolar</h2>
+            <ul>
+                <li>( X ) Projeto interdisciplinar</li>
+                <li>( X ) Projeto maker</li>
+                <li>( X ) Projeto de robótica</li>
+                <li>( X ) Projeto social</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Indicadores de Resultados</h2>
+            <p>Nesta seção, serão inseridos gráficos, depoimentos, registros e outras evidências que demonstrem o impacto e o sucesso do projeto.</p>
+            </div>
+
+        <div class="section">
+            <h2>Orçamento</h2>
+            <p>Detalhes sobre o orçamento do projeto serão incluídos nesta seção.</p>
+            </div>
+
+        ---
+
+        <div class="section">
+            <h2>Anexos e Registros Visuais</h2>
+            <p>Esta seção ilustra as diferentes etapas do projeto "Despertando Virtudes" por meio de registros fotográficos. As imagens abaixo representam momentos chave, atividades e resultados alcançados durante o desenvolvimento.</p>
+            <div class="anexos-grid">
+                <img src="Foto1.jpg" alt="Sorteio Nome do Projeto">
+                <img src="Foto2.jpg" alt="Sorteio Nome do Projeto">
+                <img src="Foto3.jpg" alt="Desejo dos Heróis no Grupo">
+                <img src="Foto4.jpg" alt="Eleição dos Desenhos dos Heróis">
+                <img src="Foto5.jpg" alt="Resultado da Eleição dos Desenho dos Heróis">
+                <img src="Foto6.jpg" alt="Vencedora do Desenho dos Heróis - Respeito">
+                <img src="Foto7.jpg" alt="Resultado da Eleição dos Desenho dos Heróis">
+                <img src="Foto8.jpg" alt="Confeção dos Cartazes">
+                <img src="Foto9.jpg" alt="Confeção dos Cartazes">
+                <img src="Foto10.jpg" alt="Confeção dos Cartazes">
+                <img src="Foto11.jpg" alt="Confeção dos Cartazes">
+                <img src="Foto12.jpg" alt="Confeção dos Cartazes">
+                <img src="Foto13.jpg" alt="Confeção dos Cartazes">
+                <img src="Foto14.jpg" alt="Quadro de Conquista Coletiva">
+                <img src="Foto15.jpg" alt="Quadro de Conquista Coletiva">
+                <img src="caminho/para/sua/imagem_anexo_10.jpg" alt="Descrição da Imagem do Anexo 16">
+            </div>
+            <p>Essas imagens serão preenchidas futuramente para documentar visualmente o progresso e os marcos do projeto.</p>
+        </div>
+
+
+        <a href="index.html" class="back-to-home">Voltar à Página Inicial</a>
+    </div>
+
+    <script>
+        // Script JavaScript (exemplo simples, não essencial para este layout)
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página de Desenvolvimento do Projeto carregada!');
+            // Você pode adicionar interatividade aqui, se precisar.
+            // Por exemplo, um efeito de "scroll suave" para as seções.
+        });
+    </script>
+
+</body>
+</html>

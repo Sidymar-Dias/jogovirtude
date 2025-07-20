@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acessibilidade - Projeto Virtudes</title>
+    <style>
+        /* Estilos globais para o corpo da página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* Estilos do cabeçalho da página (para as logos) */
+        .page-header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between; /* Espaça os itens nas extremidades */
+            align-items: center; /* Alinha verticalmente */
+            box-sizing: border-box;
+        }
+
+        /* Contêiner para centralizar a logo da SME */
+        .logo-center-container {
+            flex-grow: 1; /* Permite que ocupe o espaço disponível */
+            text-align: center; /* Centraliza o conteúdo (logo da SME) */
+        }
+
+        /* Estilo para todas as logos no cabeçalho */
+        .page-header .logo {
+            max-height: 80px; /* Altura máxima das logos */
+            width: auto; /* Mantém proporção da largura */
+            vertical-align: middle; /* Alinha imagens se estiverem em linha */
+        }
+
+        /* Estilos para o título principal "Acessibilidade" */
+        .main-title {
+            color: #2c3e50;
+            text-align: center;
+            margin: 30px 0 40px 0; /* Margem superior, sem laterais, margem inferior */
+            font-size: 2.8em;
+            width: 100%;
+        }
+
+        /* Contêiner principal para vídeo e áudio */
+        .main-content {
+            flex-grow: 1; /* Ocupa o espaço vertical restante */
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px; /* Espaço entre as seções */
+            max-width: 1200px; /* Largura máxima do conteúdo */
+            margin: 0 auto; /* Centraliza a caixa de conteúdo */
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Título das seções (Vídeo, Áudio) */
+        .section-title {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Contêiner para vídeo */
+        .video-container {
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16 / 9; /* Proporção de vídeo padrão (16:9) */
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            display: block; /* Remove espaço extra abaixo do vídeo */
+        }
+
+        /* Contêiner para áudio */
+        .audio-section {
+            width: 80%;
+            max-width: 800px;
+            text-align: center; /* Centraliza o player de áudio */
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .audio-section audio {
+            width: 100%; /* Ocupa a largura total do contêiner */
+            max-width: 600px; /* Limite máximo para o player de áudio */
+            margin-top: 15px;
+            display: block; /* Para que o margin auto funcione */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Estilo para o link "Voltar para a Página Anterior" */
+        .back-link {
+            display: block; /* Ocupa a largura total para centralização */
+            width: fit-content; /* Largura se ajusta ao texto */
+            background-color: #3498db; /* Cor de fundo azul */
+            color: white; /* Cor do texto */
+            padding: 12px 25px;
+            text-decoration: none; /* Remove sublinhado */
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease; /* Transição suave */
+            margin: 30px auto; /* Centraliza horizontalmente e adiciona margem */
+        }
+
+        .back-link:hover {
+            background-color: #2980b9; /* Cor mais escura no hover */
+        }
+
+        /* Ajustes responsivos para tablets */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+                justify-content: space-around; /* Distribui o espaço entre os itens */
+            }
+
+            .logo-center-container {
+                order: 3; /* Move para o final para reorganizar as 3 logos */
+                width: 100%; /* Ocupa toda a largura quando quebra */
+                margin-top: 10px; /* Espaço entre as linhas */
+            }
+
+            .page-header .logo {
+                max-height: 60px;
+            }
+            /* Garante que Capa.png e logo.png fiquem nas extremidades da primeira linha */
+            .page-header img:nth-child(1) { order: 1; margin-right: auto; }
+            .page-header img:nth-child(2) { order: 2; margin-left: auto; }
+
+
+            .main-title {
+                font-size: 2.2em;
+                margin-top: 20px;
+            }
+
+            .main-content {
+                padding: 20px 10px;
+                width: 95%;
+            }
+
+            .video-container,
+            .audio-section {
+                width: 95%;
+            }
+
+            .video-container {
+                height: 400px; /* Ajusta altura para telas menores */
+            }
+        }
+
+        /* Ajustes responsivos para smartphones */
+        @media (max-width: 480px) {
+            .page-header .logo {
+                max-height: 50px;
+            }
+
+            .main-title {
+                font-size: 1.8em;
+            }
+
+            .video-container {
+                height: 300px;
+            }
+
+            .back-link {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <img src="Capa.png" alt="Emblema do Projeto" class="logo">
+        
+        <div class="logo-center-container">
+            <img src="logo1.png" alt="Logo da Secretaria Municipal de Educação" class="logo">
+        </div>
+        
+        <img src="logo.png" alt="Logo da Escola" class="logo">
+    </header>
+
+    <h1 class="main-title">Acessibilidade</h1>
+
+    <div class="main-content">
+        <h2 class="section-title">Vídeo Explicativo</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="seu_video.mp4" type="video/mp4">
+                Seu navegador não suporta a reprodução de vídeo.
+            </video>
+        </div>
+
+        <h2 class="section-title">Audiodescrição do Conteúdo</h2>
+        <div class="audio-section">
+            <p>Ouça a audiodescrição completa do vídeo e do conteúdo da página:</p>
+            <audio controls>
+                <source src="sua_audiodescricao.mp3" type="audio/mpeg">
+                Seu navegador não suporta a reprodução de áudio.
+            </audio>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-link">Voltar para a Página Inicial</a>
+
+    <script>
+        // Espaço para código JavaScript, se necessário futuramente.
+        // Por enquanto, não é necessário para as funcionalidades básicas desta página.
+    </script>
+</body>
+</html>

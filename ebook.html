@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebook - Projeto Despertando Virtudes</title>
+    <style>
+        /* Estilos globais para o corpo da página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* Estilos do cabeçalho da página (apenas para as logos) */
+        .page-header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* Estilo para todas as logos no cabeçalho */
+        .page-header .logo {
+            max-height: 80px;
+            width: auto;
+        }
+
+        /* Estilo específico para a logo da SME que ficará centralizada */
+        .page-header .logo.sme {
+            margin: 0; 
+        }
+
+        /* Estilos para o título principal (Ebook), que ficará abaixo do cabeçalho */
+        .main-title {
+            color: #2c3e50;
+            text-align: center;
+            margin: 30px 0 40px 0;
+            font-size: 2.8em;
+            width: 100%;
+        }
+
+        /* Área de conteúdo principal (para vídeo e PDF) */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Título das subseções (vídeo e ebook) */
+        .section-title {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Contêiner do vídeo */
+        .video-container {
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Estilo para a tag <video> */
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Contêiner do Ebook PDF */
+        .ebook-container {
+            width: 80%;
+            max-width: 800px;
+            height: 600px; /* Altura fixa para o visualizador de PDF */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Estilo para o iframe do PDF */
+        .ebook-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Estilo para o parágrafo de fallback do PDF */
+        .ebook-container p {
+            padding: 20px;
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        /* Estilo para o link "Voltar para a Página Inicial" */
+        .back-home-link {
+            display: block;
+            width: fit-content;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+            margin: 30px auto;
+        }
+
+        /* Estilo do link ao passar o mouse por cima */
+        .back-home-link:hover {
+            background-color: #2980b9;
+        }
+
+        /* Ajustes responsivos para telas menores (tablets) */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .page-header .logo {
+                max-height: 60px;
+                margin-bottom: 10px;
+            }
+
+            /* Força a logo da SME a aparecer na segunda linha quando quebra */
+            .page-header .logo.sme {
+                order: 2; /* Depois das outras logos */
+                width: 100%; /* Ocupa largura total */
+                text-align: center; /* Centraliza a própria imagem se for um bloco */
+                margin: 10px 0; /* Adiciona margem acima/abaixo */
+            }
+            .page-header .logo:first-child { order: 1; margin-right: auto; }
+            .page-header .logo:last-child { order: 3; margin-left: auto; }
+
+            .main-title {
+                font-size: 2.2em;
+                margin-top: 20px;
+            }
+
+            .main-content {
+                padding: 20px 10px;
+                width: 95%;
+            }
+
+            .video-container,
+            .ebook-container {
+                width: 95%;
+                height: 400px;
+            }
+        }
+
+        /* Ajustes responsivos para telas muito pequenas (smartphones) */
+        @media (max-width: 480px) {
+            .page-header .logo {
+                max-height: 50px;
+            }
+
+            .main-title {
+                font-size: 1.8em;
+            }
+
+            .video-container,
+            .ebook-container {
+                height: 300px;
+            }
+
+            .back-home-link {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <img src="Capa.png" alt="Emblema do Projeto" class="logo">
+        
+        <img src="logo1.png" alt="Logo da Secretaria Municipal de Educação" class="logo sme">
+        
+        <img src="logo.png" alt="Logo do CENAM" class="logo">
+    </header>
+
+    <h1 class="main-title">Ebook</h1>
+
+    <div class="main-content">
+        <h2 class="section-title">Assista ao vídeo do Ebook</h2>
+        <div class="video-container">
+            <video controls>
+                <source src="EBook Virtudes.mp4" type="video/mp4">
+                Seu navegador não suporta a reprodução de vídeo.
+            </video>
+        </div>
+
+        <h2 class="section-title">Confira nosso Ebook em PDF!</h2>
+        <div class="ebook-container">
+            <iframe src="EBook Virtudes.pdf" 
+                    width="100%" 
+                    height="100%" 
+                    style="border: none;" 
+                    title="Visualizador de Ebook PDF">
+            </iframe>
+            <p>Se você não conseguir visualizar o PDF diretamente aqui, pode fazer o download: 
+               <a href="EBook Virtudes.pdf" download>Baixar Ebook em PDF</a></p>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-home-link">Voltar para a Página Inicial</a>
+
+    <script>
+        // Este é um espaço para código JavaScript, se você precisar de interatividade futura.
+        // No momento, esta página não precisa de JavaScript para as funcionalidades básicas.
+    </script>
+</body>
+</html>
