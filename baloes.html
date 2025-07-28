@@ -291,8 +291,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* touch-action: none; - Removido daqui, gerenciado via JS no body */
             overflow: hidden; /* Garante que o modal não tenha rolagem própria */
+            /* touch-action: none; Removido daqui, gerenciado via JS no body */
         }
         .modal-content {
             background-color: #fefefe;
@@ -527,12 +527,11 @@
                 }
             }
 
+            // Mantendo apenas o 'click' para os balões, como eles não estão sob o modal.
             balloon.addEventListener('click', handleBalloonPop);
-            // Removido touchstart aqui para balões, vamos focar no modal primeiro
         }
 
         function initGame() {
-            // Limpa os balões existentes
             const currentBalloons = gameArea.querySelectorAll('.balloon');
             currentBalloons.forEach(b => b.remove());
 
@@ -547,8 +546,7 @@
             const shuffledPositive = [...positiveWords].sort(() => 0.5 - Math.random());
             const shuffledNegative = [...negativeWords].sort(() => 0.5 - Math.random());
 
-            // Cria uma mistura de balões positivos e negativos
-            for (let i = 0; i < 20; i++) { // Você pode ajustar o número total de balões
+            for (let i = 0; i < 20; i++) {
                 if (i < totalPositiveBalloons) {
                     createBalloon('positive', shuffledPositive[i % shuffledPositive.length]);
                 } else {
@@ -571,7 +569,7 @@
             document.body.style.overflow = 'hidden'; // Impede rolagem
             document.body.style.touchAction = 'none'; // Impede rolagem e zoom em toda a página
             // Opcional: focar no botão para tentar ativar o teclado virtual
-            closeModalButton.focus(); 
+            // closeModalButton.focus(); // Removido, pode causar problemas de teclado em mobile
         }
 
         function closeInstructionsModal() {
@@ -581,23 +579,24 @@
             initGame(); // Inicia o jogo quando o modal é fechado
         }
 
-        // Listener para o botão de fechar o modal - usa ambos 'click' e 'touchstart'
-        // 'click' é para desktop e 'touchstart' para mobile, ambos chamando a mesma função
+        // --- MUDANÇAS FOCAIS AQUI ---
+        // Listener para o botão de fechar o modal
         closeModalButton.addEventListener('click', closeInstructionsModal);
+        
+        // Listener de touchstart direto no botão para garantir a resposta em mobile
+        // Usamos {passive: false} para permitir preventDefault, que é crucial para bloquear a rolagem
         closeModalButton.addEventListener('touchstart', function(event) {
-            event.preventDefault(); // Impede o comportamento padrão do toque
-            closeInstructionsModal();
-        });
+            console.log("touchstart no botão 'Começar o Jogo'"); // Para depuração
+            event.preventDefault(); // Impede o comportamento padrão de toque (como rolagem ou zoom)
+            event.stopPropagation(); // Impede que o evento se propague para elementos pai (modal, body)
+            closeInstructionsModal(); // Chama a função para fechar o modal e iniciar o jogo
+        }, { passive: false });
 
-        // Previne a rolagem na área do modal em si, mas permite toques nos elementos internos
-        instructionsModal.addEventListener('touchstart', function(event) {
-            // Permite que o toque no botão se propague.
-            // Se o toque não for no botão, previne a rolagem.
-            if (event.target !== closeModalButton) {
-                event.preventDefault(); 
-            }
-        }, { passive: false }); // Use { passive: false } para garantir que preventDefault funcione
-
+        // Remover o listener touchstart genérico do modal,
+        // ele pode estar interceptando toques no botão.
+        // Se você tinha: instructionsModal.addEventListener('touchstart', ..., { passive: false });
+        // Remova-o!
+        // A lógica de touch-action no body já deve ser suficiente.
 
         // Exibe o modal ao carregar a página
         window.onload = openInstructionsModal;
