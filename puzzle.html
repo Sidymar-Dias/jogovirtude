@@ -455,29 +455,109 @@
             }
         }
     </style>
-</head>
+    </head>
 <body>
-    ```
 
-**Principais alterações no CSS:**
+    <header>
+        <img src="Capa.png" alt="Emblema do Jogo" class="header-emblem">
+        <h1 class="game-title">Quebra-Cabeça</h1>
+        <img src="logo.png" alt="Logo do Jogo" class="header-logo">
+    </header>
 
-* **`#tabuleiro-quebra-cabeca`**: Mudei o `width` para `90%` ou `95%` em telas menores. Isso fará com que o tabuleiro ocupe uma porcentagem da largura da tela, em vez de um valor fixo. O `aspect-ratio` garantirá que a altura se ajuste proporcionalmente.
-* **`#container-pecas`**:
-    * Para `@media (max-width: 1024px)`, aumentei `minmax(80px, 1fr)` para **`minmax(100px, 1fr)`** nas `grid-template-columns`. Isso força as peças a serem um pouco maiores.
-    * Para `@media (max-width: 768px)`, ajustei o `gap` para `5px` e o `minmax` para **`minmax(80px, 1fr)`**.
-    * Para `@media (max-width: 480px)`, o `minmax` foi aumentado significativamente para **`minmax(100px, 1fr)`** e o `gap` para `8px` para que as peças fiquem maiores e mais fáceis de tocar. Aumentei também o `padding` do container.
-    * O `grid-template-columns: repeat(auto-fill, minmax(Xpx, 1fr))` é fundamental porque ele permite que o navegador decida quantas colunas são apropriadas com base no tamanho mínimo `Xpx` que você definiu para cada item, garantindo que as peças nunca fiquem menores que `Xpx`.
-* **`.peca-quebra-cabeca`**: Mantive `width: 100%; height: auto; aspect-ratio: 1 / 1;` dentro das media queries. Isso é crucial porque faz com que cada peça ocupe 100% da largura da sua célula no grid e mantenha uma proporção quadrada, adaptando seu tamanho à largura da coluna definida no `#container-pecas`.
+    <div class="container-principal">
+        <aside class="barra-lateral">
+            <img src="puzzle.png" alt="Imagem de Referência" class="imagem-referencia">
 
-**2. Ajustes no JavaScript (dentro da tag `<script>`)**
+            <div class="container-info-jogador">
+                <img src="HPERS.png" alt="Figura do Jogador" class="avatar-jogador" id="playerAvatar">
 
-A sua função `ajustarTamanhoDasPecas()` é fundamental para redimensionar as peças. Ela já usa `tabuleiro.clientWidth` e `tabuleiro.clientHeight` para calcular o tamanho das peças, o que é ótimo.
+                <div class="placar">
+                    <p>Acertos: <span id="contador-acertos">0</span></p>
+                    <p>Erros: <span id="contador-erros">0</span></p>
+                </div>
+                <button id="botao-reiniciar">Reiniciar a Partida</button>
+            </div>
+        </aside>
 
-**O importante é garantir que essa função seja chamada sempre que o tamanho da tela mudar (o que você já faz com `window.addEventListener('resize', ajustarTamanhoDasPecas);`) e também após a inicialização do jogo para que as peças tenham o tamanho correto desde o início.**
+        <main class="area-trabalho">
+            <div id="tabuleiro-quebra-cabeca">
+            </div>
+            <div id="container-pecas">
+            </div>
+        </main>
+    </div>
 
-No seu código, a linha `ajustarTamanhoDasPecas();` já está presente dentro de `inicializarJogo()`, o que é perfeito.
+    <footer>
+        <div class="caixa-mensagem-mapa">
+            <a href="mapa.html?seal_earned=4">Retornar ao Mapa Principal</a>
+        </div>
+    </footer>
 
-```javascript
+    <div id="modal-boas-vindas" class="modal-info">
+        <div class="conteudo-modal-info">
+            <h2>Bem-vindo à Aventura!</h2>
+            <p>Sua missão é recriar a imagem, colocando cada peça no seu devido lugar. Prepare-se para um desafio que testará sua atenção e raciocínio!</p>
+            <h3>Regras do Jogo:</h3>
+            <ul>
+                <li>Arraste e Solte: Clique e arraste as peças da área inferior para os espaços vazios no tabuleiro principal.</li>
+                <li>Encaixe Perfeito: Cada peça tem um lugar certo. Se a peça não se encaixar no espaço, ela não será fixada, e um "erro" será contabilizado.</li>
+                <li>Imagem Guia: Use a imagem de referência na barra lateral para te ajudar a montar o quebra-cabeça.</li>
+                <li>Pontuação: Seu placar de acertos e erros será atualizado. Tente minimizar os erros!</li>
+                <li>Selo de Conquista: Complete o quebra-cabeça para ganhar um selo exclusivo e avançar em sua jornada!</li>
+            </ul>
+            <button id="botao-comecar-jogo" class="botao-fechar-modal">Começar Jogo</button>
+        </div>
+    </div>
+
+    <div id="modal-conclusao" class="overlay-modal" style="display: none;">
+        <div class="conteudo-modal">
+            <h2>Você conseguiu!! Parabéns!!</h2>
+            <p>Você concluiu com êxito a atividade!</p>
+            <img src="HPERS.png" alt="Selo Conquistado" class="selo-ganho">
+            <p>Clique no botão abaixo para voltar ao mapa e continuar sua jornada!</p>
+            <a href="mapa.html?seal_earned=4" class="botao-voltar">Voltar ao Mapa</a>
+        </div>
+    </div>
+
+    <audio id="som-aplauso" src="aplausos.mp3" preload="auto"></audio>
+    <audio id="som-erro" src="erro.mp3" preload="auto"></audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- CONFIGURAÇÕES DO JOGO ---
+            const LINHAS = 5;
+            const COLUNAS = 8;
+            const TOTAL_PECAS = LINHAS * COLUNAS;
+            const NOME_IMAGEM_QUEBRA_CABECAS = 'onça.png'; // Caminho da imagem do quebra-cabeça (Ajustei para onça.png)
+            const NOME_SELO_GANHO = 'HPERS.png'; // Imagem do selo que o jogador ganha
+            const ID_SELO = '4'; // ID único para salvar no navegador para este selo (Perseverança)
+
+            // Dimensões originais da imagem do quebra-cabeça.
+            // VOCÊ DEVE SUBSTITUIR ESSES VALORES PELAS DIMENSÕES REAIS DA SUA IMAGEM 'onça.png'
+            const ORIGINAL_IMAGE_WIDTH = 800; // Por exemplo, se 'onça.png' tem 800px de largura
+            const ORIGINAL_IMAGE_HEIGHT = 500; // Por exemplo, se 'onça.png' tem 500px de altura
+
+            // --- ELEMENTOS DO DOM ---
+            const tabuleiro = document.getElementById('tabuleiro-quebra-cabeca');
+            const containerPecas = document.getElementById('container-pecas');
+            const contadorAcertosEl = document.getElementById('contador-acertos');
+            const contadorErrosEl = document.getElementById('contador-erros');
+            const botaoReiniciar = document.getElementById('botao-reiniciar');
+            const modalConclusao = document.getElementById('modal-conclusao');
+            const somAplauso = document.getElementById('som-aplauso');
+            const modalBoasVindas = document.getElementById('modal-boas-vindas');
+            const botaoComecarJogo = document.getElementById('botao-comecar-jogo');
+            const somErro = document.getElementById('som-erro'); // Referência ao elemento de áudio de erro
+            const playerAvatar = document.getElementById('playerAvatar'); // Referência ao avatar do jogador
+
+            // --- ESTADO DO JOGO ---
+            let acertos = 0;
+            let erros = 0;
+            let pecaArrastada = null;
+
+            // --- FUNÇÕES PRINCIPAIS ---
+
             function inicializarJogo() {
                 acertos = 0;
                 erros = 0;
@@ -486,10 +566,6 @@ No seu código, a linha `ajustarTamanhoDasPecas();` já está presente dentro de
                 tabuleiro.innerHTML = '';
                 containerPecas.innerHTML = '';
                 modalConclusao.style.display = 'none';
-
-                // Remova as linhas abaixo, pois o width/height do tabuleiro agora são responsivos pelo CSS
-                // const larguraPeca = tabuleiro.clientWidth / COLUNAS;
-                // const alturaPeca = tabuleiro.clientHeight / LINHAS;
 
                 let pecas = [];
                 for (let i = 0; i < TOTAL_PECAS; i++) {
@@ -506,26 +582,15 @@ No seu código, a linha `ajustarTamanhoDasPecas();` já está presente dentro de
                     peca.dataset.id = i;
                     peca.draggable = true;
 
-                    // O cálculo do background-position e background-size deve ser feito com base no tamanho original da imagem
-                    // e no número de peças, não no clientWidth/Height do tabuleiro, que pode variar
-                    // Isso garante que a imagem de fundo esteja sempre correta, independentemente do tamanho da peça no CSS.
-                    // Para o background-size, você deve usar o tamanho real da imagem ou um tamanho relativo a ela.
-                    // Se a imagem for de 800x500 e você tem 8x5 peças, então:
-                    const originalImageWidth = 800; // Assumindo que 'onça.png' tem 800px de largura
-                    const originalImageHeight = 500; // Assumindo que 'onça.png' tem 500px de altura
-                    const pecaOriginalWidth = originalImageWidth / COLUNAS;
-                    const pecaOriginalHeight = originalImageHeight / LINHAS;
-
+                    // Calcula a posição do background para cada pedaço da imagem
                     const col = i % COLUNAS;
                     const lin = Math.floor(i / COLUNAS);
 
-                    // Deixe o width e height da peça serem controlados apenas pelo CSS
-                    // peca.style.width = `${larguraPeca}px`; // REMOVER
-                    // peca.style.height = `${alturaPeca}px`; // REMOVER
-
+                    // O background-size é o tamanho TOTAL da imagem, e o background-position
+                    // é o deslocamento de cada pedaço dentro dessa imagem total.
                     peca.style.backgroundImage = `url('${NOME_IMAGEM_QUEBRA_CABECAS}')`;
-                    peca.style.backgroundSize = `${originalImageWidth}px ${originalImageHeight}px`; // Tamanho total da imagem de fundo
-                    peca.style.backgroundPosition = `-${col * pecaOriginalWidth}px -${lin * pecaOriginalHeight}px`; // Posição para mostrar o pedaço correto
+                    peca.style.backgroundSize = `${ORIGINAL_IMAGE_WIDTH}px ${ORIGINAL_IMAGE_HEIGHT}px`;
+                    peca.style.backgroundPosition = `-${col * (ORIGINAL_IMAGE_WIDTH / COLUNAS)}px -${lin * (ORIGINAL_IMAGE_HEIGHT / LINHAS)}px`;
 
                     peca.addEventListener('dragstart', aoArrastar);
                     pecas.push(peca);
@@ -534,26 +599,189 @@ No seu código, a linha `ajustarTamanhoDasPecas();` já está presente dentro de
                 pecas.sort(() => Math.random() - 0.5); // Embaralha as peças
                 pecas.forEach(p => containerPecas.appendChild(p)); // Adiciona as peças ao container lateral
 
-                // A função ajustarTamanhoDasPecas() que estava aqui não é mais necessária para o tamanho das peças em si,
-                // pois o CSS as controla. Ela era mais para o background-size, que agora é fixo.
-                // ajustarTamanhoDasPecas(); // REMOVER OU MANTER APENAS SE TIVER OUTRA LÓGICA DE AJUSTE QUE NÃO SEJA O BACKGROUND
+                // Chama para garantir que o background-size das peças (se necessário) seja ajustado
+                // ou apenas para confirmar o layout após o carregamento.
+                // Como agora background-size é fixo para a imagem original, esta função é menos crítica aqui.
+                // No entanto, se o tabuleiro tiver um tamanho responsivo e a imagem de fundo precisar se esticar
+                // para cobrir, esta função precisaria reajustar o backgroundSize.
+                // Mas, com o ajuste de CSS para as peças, o JS pode se preocupar menos com isso.
+                // Mantenha para fins de compatibilidade ou futuros ajustes.
+                ajustarTamanhoDasPecasNoTabuleiro(); 
                 updatePlayerAvatarStatus(); // Atualiza o avatar ao reiniciar o jogo
             }
 
-            // Esta função não é mais necessária para definir o width/height das peças,
-            // mas ainda é útil para reajustar o background-size se o tabuleiro for elástico.
-            // No entanto, se o background-size for o tamanho total da imagem, não precisa ser reajustado.
-            // Se você quer que a imagem de fundo das peças se adapte ao tamanho do tabuleiro (que é responsivo),
-            // você precisa recalcular o backgroundSize aqui também.
-            function ajustarTamanhoDasPecas() {
-                 // Reajustar o background-size para corresponder ao tabuleiro responsivo
+            // Esta função ajusta o background-size das peças
+            // para que a imagem de fundo preencha corretamente o espaço da peça,
+            // que agora é controlado pelo CSS responsivo do tabuleiro.
+            function ajustarTamanhoDasPecasNoTabuleiro() {
                 const larguraTabuleiroAtual = tabuleiro.clientWidth;
                 const alturaTabuleiroAtual = tabuleiro.clientHeight;
 
                 const todasAsPecas = document.querySelectorAll('.peca-quebra-cabeca');
                 todasAsPecas.forEach(p => {
+                    // O background-size deve ser o tamanho total da imagem, escalado para o tamanho atual do tabuleiro
                     p.style.backgroundSize = `${larguraTabuleiroAtual}px ${alturaTabuleiroAtual}px`;
-                    // O background-position já está correto se as coordenadas forem baseadas no tamanho original da imagem
-                    // e a peça se dimensionar por CSS.
+                    // O background-position já está correto, pois é calculado com base nas dimensões originais da imagem
+                    // e o número de colunas/linhas, o que funciona bem com o escalamento do background-size.
                 });
             }
+
+            function atualizarPlacar() {
+                contadorAcertosEl.textContent = acertos;
+                contadorErrosEl.textContent = erros;
+            }
+
+            // --- LÓGICA DE ARRASTAR E SOLTAR (DRAG & DROP) ---
+
+            function aoArrastar(evento) {
+                pecaArrastada = evento.target;
+                setTimeout(() => evento.target.style.opacity = '0.5', 0);
+            }
+
+            function aoArrastarSobre(evento) {
+                evento.preventDefault();
+            }
+
+            function aoSoltar(evento) {
+                evento.preventDefault();
+                pecaArrastada.style.opacity = '1';
+                const espacoAlvo = evento.target;
+
+                // Verifica se o alvo é um espaço de peça e se está vazio
+                if (espacoAlvo.classList.contains('espaco-peca') && !espacoAlvo.hasChildNodes()) {
+                    if (pecaArrastada.dataset.id === espacoAlvo.dataset.id) {
+                        // ACERTOU
+                        espacoAlvo.appendChild(pecaArrastada);
+                        pecaArrastada.draggable = false;
+                        pecaArrastada.style.cursor = 'default';
+                        acertos++;
+                        verificarVitoria();
+                    } else {
+                        // ERROU - Toca o som de erro
+                        erros++;
+                        somErro.currentTime = 0;
+                        somErro.play();
+                    }
+                    atualizarPlacar();
+                } else {
+                    // Se soltou em um lugar inválido (não é espaço de peça ou já tem peça)
+                    erros++;
+                    somErro.currentTime = 0;
+                    somErro.play();
+                    atualizarPlacar();
+                }
+            }
+
+            // --- LÓGICA DE VITÓRIA E SELOS ---
+
+            function verificarVitoria() {
+                if (acertos === TOTAL_PECAS) {
+                    somAplauso.play();
+                    modalConclusao.style.display = 'flex';
+
+                    // Adiciona o selo ao localStorage
+                    let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                    if (!collectedSeals.includes(ID_SELO)) {
+                        collectedSeals.push(ID_SELO);
+                        localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
+                        console.log(`Selo ${ID_SELO} adicionado aos selos coletados.`); // DEBUG
+                    } else {
+                        console.log(`Selo ${ID_SELO} já está coletado.`); // DEBUG
+                    }
+                    updatePlayerAvatarStatus(); // Atualiza o avatar para refletir o selo ganho
+                }
+            }
+
+            /**
+             * Atualiza o status do avatar do jogador com base nos selos coletados.
+             * Se o selo deste jogo foi coletado, adiciona a classe 'unlocked' ao avatar.
+             */
+            function updatePlayerAvatarStatus() {
+                const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                if (collectedSeals.includes(ID_SELO)) {
+                    playerAvatar.classList.add('unlocked');
+                    console.log('Avatar atualizado: selo desbloqueado.'); // DEBUG
+                } else {
+                    playerAvatar.classList.remove('unlocked');
+                    console.log('Avatar atualizado: selo não desbloqueado.'); // DEBUG
+                }
+            }
+
+            // --- EVENTOS ---
+            botaoReiniciar.addEventListener('click', () => {
+                // Substituído alert() e confirm() por uma mensagem customizada
+                const customConfirm = (message, onConfirm, onCancel) => {
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = `
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                        background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                        align-items: center; z-index: 9999;
+                    `;
+                    const box = document.createElement('div');
+                    box.style.cssText = `
+                        background-color: white; padding: 25px; border-radius: 10px;
+                        text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                        max-width: 350px; width: 90%;
+                    `;
+                    const msg = document.createElement('p');
+                    msg.textContent = message;
+                    msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
+
+                    const btnContainer = document.createElement('div');
+                    btnContainer.style.cssText = 'display: flex; justify-content: center; gap: 15px;';
+
+                    const confirmBtn = document.createElement('button');
+                    confirmBtn.textContent = 'Sim';
+                    confirmBtn.style.cssText = `
+                        padding: 10px 20px; border: none; border-radius: 5px;
+                        background-color: #dc3545; color: white;
+                        font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                    `;
+                    confirmBtn.onmouseover = () => confirmBtn.style.backgroundColor = '#c82333';
+                    confirmBtn.onmouseout = () => confirmBtn.style.backgroundColor = '#dc3545';
+                    confirmBtn.onclick = () => { document.body.removeChild(overlay); onConfirm(); };
+
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.textContent = 'Não';
+                    cancelBtn.style.cssText = `
+                        padding: 10px 20px; border: none; border-radius: 5px;
+                        background-color: #007bff; color: white;
+                        font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                    `;
+                    cancelBtn.onmouseover = () => cancelBtn.style.backgroundColor = '#0056b3';
+                    cancelBtn.onmouseout = () => cancelBtn.style.backgroundColor = '#007bff';
+                    cancelBtn.onclick = () => { document.body.removeChild(overlay); if (onCancel) onCancel(); };
+
+                    btnContainer.appendChild(confirmBtn);
+                    btnContainer.appendChild(cancelBtn);
+                    box.appendChild(msg);
+                    box.appendChild(btnContainer);
+                    overlay.appendChild(box);
+                    document.body.appendChild(overlay);
+                };
+
+                customConfirm('Tem certeza que deseja reiniciar a partida? Seu progresso nesta atividade será perdido.', () => {
+                    inicializarJogo(); // Reinicia o jogo
+                });
+            });
+
+            // Adiciona um listener para redimensionar as peças quando a janela muda de tamanho
+            // Isso é crucial para a responsividade das peças de background.
+            window.addEventListener('resize', ajustarTamanhoDasPecasNoTabuleiro);
+
+
+            // Evento para fechar o modal de boas-vindas
+            botaoComecarJogo.addEventListener('click', () => {
+                modalBoasVindas.style.display = 'none';
+                inicializarJogo(); // Inicia o jogo após fechar o modal
+            });
+
+            // --- INICIAR O JOGO QUANDO A PÁGINA CARREGAR ---
+            // Exibe o modal de boas-vindas ao carregar
+            modalBoasVindas.style.display = 'flex';
+            // Atualiza o status do avatar na carga inicial
+            updatePlayerAvatarStatus();
+        });
+    </script>
+    </body>
+</html>
