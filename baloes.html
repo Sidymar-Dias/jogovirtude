@@ -286,7 +286,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
+            /* Removido overflow: auto; para evitar problemas de rolagem */
             background-color: rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
@@ -338,7 +338,7 @@
     <header class="header">
         <img src="Capa.png" alt="Emblema da Escola" class="school-emblem">
         <h1 class="game-title">Estoure os Balões</h1>
-        <img src="logo.png" alt="Logo do Jogo" class="logo">        
+        <img src="logo.png" alt="Logo do Jogo" class="logo">         
     </header>
     <p class="game-instructions">Clique apenas nos balões com comportamentos positivos para ganhar pontos!</p>
     <div class="main-game-area-wrapper">
@@ -403,6 +403,7 @@
             'color-11', 'color-12', 'color-13', 'color-14', 'color-15'
         ];
         const SEAL_ID_FOR_THIS_GAME = '5';
+
         function updatePlayerAvatarStatus() {
             const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
             if (collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
@@ -411,24 +412,31 @@
                 playerFigure.classList.remove('unlocked');
             }
         }
+
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
+
         function createBalloon(type, word) {
             const balloon = document.createElement('div');
             balloon.classList.add('balloon', type);
             balloon.classList.add(balloonColors[getRandomInt(0, balloonColors.length - 1)]);
             balloon.textContent = word;
             balloon.id = `balloon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
             let x, y;
             let overlapping;
             const balloonSize = 80;
+            const padding = 10; // Adicionado preenchimento para evitar que os balões fiquem muito próximos
             do {
                 overlapping = false;
-                x = getRandomInt(0, gameArea.offsetWidth - balloonSize);
-                y = getRandomInt(0, gameArea.offsetHeight - balloonSize);
+                // Garante que os balões sejam colocados dentro dos limites da área do jogo
+                x = getRandomInt(padding, gameArea.offsetWidth - balloonSize - padding);
+                y = getRandomInt(padding, gameArea.offsetHeight - balloonSize - padding);
+
                 const tempRect = { left: x, top: y, right: x + balloonSize, bottom: y + balloonSize };
                 const existingBalloons = gameArea.querySelectorAll('.balloon:not(.popped)');
+
                 for (const existingBalloon of existingBalloons) {
                     const currentBalloonRect = {
                         left: parseFloat(existingBalloon.style.left),
@@ -436,27 +444,36 @@
                         right: parseFloat(existingBalloon.style.left) + balloonSize,
                         bottom: parseFloat(existingBalloon.style.top) + balloonSize
                     };
-                    if (!(tempRect.right < currentBalloonRect.left ||
-                            tempRect.left > currentBalloonRect.right ||
-                            tempRect.bottom < currentBalloonRect.top ||
-                            tempRect.top > currentBalloonRect.bottom)) {
+
+                    // Verifica sobreposição com preenchimento adicionado
+                    if (!(tempRect.right < currentBalloonRect.left - padding ||
+                            tempRect.left > currentBalloonRect.right + padding ||
+                            tempRect.bottom < currentBalloonRect.top - padding ||
+                            tempRect.top > currentBalloonRect.bottom + padding)) {
                         overlapping = true;
                         break;
                     }
                 }
             } while (overlapping);
+
             balloon.style.left = `${x}px`;
             balloon.style.top = `${y}px`;
             gameArea.appendChild(balloon);
+
             const speed = getRandomInt(1, 2);
             let directionX = Math.random() < 0.5 ? 1 : -1;
             let directionY = Math.random() < 0.5 ? 1 : -1;
+
             function moveBalloon() {
                 if (balloon.classList.contains('popped')) return;
+
                 let currentX = parseFloat(balloon.style.left);
                 let currentY = parseFloat(balloon.style.top);
+
                 currentX += directionX * speed;
                 currentY += directionY * speed;
+
+                // Ajusta os limites e inverte a direção se atingir uma borda
                 if (currentX + balloonSize > gameArea.offsetWidth || currentX < 0) {
                     directionX *= -1;
                     currentX = Math.max(0, Math.min(currentX, gameArea.offsetWidth - balloonSize));
@@ -465,20 +482,25 @@
                     directionY *= -1;
                     currentY = Math.max(0, Math.min(currentY, gameArea.offsetHeight - balloonSize));
                 }
+
                 balloon.style.left = `${currentX}px`;
                 balloon.style.top = `${currentY}px`;
+
                 requestAnimationFrame(moveBalloon);
             }
             requestAnimationFrame(moveBalloon);
+
             function handleBalloonPop() {
-                if (balloon.classList.contains('popped')) return;
+                if (balloon.classList.contains('popped')) return; // Impede múltiplos estouros
+
                 if (type === 'positive') {
                     balloon.classList.add('popped');
                     correctScore++;
                     balloonsPopped++;
                     correctScoreSpan.textContent = correctScore;
                     positiveAudio.currentTime = 0;
-                    positiveAudio.play().catch(e => {});
+                    positiveAudio.play().catch(e => { /* Autoplay foi impedido */ });
+
                     if (balloonsPopped === totalPositiveBalloons) {
                         setTimeout(() => {
                             successOverlay.classList.add('show');
@@ -488,7 +510,7 @@
                                 localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
                             }
                             updatePlayerAvatarStatus();
-                        }, 500);
+                        }, 500); // Pequeno atraso para ver o último balão estourar
                     }
                 } else {
                     wrongScore++;
@@ -496,17 +518,22 @@
                     negativeMessage.classList.add('show');
                     setTimeout(() => {
                         negativeMessage.classList.remove('show');
-                    }, 2000);
+                    }, 2000); // Mensagem desaparece após 2 segundos
                 }
             }
+
             balloon.addEventListener('click', handleBalloonPop);
             balloon.addEventListener('touchstart', function(e) {
-                e.preventDefault();
+                e.preventDefault(); // Impede o comportamento padrão do toque (como zoom/rolagem)
                 handleBalloonPop();
             });
         }
+
         function initGame() {
-            gameArea.innerHTML = '<div id="negative-balloon-message">Este não é um bom comportamento!!! Tente novamente.</div>';
+            // Limpa os balões existentes
+            const currentBalloons = gameArea.querySelectorAll('.balloon');
+            currentBalloons.forEach(b => b.remove());
+
             correctScore = 0;
             wrongScore = 0;
             balloonsPopped = 0;
@@ -514,9 +541,12 @@
             wrongScoreSpan.textContent = wrongScore;
             successOverlay.classList.remove('show');
             negativeMessage.classList.remove('show');
+
             const shuffledPositive = [...positiveWords].sort(() => 0.5 - Math.random());
             const shuffledNegative = [...negativeWords].sort(() => 0.5 - Math.random());
-            for (let i = 0; i < 20; i++) {
+
+            // Cria uma mistura de balões positivos e negativos
+            for (let i = 0; i < 20; i++) { // Você pode ajustar o número total de balões
                 if (i < totalPositiveBalloons) {
                     createBalloon('positive', shuffledPositive[i % shuffledPositive.length]);
                 } else {
@@ -525,23 +555,35 @@
             }
             updatePlayerAvatarStatus();
         }
+
         function goToPreviousPage() {
+            // Este é um placeholder. Você deve substituir 'mapa.html' pela URL real da sua página principal do mapa.
+            // O parâmetro `seal_earned` pode ser usado pela página do mapa para saber qual selo foi ganho.
             window.location.href = `mapa.html?seal_earned=${SEAL_ID_FOR_THIS_GAME}`;
         }
+
         goToMapButtonGlobal.addEventListener('click', goToPreviousPage);
         goToMapButtonOverlay.addEventListener('click', goToPreviousPage);
         restartButton.addEventListener('click', initGame);
+
         function closeInstructionsModal() {
             instructionsModal.style.display = 'none';
+            // Habilita a rolagem no corpo assim que o modal é fechado
+            document.body.style.overflow = 'auto'; 
             initGame();
         }
+
         closeModalButton.addEventListener('click', closeInstructionsModal);
         closeModalButton.addEventListener('touchstart', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Impede o comportamento padrão do toque (como zoom/rolagem)
             closeInstructionsModal();
         });
+
+        // Mostra o modal ao carregar a página
         window.onload = () => {
             instructionsModal.style.display = 'flex';
+            // Impede a rolagem no corpo quando o modal está aberto
+            document.body.style.overflow = 'hidden'; 
             updatePlayerAvatarStatus();
         };
     </script>
