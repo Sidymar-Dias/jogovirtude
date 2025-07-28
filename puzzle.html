@@ -14,6 +14,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh; /* Garante que o body ocupe toda a altura da viewport */
+            overflow-x: hidden; /* Evita rolagem horizontal indesejada */
         }
 
         * {
@@ -28,6 +29,7 @@
             padding: 10px 20px;
             background-color: #ffffff;
             border-bottom: 2px solid #ddd;
+            flex-shrink: 0; /* Impede que o cabeçalho encolha */
         }
         .header-emblem, .header-logo {
             height: 60px;
@@ -39,58 +41,52 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Sombra para destaque */
             margin: 0 20px; /* Espaçamento lateral */
             white-space: nowrap; /* Evita que o título quebre linha */
+            text-align: center; /* Centraliza o texto */
+            flex-grow: 1; /* Permite que o título ocupe o espaço */
         }
 
-        /* Layout Principal */
-        .container-principal {
+        /* Barra de Informações Abaixo do Cabeçalho */
+        .info-bar {
             display: flex;
-            flex-grow: 1; /* Permite que este container ocupe o espaço restante */
-            padding: 20px;
-            gap: 20px; /* Adiciona espaço entre a barra lateral e a área do jogo */
-            align-items: flex-start; /* Alinha os itens ao topo do container */
-            justify-content: center; /* Centraliza o conteúdo horizontalmente, mantendo o tabuleiro no centro */
-            overflow-y: auto; /* Adiciona rolagem se o conteúdo for muito alto */
-        }
-
-        /* Barra Lateral */
-        .barra-lateral {
-            width: 220px;
-            padding: 20px;
+            justify-content: space-around; /* Espaço igual entre os elementos */
+            align-items: center; /* Alinha verticalmente ao centro */
+            padding: 15px 20px;
             background-color: #f9f9f9;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            flex-shrink: 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px; /* Espaço abaixo da barra de informações */
+            flex-wrap: wrap; /* Permite que os itens quebrem para baixo em telas menores */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra leve para destaque */
         }
 
-        /* Estilo para a imagem de referência */
+        .info-bar > * {
+            margin: 10px; /* Espaçamento entre os itens dentro da info-bar */
+        }
+
         .imagem-referencia {
-            width: 100%;
+            width: 150px; /* Ajuste o tamanho conforme necessário */
             border-radius: 5px;
             border: 2px solid #ccc;
-            margin-bottom: 15px;
+            margin-bottom: 0; /* Remova a margem inferior, pois agora está dentro da info-bar */
+            flex-shrink: 0; /* Impede que a imagem encolha muito */
         }
 
-        /* Container para alinhar Imagem do Jogador, Placar e Botão */
         .container-info-jogador {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%; /* Garante que o container ocupe a largura disponível na barra lateral */
-            margin-bottom: 20px; /* Espaço abaixo deste bloco */
+            text-align: center;
+            margin-bottom: 0; /* Remova a margem inferior */
+            flex-shrink: 0; /* Impede que o container de info encolha muito */
         }
 
-        /* Estilo para a imagem do jogador (avatar) */
         .avatar-jogador {
-            width: 100px;
-            height: 100px;
+            width: 80px; /* Ajuste o tamanho do avatar */
+            height: 80px;
             border-radius: 50%;
             border: 3px solid #007bff;
-            margin-bottom: 15px;
-            object-fit: cover; /* Garante que a imagem preencha o círculo */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição para o efeito de desbloqueio */
+            margin-bottom: 10px; /* Reduza a margem inferior do avatar */
+            object-fit: cover;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .avatar-jogador.unlocked {
@@ -99,89 +95,105 @@
         }
 
         .placar {
-            font-size: 1.1em;
+            font-size: 1em; /* Reduza um pouco a fonte do placar */
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Reduza a margem inferior do placar */
         }
         .placar p {
             margin: 5px 0;
         }
+
         #botao-reiniciar {
-            width: 100%;
-            padding: 10px;
-            font-size: 1em;
+            width: auto; /* Ajusta a largura ao conteúdo */
+            padding: 8px 15px; /* Reduza um pouco o padding do botão */
+            font-size: 0.9em;
             background-color: #dc3545;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 0; /* Remova a margem inferior do botão */
+            transition: background-color 0.3s ease;
         }
         #botao-reiniciar:hover {
             background-color: #c82333;
         }
 
+        /* Layout Principal do Jogo */
+        .container-principal {
+            display: flex;
+            flex-grow: 1; /* Permite que este container ocupe o espaço restante */
+            padding: 20px;
+            gap: 20px; /* Espaço entre a área de trabalho e outros elementos (se houvesse) */
+            align-items: flex-start; /* Alinha os itens ao topo */
+            justify-content: center; /* Centraliza o conteúdo horizontalmente */
+            overflow-y: auto; /* Adiciona rolagem se o conteúdo for muito alto */
+        }
+
         /* Área de Trabalho (Quebra-Cabeça) */
         .area-trabalho {
             display: flex;
-            flex-direction: row; /* Mantém o tabuleiro e as peças um ao lado do outro */
+            flex-direction: row; /* Padrão: tabuleiro e peças lado a lado */
             gap: 20px;
-            flex-grow: 1;
-            max-width: unset; /* Remove restrições de max-width aqui */
-            margin: 0;
-            justify-content: center; /* Centraliza o tabuleiro e as peças */
-            align-items: flex-start;
+            flex-grow: 1; /* Permite que ocupe o máximo de espaço disponível */
+            justify-content: center; /* Centraliza o conteúdo */
+            align-items: flex-start; /* Alinha os itens ao topo */
+            flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+            min-width: 0; /* Garante que flexbox não ignore o min-content */
         }
 
-        /* Ajustes para o tabuleiro */
+        /* Tabuleiro do Quebra-Cabeça */
         #tabuleiro-quebra-cabeca {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(5, 1fr);
             border: 2px solid #333;
             background-color: #ddd;
-            flex-shrink: 0; /* Impede que o tabuleiro encolha */
+            flex-shrink: 1; /* Permite que o tabuleiro encolha */
+            flex-grow: 1; /* Permite que o tabuleiro cresça */
 
-            /* Definindo um tamanho base para o tabuleiro */
-            width: 800px; /* Largura padrão para desktop */
-            height: 500px; /* Altura padrão para desktop */
-            max-width: 100%; /* Garante que não ultrapasse a largura do pai */
-            aspect-ratio: 8 / 5; /* Mantém a proporção mesmo se a largura mudar */
+            /* Tamanho base para desktop, mas com flexibilidade */
+            max-width: 800px; /* Limite máximo para o tabuleiro */
+            width: min(80vw, 800px); /* Usa 80% da largura da viewport ou 800px, o que for menor */
+            aspect-ratio: 8 / 5; /* Mantém a proporção correta (8 colunas por 5 linhas) */
+            margin: auto; /* Centraliza horizontalmente se tiver espaço extra */
         }
 
         .espaco-peca {
             border: 1px solid #ccc;
         }
 
-        /* Ajustes para o container das peças */
+        /* Container das Peças */
         #container-pecas {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colunas de peças */
-            gap: 8px; /* Aumentei o espaçamento entre as peças */
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Peças com no mínimo 120px */
+            gap: 8px; /* Espaçamento entre as peças */
             padding: 10px;
             background-color: #e0e0e0;
             border-radius: 8px;
-            align-items: start; /* Alinha as peças ao topo dentro do container */
-            justify-items: center; /* Centraliza as peças horizontalmente em suas células */
-            width: auto; /* Deixa a largura ser determinada pelo conteúdo das 3 colunas e gap */
-            max-width: 350px; /* Largura máxima para as 3 colunas + gap */
-            flex-shrink: 0;
-            overflow-y: auto; /* Permite rolagem vertical se houver muitas peças */
-            max-height: 500px; /* Ajusta a altura máxima para a altura do tabuleiro (desktop) */
+            align-items: start;
+            justify-items: center;
+            flex-shrink: 1; /* Permite que o container de peças encolha */
+            flex-grow: 1; /* Permite que o container de peças cresça */
+            max-width: 400px; /* Limite máximo para o container de peças em desktop */
+            width: min(90vw, 400px); /* 90% da largura da viewport ou 400px, o que for menor */
+            max-height: 500px; /* Altura máxima para desktop, alinhado ao tabuleiro */
+            overflow-y: auto; /* Adiciona rolagem se as peças excederem a altura */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            align-self: flex-start; /* Garante que ele se alinhe ao topo quando há outros elementos flexíveis */
         }
 
-        /* Ajustes para cada peça individual */
+        /* Peça Individual do Quebra-Cabeça */
         .peca-quebra-cabeca {
-            /* Background-image será definido via JS */
-            /* background-size e background-position serão definidos via JS */
             border: 1px solid #000;
             cursor: grab;
             transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%; /* Cada peça ocupa 100% da largura da sua célula no grid */
-            height: 0; /* Define altura inicial como 0 */
-            padding-bottom: 100%; /* Usa padding-bottom para criar um quadrado (100% da largura) */
-            background-repeat: no-repeat; /* Importante para que a imagem não se repita */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra para dar profundidade */
+            width: 100%; /* Ocupa 100% da largura da célula do grid */
+            height: 0; /* A altura é controlada pelo padding-bottom */
+            padding-bottom: 100%; /* Torna a peça quadrada (100% da largura) */
+            background-repeat: no-repeat;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background-color: #f0f0f0; /* Fundo para peças antes do carregamento da imagem */
         }
         .peca-quebra-cabeca:hover {
             transform: scale(1.1);
@@ -195,7 +207,8 @@
             text-align: center;
             background-color: #ffffff;
             border-top: 2px solid #ddd;
-            flex-shrink: 0; /* Impede que o rodapé encolha e garante que fique sempre no final */
+            flex-shrink: 0;
+            margin-top: auto; /* Empurra o rodapé para o final */
         }
         .caixa-mensagem-mapa a {
             color: #007bff;
@@ -226,6 +239,7 @@
             border: 5px solid #28a745;
             max-width: 90%;
             width: 500px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
         .conteudo-modal h2 {
             font-size: 2.2em;
@@ -251,6 +265,7 @@
             font-size: 1.2em;
             margin-top: 20px;
             border: none;
+            transition: background-color 0.3s ease;
         }
         .botao-voltar:hover {
             background-color: #0056b3;
@@ -316,48 +331,56 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
+            transition: background-color 0.3s ease;
         }
         .botao-fechar-modal:hover {
             background-color: #0056b3;
         }
 
-        /* Responsividade */
+        /* Responsividade com Media Queries aprimoradas */
+
+        /* Para telas menores que 1024px (Tablets em modo paisagem, notebooks pequenos) */
         @media (max-width: 1024px) {
-            .container-principal {
-                flex-direction: column;
-                align-items: center;
+            .info-bar {
+                flex-direction: row; /* Mantém horizontal */
+                justify-content: space-around;
+                padding: 10px;
             }
-            .barra-lateral {
-                width: 90%;
-                max-width: 400px;
+            .imagem-referencia {
+                width: 120px; /* Reduz o tamanho da imagem de referência */
+            }
+            .container-info-jogador {
+                width: auto; /* Permite que o container de info se ajuste ao conteúdo */
+            }
+
+            .container-principal {
+                flex-direction: column; /* Pilha a barra lateral e a área de trabalho */
+                align-items: center; /* Centraliza a pilha */
+                padding: 15px;
+                gap: 15px;
             }
             .area-trabalho {
-                flex-direction: column;
+                flex-direction: column; /* Tabuleiro e peças em coluna */
                 align-items: center;
+                gap: 15px;
             }
             #tabuleiro-quebra-cabeca {
-                width: 90%; /* Ajusta para 90% da largura da tela */
+                width: 95vw; /* Ocupa 95% da largura da viewport */
+                max-width: 700px; /* Limite máximo para tablets */
                 height: auto;
-                aspect-ratio: 8 / 5; /* Mantém a proporção */
             }
             #container-pecas {
-                width: 90%;
-                max-width: 90%;
-                /* Ajuste para 4 colunas em telas médias, com tamanho mínimo maior */
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Aumenta o minmax */
-                max-height: none; /* Remove altura máxima para rolagem em telas menores */
+                width: 95vw; /* Ocupa 95% da largura da viewport */
+                max-width: 700px; /* Limite máximo para tablets */
+                max-height: 40vh; /* Altura máxima para rolagem, 40% da altura da viewport */
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Peças menores */
             }
             .game-title {
                 font-size: 1.8em;
             }
-            .conteudo-modal-info h2, .conteudo-modal h2 {
-                font-size: 1.8em;
-            }
-            .conteudo-modal-info p, .conteudo-modal p {
-                font-size: 1em;
-            }
         }
 
+        /* Para telas menores que 768px (Tablets em modo retrato, celulares grandes) */
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
@@ -371,46 +394,45 @@
             .header-emblem, .header-logo {
                 height: 50px;
             }
-            .container-principal {
+            .info-bar {
+                flex-direction: column; /* Volta a ser vertical */
+                align-items: center;
+                gap: 15px; /* Mais espaço entre os elementos na coluna */
                 padding: 10px;
-                gap: 15px;
             }
-            .barra-lateral {
-                padding: 15px;
+            .info-bar > * {
+                margin: 0; /* Remove margem lateral, usa o gap */
+            }
+            .imagem-referencia {
+                width: 80%; /* Ocupa mais largura */
+                max-width: 180px;
             }
             .avatar-jogador {
-                width: 80px;
-                height: 80px;
+                width: 70px;
+                height: 70px;
             }
             .placar {
-                font-size: 1em;
+                font-size: 0.9em;
             }
             #botao-reiniciar {
-                padding: 8px;
-                font-size: 0.9em;
+                padding: 6px 12px;
+                font-size: 0.8em;
             }
             #tabuleiro-quebra-cabeca {
-                width: 95%; /* Continua ajustando a largura */
+                width: 98vw; /* Ainda maior para aproveitar o espaço */
             }
             #container-pecas {
-                width: 95%;
+                width: 98vw;
                 padding: 8px;
-                gap: 5px; /* Aumenta o gap para melhor espaçamento */
-                /* Ajuste para 3 colunas em telas menores, com tamanho mínimo maior */
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Aumenta o minmax */
-            }
-            .conteudo-modal-info, .conteudo-modal {
-                padding: 20px;
+                gap: 6px;
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* Peças um pouco menores */
+                max-height: 35vh; /* Altura para rolagem */
             }
             .conteudo-modal-info h2, .conteudo-modal h2 {
-                font-size: 1.5em;
+                font-size: 1.8em;
             }
             .conteudo-modal-info p, .conteudo-modal p {
-                font-size: 0.9em;
-            }
-            .conteudo-modal-info ul {
-                padding-left: 20px;
-                max-width: 90%;
+                font-size: 1em;
             }
             .selo-ganho {
                 width: 80px;
@@ -422,6 +444,7 @@
             }
         }
 
+        /* Para telas menores que 480px (Celulares pequenos) */
         @media (max-width: 480px) {
             .game-title {
                 font-size: 1.2em;
@@ -429,34 +452,39 @@
             .header-emblem, .header-logo {
                 height: 40px;
             }
-            .barra-lateral {
-                padding: 10px;
+            .info-bar {
+                padding: 8px;
+                gap: 10px;
+            }
+            .imagem-referencia {
+                max-width: 150px;
             }
             .avatar-jogador {
-                width: 70px;
-                height: 70px;
+                width: 60px;
+                height: 60px;
             }
             .placar {
-                font-size: 0.9em;
+                font-size: 0.8em;
             }
             #botao-reiniciar {
-                padding: 6px;
-                font-size: 0.8em;
+                padding: 5px 10px;
+                font-size: 0.7em;
+            }
+            #tabuleiro-quebra-cabeca {
+                width: 98vw; /* Quase total da tela */
             }
             #container-pecas {
-                /* Ajuste para 2 ou 3 colunas em telas muito pequenas, com tamanho mínimo bem maior */
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Aumenta bastante para peças maiores */
-                gap: 8px; /* Mais espaço entre as peças */
-                padding: 15px; /* Mais padding no container das peças */
+                width: 98vw;
+                padding: 8px;
+                gap: 5px;
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Peças pequenas */
+                max-height: 30vh; /* Altura para rolagem */
             }
             .conteudo-modal-info h2, .conteudo-modal h2 {
-                font-size: 1.3em;
+                font-size: 1.5em;
             }
             .conteudo-modal-info p, .conteudo-modal p {
-                font-size: 0.8em;
-            }
-            .conteudo-modal-info ul {
-                padding-left: 15px;
+                font-size: 0.9em;
             }
             .botao-fechar-modal {
                 padding: 8px 15px;
@@ -464,7 +492,7 @@
             }
         }
     </style>
-    </head>
+</head>
 <body>
 
     <header>
@@ -473,21 +501,19 @@
         <img src="logo.png" alt="Logo do Jogo" class="header-logo">
     </header>
 
-    <div class="container-principal">
-        <aside class="barra-lateral">
-            <img src="puzzle.png" alt="Imagem de Referência" class="imagem-referencia">
-
-            <div class="container-info-jogador">
-                <img src="HPERS.png" alt="Figura do Jogador" class="avatar-jogador" id="playerAvatar">
-
-                <div class="placar">
-                    <p>Acertos: <span id="contador-acertos">0</span></p>
-                    <p>Erros: <span id="contador-erros">0</span></p>
-                </div>
-                <button id="botao-reiniciar">Reiniciar a Partida</button>
+    <div class="info-bar">
+        <img src="puzzle.png" alt="Imagem de Referência" class="imagem-referencia">
+        <div class="container-info-jogador">
+            <img src="HPERS.png" alt="Figura do Jogador" class="avatar-jogador" id="playerAvatar">
+            <div class="placar">
+                <p>Acertos: <span id="contador-acertos">0</span></p>
+                <p>Erros: <span id="contador-erros">0</span></p>
             </div>
-        </aside>
+            <button id="botao-reiniciar">Reiniciar a Partida</button>
+        </div>
+    </div>
 
+    <div class="container-principal">
         <main class="area-trabalho">
             <div id="tabuleiro-quebra-cabeca">
             </div>
@@ -538,9 +564,8 @@
             const LINHAS = 5;
             const COLUNAS = 8;
             const TOTAL_PECAS = LINHAS * COLUNAS;
-            // !!! ALTERADO PARA puzzle.png AQUI !!!
-            const NOME_IMAGEM_QUEBRA_CABECAS = 'puzzle.png'; 
-            const NOME_SELO_GANHO = 'HPERS.png'; // Imagem do selo que o jogador ganha
+            const NOME_IMAGEM_QUEBRA_CABECAS = 'puzzle.png';
+            const NOME_SELO_GANHO = 'HPERS.png';
             const ID_SELO = '4'; // ID único para salvar no navegador para este selo (Perseverança)
 
             // --- ESTES VALORES SÃO CRUCIAIS! SUBSTITUA PELAS DIMENSÕES REAIS DA SUA IMAGEM 'puzzle.png' ---
@@ -772,5 +797,5 @@
             updatePlayerAvatarStatus();
         });
     </script>
-    </body>
+</body>
 </html>
