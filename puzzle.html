@@ -132,42 +132,56 @@
             justify-content: center; /* Centraliza o tabuleiro e as peças */
             align-items: flex-start;
         }
+
+        /* Ajustes para o tabuleiro */
         #tabuleiro-quebra-cabeca {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(5, 1fr);
             border: 2px solid #333;
-            /* Tamanho Fixo para o tabuleiro (pode ser ajustado para ser mais responsivo) */
-            width: 800px; /* Largura fixa */
-            height: 500px; /* Altura fixa (800px / (8/5) = 500px) */
             background-color: #ddd;
             flex-shrink: 0; /* Impede que o tabuleiro encolha */
+
+            /* Definindo um tamanho base para o tabuleiro */
+            width: 800px; /* Largura padrão para desktop */
+            height: 500px; /* Altura padrão para desktop */
+            max-width: 100%; /* Garante que não ultrapasse a largura do pai */
+            aspect-ratio: 8 / 5; /* Mantém a proporção mesmo se a largura mudar */
         }
+
         .espaco-peca {
             border: 1px solid #ccc;
         }
+
+        /* Ajustes para o container das peças */
         #container-pecas {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Peças em 3 colunas */
-            gap: 5px;
+            grid-template-columns: repeat(3, 1fr); /* 3 colunas de peças */
+            gap: 8px; /* Aumentei o espaçamento entre as peças */
             padding: 10px;
             background-color: #e0e0e0;
             border-radius: 8px;
             align-items: start; /* Alinha as peças ao topo dentro do container */
             justify-items: center; /* Centraliza as peças horizontalmente em suas células */
             width: auto; /* Deixa a largura ser determinada pelo conteúdo das 3 colunas e gap */
-            max-width: 350px; /* Um pouco mais de largura para as 3 colunas + gap */
+            max-width: 350px; /* Largura máxima para as 3 colunas + gap */
             flex-shrink: 0;
             overflow-y: auto; /* Permite rolagem vertical se houver muitas peças */
-            max-height: 500px; /* Ajusta a altura máxima para a altura do tabuleiro */
+            max-height: 500px; /* Ajusta a altura máxima para a altura do tabuleiro (desktop) */
         }
+
+        /* Ajustes para cada peça individual */
         .peca-quebra-cabeca {
-            background-image: url('onça.png');
+            /* Background-image será definido via JS */
+            /* background-size e background-position serão definidos via JS */
             border: 1px solid #000;
             cursor: grab;
             transition: transform 0.2s, box-shadow 0.2s;
-            /* width e height serão definidos via JS para corresponder ao tabuleiro */
-            /* background-size e background-position serão definidos via JS para corresponder ao tabuleiro */
+            width: 100%; /* Cada peça ocupa 100% da largura da sua célula no grid */
+            height: 0; /* Define altura inicial como 0 */
+            padding-bottom: 100%; /* Usa padding-bottom para criar um quadrado (100% da largura) */
+            background-repeat: no-repeat; /* Importante para que a imagem não se repita */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra para dar profundidade */
         }
         .peca-quebra-cabeca:hover {
             transform: scale(1.1);
@@ -332,11 +346,6 @@
                 /* Ajuste para 4 colunas em telas médias, com tamanho mínimo maior */
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Aumenta o minmax */
                 max-height: none; /* Remove altura máxima para rolagem em telas menores */
-            }
-            .peca-quebra-cabeca {
-                width: 100%; /* Peças se ajustam à largura da coluna */
-                height: auto;
-                aspect-ratio: 1 / 1; /* Mantém as peças quadradas */
             }
             .game-title {
                 font-size: 1.8em;
@@ -529,14 +538,16 @@
             const LINHAS = 5;
             const COLUNAS = 8;
             const TOTAL_PECAS = LINHAS * COLUNAS;
-            const NOME_IMAGEM_QUEBRA_CABECAS = 'onça.png'; // Caminho da imagem do quebra-cabeça (Ajustei para onça.png)
+            // !!! ALTERADO PARA puzzle.png AQUI !!!
+            const NOME_IMAGEM_QUEBRA_CABECAS = 'puzzle.png'; 
             const NOME_SELO_GANHO = 'HPERS.png'; // Imagem do selo que o jogador ganha
             const ID_SELO = '4'; // ID único para salvar no navegador para este selo (Perseverança)
 
-            // Dimensões originais da imagem do quebra-cabeça.
-            // VOCÊ DEVE SUBSTITUIR ESSES VALORES PELAS DIMENSÕES REAIS DA SUA IMAGEM 'onça.png'
-            const ORIGINAL_IMAGE_WIDTH = 800; // Por exemplo, se 'onça.png' tem 800px de largura
-            const ORIGINAL_IMAGE_HEIGHT = 500; // Por exemplo, se 'onça.png' tem 500px de altura
+            // --- ESTES VALORES SÃO CRUCIAIS! SUBSTITUA PELAS DIMENSÕES REAIS DA SUA IMAGEM 'puzzle.png' ---
+            // EX: se 'puzzle.png' tem 800px de largura e 500px de altura
+            const ORIGINAL_IMAGE_WIDTH = 800; // <<< SUBSTITUA PELO VALOR REAL DA LARGURA DA SUA IMAGEM
+            const ORIGINAL_IMAGE_HEIGHT = 500; // <<< SUBSTITUA PELO VALOR REAL DA ALTURA DA SUA IMAGEM
+            // -----------------------------------------------------------------------------------------
 
             // --- ELEMENTOS DO DOM ---
             const tabuleiro = document.getElementById('tabuleiro-quebra-cabeca');
@@ -548,8 +559,8 @@
             const somAplauso = document.getElementById('som-aplauso');
             const modalBoasVindas = document.getElementById('modal-boas-vindas');
             const botaoComecarJogo = document.getElementById('botao-comecar-jogo');
-            const somErro = document.getElementById('som-erro'); // Referência ao elemento de áudio de erro
-            const playerAvatar = document.getElementById('playerAvatar'); // Referência ao avatar do jogador
+            const somErro = document.getElementById('som-erro');
+            const playerAvatar = document.getElementById('playerAvatar');
 
             // --- ESTADO DO JOGO ---
             let acertos = 0;
@@ -571,7 +582,7 @@
                 for (let i = 0; i < TOTAL_PECAS; i++) {
                     const espaco = document.createElement('div');
                     espaco.classList.add('espaco-peca');
-                    espaco.dataset.id = i;
+                    espaco.dataset.id = i; // ID do espaço
                     tabuleiro.appendChild(espaco);
 
                     espaco.addEventListener('dragover', aoArrastarSobre);
@@ -579,18 +590,26 @@
 
                     const peca = document.createElement('div');
                     peca.classList.add('peca-quebra-cabeca');
-                    peca.dataset.id = i;
+                    peca.dataset.id = i; // ID da peça (corresponde ao ID do espaço correto)
                     peca.draggable = true;
 
                     // Calcula a posição do background para cada pedaço da imagem
                     const col = i % COLUNAS;
                     const lin = Math.floor(i / COLUNAS);
 
-                    // O background-size é o tamanho TOTAL da imagem, e o background-position
-                    // é o deslocamento de cada pedaço dentro dessa imagem total.
+                    // Dimensões de cada pedaço da imagem original
+                    const pecaLarguraOriginal = ORIGINAL_IMAGE_WIDTH / COLUNAS;
+                    const pecaAlturaOriginal = ORIGINAL_IMAGE_HEIGHT / LINHAS;
+
+                    // Define o background-image (URL da imagem completa)
                     peca.style.backgroundImage = `url('${NOME_IMAGEM_QUEBRA_CABECAS}')`;
+                    
+                    // Define o background-size para o tamanho total da imagem original
+                    // Isso é crucial para que o background-position funcione corretamente
                     peca.style.backgroundSize = `${ORIGINAL_IMAGE_WIDTH}px ${ORIGINAL_IMAGE_HEIGHT}px`;
-                    peca.style.backgroundPosition = `-${col * (ORIGINAL_IMAGE_WIDTH / COLUNAS)}px -${lin * (ORIGINAL_IMAGE_HEIGHT / LINHAS)}px`;
+                    
+                    // Define o background-position para mostrar a parte correta da imagem
+                    peca.style.backgroundPosition = `-${col * pecaLarguraOriginal}px -${lin * pecaAlturaOriginal}px`;
 
                     peca.addEventListener('dragstart', aoArrastar);
                     pecas.push(peca);
@@ -599,31 +618,7 @@
                 pecas.sort(() => Math.random() - 0.5); // Embaralha as peças
                 pecas.forEach(p => containerPecas.appendChild(p)); // Adiciona as peças ao container lateral
 
-                // Chama para garantir que o background-size das peças (se necessário) seja ajustado
-                // ou apenas para confirmar o layout após o carregamento.
-                // Como agora background-size é fixo para a imagem original, esta função é menos crítica aqui.
-                // No entanto, se o tabuleiro tiver um tamanho responsivo e a imagem de fundo precisar se esticar
-                // para cobrir, esta função precisaria reajustar o backgroundSize.
-                // Mas, com o ajuste de CSS para as peças, o JS pode se preocupar menos com isso.
-                // Mantenha para fins de compatibilidade ou futuros ajustes.
-                ajustarTamanhoDasPecasNoTabuleiro(); 
                 updatePlayerAvatarStatus(); // Atualiza o avatar ao reiniciar o jogo
-            }
-
-            // Esta função ajusta o background-size das peças
-            // para que a imagem de fundo preencha corretamente o espaço da peça,
-            // que agora é controlado pelo CSS responsivo do tabuleiro.
-            function ajustarTamanhoDasPecasNoTabuleiro() {
-                const larguraTabuleiroAtual = tabuleiro.clientWidth;
-                const alturaTabuleiroAtual = tabuleiro.clientHeight;
-
-                const todasAsPecas = document.querySelectorAll('.peca-quebra-cabeca');
-                todasAsPecas.forEach(p => {
-                    // O background-size deve ser o tamanho total da imagem, escalado para o tamanho atual do tabuleiro
-                    p.style.backgroundSize = `${larguraTabuleiroAtual}px ${alturaTabuleiroAtual}px`;
-                    // O background-position já está correto, pois é calculado com base nas dimensões originais da imagem
-                    // e o número de colunas/linhas, o que funciona bem com o escalamento do background-size.
-                });
             }
 
             function atualizarPlacar() {
@@ -709,7 +704,6 @@
 
             // --- EVENTOS ---
             botaoReiniciar.addEventListener('click', () => {
-                // Substituído alert() e confirm() por uma mensagem customizada
                 const customConfirm = (message, onConfirm, onCancel) => {
                     const overlay = document.createElement('div');
                     overlay.style.cssText = `
@@ -764,11 +758,6 @@
                     inicializarJogo(); // Reinicia o jogo
                 });
             });
-
-            // Adiciona um listener para redimensionar as peças quando a janela muda de tamanho
-            // Isso é crucial para a responsividade das peças de background.
-            window.addEventListener('resize', ajustarTamanhoDasPecasNoTabuleiro);
-
 
             // Evento para fechar o modal de boas-vindas
             botaoComecarJogo.addEventListener('click', () => {
