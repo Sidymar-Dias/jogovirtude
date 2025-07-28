@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
     <style>
-        /* (Todo o seu CSS permanece igual, sem alterações significativas aqui) */
+        /* CSS Básico - Sem alterações críticas aqui */
         body {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
@@ -18,7 +18,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-y: auto; /* Pode ser 'auto' ou 'scroll' - será controlado via JS */
+            /* `overflow-y` e `touch-action` serão gerenciados pelo JavaScript */
             -webkit-overflow-scrolling: touch; /* Melhora a rolagem em iOS */
         }
         .header {
@@ -282,7 +282,7 @@
         }
         .modal {
             position: fixed;
-            z-index: 10000; /* Aumentado z-index para garantir que esteja acima de tudo */
+            z-index: 99999; /* Z-index muito alto */
             left: 0;
             top: 0;
             width: 100%;
@@ -291,8 +291,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Nova propriedade para lidar com o comportamento de rolagem/toque */
-            touch-action: none; /* Impede rolagem e zoom no elemento do modal */
+            /* touch-action: none; - Removido daqui, gerenciado via JS no body */
+            overflow: hidden; /* Garante que o modal não tenha rolagem própria */
         }
         .modal-content {
             background-color: #fefefe;
@@ -306,9 +306,8 @@
             text-align: center;
             animation-name: animatemodal;
             animation-duration: 0.4s;
-            /* Garante que o conteúdo do modal também não cause rolagem */
-            overflow-y: auto; /* Permite rolagem apenas se o conteúdo interno for grande */
-            max-height: 90vh; /* Limita a altura para que o modal se ajuste à tela */
+            overflow-y: auto; /* Permite rolagem *apenas* se o conteúdo interno do modal for grande */
+            max-height: 90vh; /* Limita a altura para se ajustar à tela mobile */
             -webkit-overflow-scrolling: touch; /* Melhora a rolagem em iOS dentro do modal */
         }
         @keyframes animatemodal {
@@ -529,10 +528,7 @@
             }
 
             balloon.addEventListener('click', handleBalloonPop);
-            balloon.addEventListener('touchstart', function(e) {
-                e.preventDefault(); // Impede o comportamento padrão do toque (como zoom/rolagem)
-                handleBalloonPop();
-            });
+            // Removido touchstart aqui para balões, vamos focar no modal primeiro
         }
 
         function initGame() {
@@ -563,8 +559,6 @@
         }
 
         function goToPreviousPage() {
-            // Este é um placeholder. Você deve substituir 'mapa.html' pela URL real da sua página principal do mapa.
-            // O parâmetro `seal_earned` pode ser usado pela página do mapa para saber qual selo foi ganho.
             window.location.href = `mapa.html?seal_earned=${SEAL_ID_FOR_THIS_GAME}`;
         }
 
@@ -572,40 +566,41 @@
         goToMapButtonOverlay.addEventListener('click', goToPreviousPage);
         restartButton.addEventListener('click', initGame);
 
-        function closeInstructionsModal() {
-            instructionsModal.style.display = 'none';
-            // Restaura a rolagem do corpo e touch-action quando o modal é fechado
-            document.body.style.overflow = 'auto';
-            document.body.style.touchAction = 'auto'; 
-            initGame();
+        function openInstructionsModal() {
+            instructionsModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Impede rolagem
+            document.body.style.touchAction = 'none'; // Impede rolagem e zoom em toda a página
+            // Opcional: focar no botão para tentar ativar o teclado virtual
+            closeModalButton.focus(); 
         }
 
-        // Adicionando evento de touchstart para o botão do modal
+        function closeInstructionsModal() {
+            instructionsModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restaura rolagem
+            document.body.style.touchAction = 'auto'; // Restaura rolagem e zoom
+            initGame(); // Inicia o jogo quando o modal é fechado
+        }
+
+        // Listener para o botão de fechar o modal - usa ambos 'click' e 'touchstart'
+        // 'click' é para desktop e 'touchstart' para mobile, ambos chamando a mesma função
         closeModalButton.addEventListener('click', closeInstructionsModal);
-        closeModalButton.addEventListener('touchstart', function(e) {
-            e.preventDefault(); // Impede o comportamento padrão do toque
+        closeModalButton.addEventListener('touchstart', function(event) {
+            event.preventDefault(); // Impede o comportamento padrão do toque
             closeInstructionsModal();
         });
 
-        // Mostra o modal ao carregar a página
-        window.onload = () => {
-            instructionsModal.style.display = 'flex';
-            // Impede a rolagem do corpo e touch-action quando o modal está aberto
-            document.body.style.overflow = 'hidden';
-            document.body.style.touchAction = 'none'; // Impede rolagem e zoom em toda a página
-            updatePlayerAvatarStatus();
-        };
+        // Previne a rolagem na área do modal em si, mas permite toques nos elementos internos
+        instructionsModal.addEventListener('touchstart', function(event) {
+            // Permite que o toque no botão se propague.
+            // Se o toque não for no botão, previne a rolagem.
+            if (event.target !== closeModalButton) {
+                event.preventDefault(); 
+            }
+        }, { passive: false }); // Use { passive: false } para garantir que preventDefault funcione
 
-        // Adicional: Prevenir default em eventos de toque no próprio modal (para garantir)
-        instructionsModal.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-        });
 
-        // Adicional: Listener para garantir que o touchstart no botão funcione
-        document.getElementById('close-modal-button').addEventListener('touchstart', function(e) {
-            e.stopPropagation(); // Impede que o evento de toque se propague para o modal ou body
-            // A função closeInstructionsModal já é chamada pelo addEventListener acima
-        });
+        // Exibe o modal ao carregar a página
+        window.onload = openInstructionsModal;
     </script>
 </body>
 </html>
