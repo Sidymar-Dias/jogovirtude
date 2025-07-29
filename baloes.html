@@ -3,767 +3,830 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estoure os Balões!</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
+    <title>Jogo da Memória</title>
     <style>
-        /* Estilos básicos para o corpo da página */
+        /* Estilos globais para o corpo da página */
         body {
-            font-family: 'Open Sans', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
+            font-family: 'Inter', Arial, sans-serif; /* Usando Inter como fonte principal */
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            overflow-y: auto;
+            background-color: #e0f2f7; /* Um azul claro suave para o fundo */
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh; /* Garante que o body ocupe a altura total da viewport */
+            box-sizing: border-box; /* Inclui padding e borda no tamanho total */
         }
 
-        /* Cabeçalho do jogo */
-        .header {
+        /* Estilos do cabeçalho */
+        header {
             width: 100%;
+            max-width: 1200px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            box-sizing: border-box;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-
-        .header .logo, .header .school-emblem {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-        }
-
-        .game-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2em;
-            color: #333;
-            text-align: center;
-            margin: 15px 0 5px 0;
-        }
-
-        .game-instructions {
-            font-size: 1em;
-            color: #666;
-            text-align: center;
-            margin-bottom: 10px;
-            flex-shrink: 0;
-        }
-
-        /* Contêiner principal do jogo */
-        .main-game-area-wrapper {
-            display: flex;
-            width: 90%;
-            max-width: 1200px;
-            flex-grow: 1;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-            gap: 20px;
-        }
-
-        /* Área do jogador e contador */
-        .player-sidebar {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 10px;
-            background-color: #f8f8f8;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-            width: 150px;
-            box-sizing: border-box;
-        }
-
-        .player-figure {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            background-color: #8B4513;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: white;
-            overflow: hidden;
-            border: 3px solid #007bff;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .player-figure img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .player-figure.unlocked {
-            border-color: #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-        }
-
-        .score-board {
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            font-size: 1.1em;
-            color: #333;
-            width: 100%;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .score-board p {
-            margin: 5px 0;
-        }
-
-        /* Botão de Reiniciar */
-        #restart-button {
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            transition: background-color 0.2s ease;
-        }
-
-        #restart-button:hover {
-            background-color: #218838;
-        }
-
-        /* Contêiner principal do jogo (onde os balões se movem) */
-        .game-container {
-            background-color: #e0f7fa;
-            border: 2px solid #00bcd4;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-            flex-grow: 1;
-            min-height: 300px; /* Garante que a área do jogo tenha uma altura mínima */
-        }
-
-        /* Estilo dos balões */
-        .balloon {
-            position: absolute;
-            display: inline-flex; /* Permite que o balão se ajuste ao conteúdo */
-            align-items: center;
-            justify-content: center;
-            min-width: 80px; /* Largura mínima para o balão */
-            min-height: 80px; /* Altura mínima para o balão */
-            max-width: 200px; /* Largura máxima para evitar balões gigantes */
-            border-radius: 50%; /* Faz com que o shape seja circular/oval */
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.1s ease-out;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            text-align: center;
-            padding: 5px 10px; /* Aumentei o padding horizontal para mais espaço */
-            box-sizing: border-box;
-            white-space: nowrap; /* IMPEDE QUEBRAS DE LINHA */
-            font-size: 1em; /* Tamanho de fonte inicial */
-            user-select: none;
-            overflow: hidden; /* Garante que o texto não "escape" se a fonte for muito grande e não couber mesmo com ajuste */
-        }
-
-        .balloon.popped {
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.3s ease-in-out;
-            pointer-events: none;
-        }
-
-        /* Cores dos balões */
-        .color-1 { background-color: #FF6347; }
-        .color-2 { background-color: #4682B4; }
-        .color-3 { background-color: #32CD32; }
-        .color-4 { background-color: #FFD700; }
-        .color-5 { background-color: #9370DB; }
-        .color-6 { background-color: #FF4500; }
-        .color-7 { background-color: #1E90FF; }
-        .color-8 { background-color: #ADFF2F; }
-        .color-9 { background-color: #DAA520; }
-        .color-10 { background-color: #BA55D3; }
-        .color-11 { background-color: #FF69B4; }
-        .color-12 { background-color: #00CED1; }
-        .color-13 { background-color: #7FFF00; }
-        .color-14 { background-color: #D2B48C; }
-        .color-15 { background-color: #8A2BE2; }
-
-        /* Overlay de mensagem de sucesso/erro */
-        .message-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s, opacity 0.3s linear;
-        }
-
-        .message-overlay.show {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .message-box {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .message-box h2 {
-            color: #28a745;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .message-box p {
-            font-size: 1.3em;
-            color: #555;
+            padding: 15px 25px;
+            background-color: #ffffff;
+            border-radius: 15px; /* Cantos arredondados */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             margin-bottom: 30px;
+            box-sizing: border-box;
         }
 
-        .seal-image {
+        /* Itens dentro do cabeçalho (emblema, logo) */
+        .header-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-item img {
+            max-height: 60px; /* Tamanho ajustado para imagens do cabeçalho */
+            border-radius: 8px; /* Cantos arredondados para as imagens */
+        }
+
+        h1 {
+            margin: 0;
+            color: #2c3e50; /* Cor escura para o título */
+            font-size: 2.5em; /* Tamanho maior para o título do jogo */
+            text-align: center;
+            flex-grow: 1; /* Permite que o título ocupe o espaço central */
+        }
+
+        /* Container principal do jogo (sidebar + área do jogo) */
+        .game-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite que os elementos quebrem a linha em telas menores */
+            justify-content: center; /* Centraliza em telas menores */
+            width: 100%;
+            max-width: 1200px;
+            gap: 25px;
+            flex-grow: 1; /* Permite que o container cresça e ocupe o espaço restante */
+        }
+
+        /* Estilos da barra lateral */
+        .sidebar {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 280px; /* Largura fixa para a sidebar */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            /* Removido justify-content: space-between; para não empurrar o link para baixo */
+        }
+
+        .player-info {
+            margin-bottom: 25px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Avatar do jogador */
+        .player-avatar {
             width: 120px;
             height: 120px;
-            object-fit: contain;
-            background-color: #FFC107;
-            border-radius: 10px;
-            margin: 0 auto 20px auto;
-            display: block;
+            background-color: #ecf0f1; /* Fundo cinza claro */
+            border-radius: 50%; /* Círculo perfeito */
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            overflow: hidden;
+            border: 3px solid #3498db; /* Borda azul para o avatar */
         }
 
-        /* Mensagem de erro para balões negativos */
-        #negative-balloon-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(220, 53, 69, 0.9);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.4em;
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que a imagem preencha o círculo */
+        }
+
+        .score-info p {
+            margin: 8px 0;
+            font-size: 1.2em;
+            color: #34495e;
             font-weight: bold;
-            z-index: 1001;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
         }
 
-        #negative-balloon-message.show {
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.3s ease-in;
+        /* Área do jogo das cartas */
+        .game-area {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-grow: 1; /* Permite que a área do jogo ocupe o espaço restante */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Colunas responsivas */
+            gap: 20px;
+            justify-content: center;
+            align-content: center;
+            max-width: calc(100% - 300px); /* Ajusta a largura máxima para acomodar a sidebar */
+            box-sizing: border-box;
+            min-height: 400px; /* Garante uma altura mínima para o game-area */
         }
 
-        /* Botão de voltar ao mapa (posição global) */
-        #go-to-map-button-global {
-            padding: 12px 25px;
-            background-color: #007bff;
+        /* Estilos individuais das cartas */
+        .card {
+            width: 130px; /* Tamanho padrão da carta */
+            height: 130px;
+            background-color: #2ecc71; /* Verde esmeralda para o verso */
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
             color: white;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Transição com efeito elástico */
+            transform-style: preserve-3d; /* Necessário para a animação 3D de virar */
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Quando a carta é virada */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Faces da carta (frente e verso) */
+        .card .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Esconde a face quando virada */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card .card-front {
+            background-color: #2ecc71; /* Verde esmeralda */
+            color: white;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card .card-back {
+            background-color: #ecf0f1; /* Fundo claro para a imagem */
+            transform: rotateY(180deg); /* Vira o verso para a posição inicial */
+        }
+
+        .card .card-back img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain; /* Garante que a imagem se encaixe */
+        }
+
+        /* Cartas combinadas */
+        .card.matched .card-back {
+            opacity: 0.7; /* Cartas combinadas ficam um pouco transparentes */
+            /* filter: grayscale(100%); Opcional: para deixar as cartas combinadas em preto e branco */
+        }
+
+        /* Controles do jogo (botão de reiniciar) */
+        .game-controls {
+            width: 100%;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .game-controls button, .game-controls a {
+            background-color: #3498db; /* Azul vibrante */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px; /* Cantos arredondados para botões */
+            cursor: pointer;
+            font-size: 1.1em;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .game-controls button:hover, .game-controls a:hover {
+            background-color: #2980b9; /* Azul mais escuro ao passar o mouse */
+            transform: translateY(-2px); /* Efeito de "levantar" */
+        }
+
+        /* Estilos do link de retorno ao mapa principal */
+        .return-to-map {
+            width: 100%;
+            text-align: center;
+            margin-top: 25px; /* Espaçamento superior para separar da área do jogo */
+            padding-top: 20px; /* Espaçamento superior interno */
+            border-top: 1px dashed #bdc3c7; /* Linha tracejada */
+            box-sizing: border-box; /* Inclui padding e borda no tamanho total */
+        }
+
+        .return-to-map a {
+            background-color: #f39c12; /* Laranja vibrante para o botão de retorno */
+            color: white;
+            padding: 12px 25px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            transition: background-color 0.2s ease;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            flex-shrink: 0;
+            font-size: 1.1em;
+            text-decoration: none;
+            display: inline-block; /* Permite aplicar padding e margin como um bloco */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
         }
 
-        #go-to-map-button-global:hover {
-            background-color: #0056b3;
+        .return-to-map a:hover {
+            background-color: #e67e22; /* Laranja mais escuro ao passar o mouse */
+            transform: translateY(-2px);
         }
 
-        /* Estilo para o botão de voltar ao mapa no overlay de sucesso */
-        #go-to-map-button-overlay {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            margin-top: 20px;
-            transition: background-color 0.2s ease;
-        }
-
-        #go-to-map-button-overlay:hover {
-            background-color: #0056b3;
-        }
-
-        /* Estilos do Modal de Instruções */
-        .modal {
-            position: fixed;
-            z-index: 1002;
+        /* Estilos para os modais (janelas pop-up) */
+        .modal, .congratulations-modal {
+            display: none; /* Escondido por padrão */
+            position: fixed; /* Fixado na tela */
+            z-index: 1000; /* Acima de outros elementos */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
+            background-color: rgba(0,0,0,0.7); /* Fundo semi-transparente */
             justify-content: center;
-            visibility: visible;
-            opacity: 1;
-            transition: opacity 0.4s ease;
+            align-items: center;
+            padding: 20px; /* Padding para evitar que o conteúdo toque as bordas */
+            box-sizing: border-box;
         }
 
-        .modal.hidden {
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s linear 0.4s, opacity 0.4s ease;
-        }
-
-        .modal-content {
+        .modal-content, .congratulations-modal-content {
             background-color: #fefefe;
             margin: auto;
-            padding: 30px;
-            border: 1px solid #888;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            padding: 35px;
+            border-radius: 15px; /* Cantos arredondados */
+            width: 90%;
+            max-width: 550px;
             text-align: center;
-            transform: translateY(0);
-            transition: transform 0.4s ease;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            animation: fadeIn 0.4s ease-out; /* Animação de entrada */
         }
 
-        .modal.hidden .modal-content {
-            transform: translateY(-50px);
+        /* Animação para o modal */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .modal-content h2 {
-            font-family: 'Montserrat', sans-serif;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-
-        .modal-content p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .modal-content button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
+            transition: color 0.3s ease;
         }
 
-        .modal-content button:hover {
-            background-color: #45a049;
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
         }
 
-        /* Ajustes responsivos para telas menores */
+        .modal-content h2, .congratulations-modal-content h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .modal-content p, .congratulations-modal-content p {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .congratulations-modal-content img {
+            max-width: 180px; /* Tamanho maior para o selo no modal */
+            margin-top: 25px;
+            margin-bottom: 25px;
+            border: 4px solid #f39c12; /* Borda dourada para o selo */
+            border-radius: 50%; /* Selo redondo */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* --- NOVO ESTILO PARA O BOTÃO NO MODAL DE PARABÉNS --- */
+        .congratulations-modal-content .game-controls-button {
+            display: inline-block; /* Faz o link se comportar como um bloco inline */
+            margin-top: 20px; /* Espaçamento acima do botão */
+            padding: 15px 30px; /* Mais padding para parecer um botão maior */
+            background-color: #28a745; /* Verde vibrante */
+            color: white;
+            text-decoration: none; /* Remove sublinhado */
+            border-radius: 10px; /* Cantos mais arredondados */
+            font-size: 1.2em; /* Fonte um pouco maior */
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25); /* Sombra mais pronunciada */
+            border: 2px solid #218838; /* Uma borda sutil para "enquadrar" */
+            text-transform: uppercase; /* Texto em maiúsculas */
+            letter-spacing: 0.05em; /* Espaçamento entre letras */
+        }
+
+        .congratulations-modal-content .game-controls-button:hover {
+            background-color: #218838; /* Verde mais escuro no hover */
+            transform: translateY(-3px); /* Efeito de elevação mais forte */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35); /* Sombra ainda mais forte */
+        }
+        /* --- FIM DO NOVO ESTILO --- */
+
+
+        /* Responsividade para telas menores */
         @media (max-width: 768px) {
-            .header {
+            header {
                 flex-direction: column;
-                padding: 10px;
+                padding: 15px;
+                margin-bottom: 20px;
             }
-            .header .logo, .header .school-emblem {
-                width: 50px;
-                height: 50px;
-            }
-            .game-title {
-                font-size: 1.5em;
-                margin: 10px 0;
-            }
-            .main-game-area-wrapper {
-                flex-direction: column;
-                width: 95%;
-                gap: 10px;
-            }
-            .player-sidebar {
-                width: 100%;
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                padding: 10px 0;
-            }
-            .player-figure {
-                width: 70px;
-                height: 70px;
-                margin-bottom: 0;
-            }
-            .score-board {
-                width: auto;
-                margin-bottom: 0;
-            }
-            #restart-button {
-                margin-bottom: 0;
-                padding: 8px 12px;
-                font-size: 0.9em;
-            }
-            .game-container {
-                min-height: 250px;
-            }
-            .balloon {
-                min-width: 70px;
-                min-height: 70px;
-                max-width: 150px; /* Ajustado para mobile */
-                font-size: 0.9em;
-            }
-            .message-box {
-                padding: 20px;
-                width: 90%;
-            }
-            .message-box h2 {
+
+            h1 {
                 font-size: 1.8em;
+                margin-top: 10px;
+                margin-bottom: 10px;
             }
-            .message-box p {
-                font-size: 1em;
+
+            .header-item {
+                width: 100%;
+                justify-content: center;
             }
-            .seal-image {
+
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-width: 400px; /* Limita a largura da sidebar em mobile */
+            }
+
+            .game-area {
+                width: 100%;
+                max-width: 100%;
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Cartas menores em mobile */
+                gap: 10px;
+                min-height: auto; /* Remove altura mínima fixa em mobile para melhor adaptação */
+            }
+
+            .card {
                 width: 100px;
                 height: 100px;
+                font-size: 2em;
             }
-            #negative-balloon-message {
+
+            .player-avatar {
+                width: 90px;
+                height: 90px;
+            }
+
+            .return-to-map {
+                margin-top: 25px; /* Ajusta a margem superior em telas menores */
+            }
+
+            .modal-content, .congratulations-modal-content {
+                padding: 25px;
+            }
+
+            .congratulations-modal-content .game-controls-button {
+                padding: 12px 25px;
                 font-size: 1.1em;
-                padding: 10px 20px;
             }
-            .modal-content {
-                width: 90%;
-                padding: 20px;
-            }
-            .modal-content h2 {
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 80px;
+                height: 80px;
                 font-size: 1.5em;
             }
-            .modal-content p {
-                font-size: 0.9em;
+
+            .player-avatar {
+                width: 90px;
+                height: 90px;
             }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <img src="Capa.png" alt="Emblema da Escola" class="school-emblem">
-        <h1 class="game-title">Estoure os Balões</h1>
-        <img src="logo.png" alt="Logo do Jogo" class="logo">
+    <header>
+        <div class="header-item">
+            <img src="Capa.png" alt="Emblema do Jogo" id="emblema" onerror="this.onerror=null;this.src='https://placehold.co/60x60/3498db/ffffff?text=Emblema';">
+        </div>
+        <h1>Jogo da Memória</h1>
+        <div class="header-item">
+            <img src="logo.png" alt="Logo do Jogo" id="logo" onerror="this.onerror=null;this.src='https://placehold.co/60x60/2ecc71/ffffff?text=Logo';">
+        </div>
     </header>
-    <p class="game-instructions">Clique apenas nos balões com comportamentos positivos para ganhar pontos!</p>
 
-    <div class="main-game-area-wrapper">
-        <div class="player-sidebar">
-            <div class="player-figure">
-                <img src="HAC.png" alt="Figura do Jogador">
+    <div class="game-container">
+        <aside class="sidebar">
+            <div class="player-info">
+                <div class="player-avatar" id="playerAvatar">
+                    <img src="HPAC.png" alt="Avatar do Jogador" onerror="this.onerror=null;this.src='https://placehold.co/120x120/ccc/666?text=Avatar';">
+                </div>
             </div>
-            <div class="score-board">
-                <p>Certos: <span id="correct-score">0</span></p>
-                <p>Errados: <span id="wrong-score">0</span></p>
+            <div class="score-info">
+                <p>Acertos: <span id="correctCount">0</span></p>
+                <p>Erros: <span id="wrongCount">0</span></p>
             </div>
-            <button id="restart-button">Reiniciar Jogo</button>
-        </div>
+            <div class="game-controls">
+                <button id="restartGame">Reiniciar Jogo</button>
+            </div>
+        </aside>
 
-        <div class="game-container" id="game-area">
-            <div id="negative-balloon-message">Este não é um bom comportamento!!! Tente novamente.</div>
+        <main class="game-area" id="gameArea">
+        </main>
+
+        <div class="return-to-map">
+            <a href="mapa.html?seal_earned=3">Retornar ao Mapa Principal</a>
         </div>
     </div>
 
-    <button id="go-to-map-button-global">Retornar ao Mapa Principal</button>
-
-    <div class="message-overlay" id="success-overlay">
-        <div class="message-box">
-            <h2>Você conseguiu!! Parabéns!!</h2>
-            <p>Você estourou todos os balões com comportamentos positivos!</p>
-            <img src="HAC.png" alt="Selo da Atividade" class="seal-image" id="new-seal-image">
-            <p>Clique no botão abaixo para voltar ao mapa e continuar sua jornada!</p>
-            <button id="go-to-map-button-overlay">Retornar ao Mapa Principal</button>
-        </div>
-    </div>
-
-    <div id="instructions-modal" class="modal">
+    <div id="instructionsModal" class="modal">
         <div class="modal-content">
-            <h2>Bem-vindo ao Jogo Estoure os Balões!</h2>
-            <p>Seu objetivo é clicar apenas nos balões que contêm palavras de comportamentos positivos.</p>
-            <p>🎈 Cada balão positivo que você estourar aumentará sua pontuação.</p>
-            <p>💥 Se você clicar em um balão com um comportamento negativo, perderá pontos.</p>
-            <p>Complete o desafio estourando todos os balões positivos para ganhar um selo!</p>
-            <button id="close-modal-button">Começar o Jogo</button>
+            <span class="close-button" id="closeInstructions">&times;</span>
+            <h2>Como Jogar</h2>
+            <p>Seja bem-vindo(a) ao Jogo da Memória!</p>
+            <p>O objetivo é encontrar todos os pares de cartas idênticas. Clique em uma carta para virá-la e depois clique em outra.</p>
+            <ul>
+                <li>Se as cartas forem iguais, elas permanecerão viradas e você ganha um acerto.</li>
+                <li>Se forem diferentes, elas se virarão novamente após um breve momento e você não marcará ponto!</li>
+            </ul>
+            <p>Seu progresso será registrado nos contadores de acertos e erros. Ao encontrar todos os 10 pares, você ganhará um selo da conquista!</p>
+            <button id="startGameButton" class="game-controls-button">Começar Jogo!</button>
         </div>
     </div>
 
-    <audio id="positive-audio" src="som1.mp3"></audio>
+    <div id="congratulationsModal" class="congratulations-modal">
+        <div class="congratulations-modal-content">
+            <h2>Parabéns pela Conquista!</h2>
+            <p>Você encontrou todos os pares com sucesso!</p>
+            <img src="HPAC.png" alt="Selo Conquistado" id="congratulationsSeal" onerror="this.onerror=null;this.src='https://placehold.co/180x180/f39c12/ffffff?text=Selo';">
+            <p>Você ganhou um selo por sua dedicação!</p>
+            <a href="mapa.html?seal_earned=3" class="game-controls-button">Voltar para a Página do Mapa</a>
+        </div>
+    </div>
 
     <script>
-        const gameArea = document.getElementById('game-area');
-        const correctScoreSpan = document.getElementById('correct-score');
-        const wrongScoreSpan = document.getElementById('wrong-score');
-        const successOverlay = document.getElementById('success-overlay');
-        const negativeMessage = document.getElementById('negative-balloon-message');
-        const positiveAudio = document.getElementById('positive-audio');
-        const goToMapButtonGlobal = document.getElementById('go-to-map-button-global');
-        const goToMapButtonOverlay = document.getElementById('go-to-map-button-overlay');
-        const restartButton = document.getElementById('restart-button');
-        const newSealImage = document.getElementById('new-seal-image');
-        const instructionsModal = document.getElementById('instructions-modal');
-        const closeModalButton = document.getElementById('close-modal-button'); // Corrigido aqui
-        const playerFigure = document.querySelector('.player-figure');
+        // Referências aos elementos HTML
+        const gameArea = document.getElementById('gameArea');
+        const correctCountSpan = document.getElementById('correctCount');
+        const wrongCountSpan = document.getElementById('wrongCount');
+        const restartGameButton = document.getElementById('restartGame');
+        const instructionsModal = document.getElementById('instructionsModal');
+        const closeInstructionsButton = document.getElementById('closeInstructions');
+        const startGameButton = document.getElementById('startGameButton');
+        const congratulationsModal = document.getElementById('congratulationsModal');
+        const playerAvatarElement = document.getElementById('playerAvatar'); // Para o avatar do jogador
+        const congratulationsSeal = document.getElementById('congratulationsSeal'); // Para a imagem no modal de parabéns
 
-        let correctScore = 0;
-        let wrongScore = 0;
-        let balloonsPopped = 0;
-        const totalPositiveBalloons = 10;
 
-        const positiveWords = ["Amor", "Paz", "Alegria", "Esperança", "Felicidade", "Gentileza", "Gratidão", "Sucesso", "Sabedoria", "Respeito", "Colaboração", "União", "Empatia", "Generosidade", "Harmonia", "Verdade", "Coragem", "Perdão", "Paciência", "Confiança"];
-        const negativeWords = ["Ódio", "Tristeza", "Raiva", "Medo", "Fracasso", "Violência", "Inveja", "Preguiça", "Desrespeito", "Briga", "Egoísmo", "Mentira", "Preconceito", "Ganância", "Dúvida", "Pânico", "Timidez", "Crueldade", "Desespero"];
+        // Variáveis de estado do jogo
+        let cards = []; // Array de todas as cartas no tabuleiro
+        let flippedCards = []; // Array das cartas atualmente viradas (máximo de 2)
+        let matchedPairs = 0; // Contagem de pares encontrados
+        let correctGuesses = 0; // Contagem de acertos
+        let wrongGuesses = 0; // Contagem de erros
+        let lockBoard = false; // Impede cliques durante a verificação de pares
 
-        const balloonColors = [
-            'color-1', 'color-2', 'color-3', 'color-4', 'color-5',
-            'color-6', 'color-7', 'color-8', 'color-9', 'color-10',
-            'color-11', 'color-12', 'color-13', 'color-14', 'color-15'
+        // Caminhos das imagens das cartas (10 pares).
+        // Certifique-se de que estas imagens existam na mesma pasta do arquivo HTML.
+        const cardImages = [
+            'logo.png', 'trocaroupa.png', 'Empreende.png',
+            'HAC.png', 'HPERS.png', 'HRESP.png',
+            'HESP.png', 'puzzle.png', 'banho.png', 'estudar.png'
         ];
 
-        const SEAL_ID_FOR_THIS_GAME = '5';
+        // *** IMPORTANTE: ID DO SELO QUE ESTE JOGO CONQUISTA NO MAPA GERAL ***
+        // Este ID deve corresponder ao 'data-seal-id' da porta que leva a este jogo no seu mapa.html
+        const SEAL_ID_FOR_THIS_GAME = '3'; // ID do selo para Paciência
+        const SEAL_IMAGE_PATH = 'HPAC.png'; // Caminho da imagem que será o selo para Paciência
 
+        // Define a imagem do selo no modal de parabéns
+        congratulationsSeal.src = SEAL_IMAGE_PATH;
+
+        /**
+         * Embaralha um array usando o algoritmo Fisher-Yates (Knuth shuffle).
+         * @param {Array} array - O array a ser embaralhado.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Troca os elementos
+            }
+        }
+
+        /**
+         * Cria e popula o tabuleiro do jogo com as cartas embaralhadas.
+         */
+        function createBoard() {
+            gameArea.innerHTML = ''; // Limpa qualquer carta existente no tabuleiro
+
+            // Duplica as imagens para formar os pares e as embaralha
+            let gameCards = [...cardImages, ...cardImages];
+            shuffleArray(gameCards);
+
+            // Cria um elemento div para cada carta
+            gameCards.forEach((imageName, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                // Salva o nome da imagem (sem a extensão) no dataset para comparação
+                card.dataset.name = imageName.split('.')[0];
+                card.dataset.index = index; // Adiciona um índice único para cada carta
+
+                // Cria a face frontal da carta (verso)
+                const cardFront = document.createElement('div');
+                cardFront.classList.add('card-face', 'card-front');
+                cardFront.textContent = '?'; // Caractere simples para o verso
+
+                // Cria a face traseira da carta (imagem)
+                const cardBack = document.createElement('div');
+                cardBack.classList.add('card-face', 'card-back');
+                const imgElement = document.createElement('img');
+                // Caminho da imagem: diretamente o nome do arquivo, pois está na mesma pasta
+                imgElement.src = imageName;
+                imgElement.alt = card.dataset.name;
+                imgElement.onerror = function() {
+                    // Fallback para imagens ausentes: placeholder simples
+                    this.src = `https://placehold.co/90x90/ccc/666?text=${card.dataset.name}`;
+                };
+                cardBack.appendChild(imgElement);
+
+                // Adiciona as faces à carta e a carta à área do jogo
+                card.appendChild(cardFront);
+                card.appendChild(cardBack);
+
+                // Adiciona o event listener de clique para virar a carta
+                card.addEventListener('click', flipCard);
+                gameArea.appendChild(card);
+            });
+
+            cards = document.querySelectorAll('.card'); // Atualiza a lista de cartas
+            resetGameVariables(); // Reinicia as variáveis do jogo
+        }
+
+        /**
+         * Vira uma carta quando clicada.
+         */
+        function flipCard() {
+            // Se o tabuleiro estiver bloqueado ou a mesma carta for clicada novamente, ou já estiver virada, sai
+            if (lockBoard || this === flippedCards[0] || this.classList.contains('flipped')) return;
+
+            this.classList.add('flipped'); // Adiciona a classe para virar visualmente a carta
+            flippedCards.push(this); // Adiciona a carta ao array de cartas viradas
+
+            // Se duas cartas foram viradas, verifica se há um par
+            if (flippedCards.length === 2) {
+                lockBoard = true; // Bloqueia o tabuleiro para evitar cliques extras
+                checkForMatch();
+            }
+        }
+
+        /**
+         * Verifica se as duas cartas viradas formam um par.
+         */
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            // Compara os nomes das imagens das cartas
+            const isMatch = card1.dataset.name === card2.dataset.name;
+
+            // Se for um par, desabilita as cartas; caso contrário, desvira-as
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        /**
+         * Ações quando um par é encontrado: desabilita as cartas e atualiza o placar.
+         */
+        function disableCards() {
+            // Remove os event listeners para que as cartas combinadas não possam ser clicadas novamente
+            flippedCards[0].removeEventListener('click', flipCard);
+            flippedCards[1].removeEventListener('click', flipCard);
+            // Adiciona a classe 'matched' para estilos visuais de cartas combinadas
+            flippedCards[0].classList.add('matched');
+            flippedCards[1].classList.add('matched');
+
+            matchedPairs++; // Incrementa a contagem de pares encontrados
+            correctGuesses++; // Incrementa os acertos
+            updateScore(); // Atualiza o placar na interface
+
+            resetFlippedCards(); // Reseta as cartas viradas e desbloqueia o tabuleiro
+
+            // Verifica se todos os pares foram encontrados para finalizar o jogo
+            if (matchedPairs === cardImages.length) {
+                setTimeout(() => {
+                    // Substituído alert() por uma mensagem customizada
+                    const customAlert = (message, onConfirm) => {
+                        const overlay = document.createElement('div');
+                        overlay.style.cssText = `
+                            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                            background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                            align-items: center; z-index: 9999;
+                        `;
+                        const box = document.createElement('div');
+                        box.style.cssText = `
+                            background-color: white; padding: 25px; border-radius: 10px;
+                            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                            max-width: 300px; width: 90%;
+                        `;
+                        const msg = document.createElement('p');
+                        msg.textContent = message;
+                        msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
+
+                        const okBtn = document.createElement('button');
+                        okBtn.textContent = 'OK';
+                        okBtn.style.cssText = `
+                            padding: 10px 20px; border: none; border-radius: 5px;
+                            background-color: #28a745; color: white;
+                            font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                        `;
+                        okBtn.onmouseover = () => okBtn.style.backgroundColor = '#218838';
+                        okBtn.onmouseout = () => okBtn.style.backgroundColor = '#28a745';
+                        okBtn.onclick = () => { document.body.removeChild(overlay); if (onConfirm) onConfirm(); };
+
+                        box.appendChild(msg);
+                        box.appendChild(okBtn);
+                        overlay.appendChild(box);
+                        document.body.appendChild(overlay);
+                    };
+                    customAlert('Parabéns! Você encontrou todos os pares!', () => {
+                        congratulationsModal.style.display = 'flex'; // Mostra o modal de parabéns
+                        // Adiciona o selo coletado ao localStorage
+                        let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                        if (!collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
+                            collectedSeals.push(SEAL_ID_FOR_THIS_GAME);
+                            localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
+                        }
+                        updatePlayerAvatarStatus(); // Atualiza o avatar
+                    });
+                }, 800); // Pequeno atraso para a animação da carta
+            }
+        }
+
+        /**
+         * Ações quando as cartas não formam um par: desvira as cartas e atualiza o placar.
+         */
+        function unflipCards() {
+            wrongGuesses++; // Incrementa os erros
+            updateScore(); // Atualiza o placar
+            setTimeout(() => {
+                // Remove a classe 'flipped' para virar as cartas de volta
+                flippedCards[0].classList.remove('flipped');
+                flippedCards[1].classList.remove('flipped');
+                resetFlippedCards(); // Reseta as cartas viradas e desbloqueia o tabuleiro
+            }, 1000); // Atraso de 1 segundo para o jogador ver as cartas
+        }
+
+        /**
+         * Reseta o array de cartas viradas e desbloqueia o tabuleiro.
+         */
+        function resetFlippedCards() {
+            flippedCards = [];
+            lockBoard = false;
+        }
+
+        /**
+         * Atualiza a exibição dos contadores de acertos e erros.
+         */
+        function updateScore() {
+            correctCountSpan.textContent = correctGuesses;
+            wrongCountSpan.textContent = wrongGuesses;
+        }
+
+        /**
+         * Reinicia todas as variáveis de estado do jogo.
+         */
+        function resetGameVariables() {
+            flippedCards = [];
+            matchedPairs = 0;
+            correctGuesses = 0;
+            wrongGuesses = 0;
+            lockBoard = false;
+            updateScore(); // Atualiza o placar para zero
+        }
+
+        /**
+         * Inicia o jogo após o usuário fechar o modal de instruções.
+         */
+        function startGame() {
+            createBoard(); // Cria o tabuleiro inicial
+            instructionsModal.style.display = 'none'; // Esconde o modal de instruções
+        }
+
+        /**
+         * Atualiza o status do avatar do jogador com base nos selos coletados.
+         * Se o selo deste jogo foi coletado, adiciona a classe 'unlocked' ao avatar.
+         */
         function updatePlayerAvatarStatus() {
             const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+            const avatarImg = playerAvatarElement.querySelector('img');
             if (collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
-                playerFigure.classList.add('unlocked');
+                // Você pode adicionar um estilo visual aqui se desejar, por exemplo:
+                // avatarImg.style.border = '3px solid gold';
+                avatarImg.classList.add('unlocked'); // Adiciona uma classe para estilizar o avatar como "desbloqueado"
             } else {
-                playerFigure.classList.remove('unlocked');
+                // avatarImg.style.border = '3px solid #3498db'; // Volta ao estilo padrão
+                avatarImg.classList.remove('unlocked');
             }
         }
 
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+        // --- Event Listeners ---
 
-        function createBalloon(type, word) {
-            const balloon = document.createElement('div');
-            balloon.classList.add('balloon', type);
-            balloon.classList.add(balloonColors[getRandomInt(0, balloonColors.length - 1)]);
-            balloon.textContent = word;
-            balloon.id = `balloon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        // Botão para reiniciar o jogo
+        restartGameButton.addEventListener('click', () => {
+            // Substituído confirm() por uma mensagem customizada
+            const customConfirm = (message, onConfirm, onCancel) => {
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background-color: rgba(0,0,0,0.7); display: flex; justify-content: center;
+                    align-items: center; z-index: 9999;
+                `;
+                const box = document.createElement('div');
+                box.style.cssText = `
+                    background-color: white; padding: 25px; border-radius: 10px;
+                    text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    max-width: 350px; width: 90%;
+                `;
+                const msg = document.createElement('p');
+                msg.textContent = message;
+                msg.style.cssText = 'margin-bottom: 20px; font-size: 1.1em; color: #333;';
 
-            gameArea.appendChild(balloon); // Adiciona o balão à área do jogo primeiro
+                const btnContainer = document.createElement('div');
+                btnContainer.style.cssText = 'display: flex; justify-content: center; gap: 15px;';
 
-            // Mede a largura do conteúdo e ajusta o balão
-            const minBalloonWidth = 80;
-            const maxBalloonWidth = 200;
-            const padding = 20;
+                const confirmBtn = document.createElement('button');
+                confirmBtn.textContent = 'Sim';
+                confirmBtn.style.cssText = `
+                    padding: 10px 20px; border: none; border-radius: 5px;
+                    background-color: #dc3545; color: white;
+                    font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                `;
+                confirmBtn.onmouseover = () => confirmBtn.style.backgroundColor = '#c82333';
+                confirmBtn.onmouseout = () => confirmBtn.style.backgroundColor = '#dc3545';
+                confirmBtn.onclick = () => { document.body.removeChild(overlay); onConfirm(); };
 
-            let contentWidth = balloon.scrollWidth;
-            let finalBalloonWidth = Math.max(minBalloonWidth, contentWidth + padding);
-            finalBalloonWidth = Math.min(finalBalloonWidth, maxBalloonWidth);
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = 'Não';
+                cancelBtn.style.cssText = `
+                    padding: 10px 20px; border: none; border-radius: 5px;
+                    background-color: #007bff; color: white;
+                    font-size: 1em; cursor: pointer; transition: background-color 0.3s;
+                `;
+                cancelBtn.onmouseover = () => cancelBtn.style.backgroundColor = '#0056b3';
+                cancelBtn.onmouseout = () => cancelBtn.style.backgroundColor = '#007bff';
+                cancelBtn.onclick = () => { document.body.removeChild(overlay); if (onCancel) onCancel(); };
 
-            balloon.style.width = `${finalBalloonWidth}px`;
-            balloon.style.height = `${finalBalloonWidth}px`; // Mantém circular
+                btnContainer.appendChild(confirmBtn);
+                btnContainer.appendChild(cancelBtn);
+                box.appendChild(msg);
+                box.appendChild(btnContainer);
+                overlay.appendChild(box);
+                document.body.appendChild(overlay);
+            };
 
-            if (contentWidth > finalBalloonWidth - padding) {
-                let newFontSize = parseFloat(getComputedStyle(balloon).fontSize) * ((finalBalloonWidth - padding) / contentWidth);
-                newFontSize = Math.max(newFontSize, 10);
-                balloon.style.fontSize = `${newFontSize / 16}em`;
-            }
-
-            // --- Lógica de Posicionamento e Movimento ---
-            // Garante que a gameArea tenha dimensões válidas antes de posicionar
-            if (gameArea.offsetWidth === 0 || gameArea.offsetHeight === 0) {
-                console.warn("gameArea ainda não tem dimensões válidas. Tentando novamente em breve.");
-                // Remove o balão e tenta criar novamente após um pequeno atraso
-                gameArea.removeChild(balloon);
-                setTimeout(() => createBalloon(type, word), 100);
-                return; // Sai da função atual
-            }
-
-            let x, y;
-            let overlapping;
-            const currentBalloonSize = finalBalloonWidth;
-
-            let attempts = 0;
-            const maxAttempts = 50; // Limite de tentativas para evitar loop infinito em layouts apertados
-
-            do {
-                overlapping = false;
-                x = getRandomInt(0, gameArea.offsetWidth - currentBalloonSize);
-                y = getRandomInt(0, gameArea.offsetHeight - currentBalloonSize);
-
-                const tempRect = { left: x, top: y, right: x + currentBalloonSize, bottom: y + currentBalloonSize };
-
-                const existingBalloons = gameArea.querySelectorAll('.balloon:not(.popped)');
-                for (const existingBalloon of existingBalloons) {
-                    if (existingBalloon.id === balloon.id) continue;
-
-                    const existingRect = existingBalloon.getBoundingClientRect(); // Use getBoundingClientRect para dimensões renderizadas
-
-                    if (!(tempRect.right < existingRect.left ||
-                            tempRect.left > existingRect.right ||
-                            tempRect.bottom < existingRect.top ||
-                            tempRect.top > existingRect.bottom)) {
-                        overlapping = true;
-                        break;
-                    }
-                }
-                attempts++;
-            } while (overlapping && attempts < maxAttempts);
-
-            // Se excedeu as tentativas, ainda adiciona o balão, mas pode haver sobreposição
-            if (attempts >= maxAttempts) {
-                console.warn("Excedido o número máximo de tentativas para posicionar o balão sem sobreposição. Pode haver balões sobrepostos.");
-            }
-
-            balloon.style.left = `${x}px`;
-            balloon.style.top = `${y}px`;
-
-            const speed = getRandomInt(1, 2);
-            let directionX = Math.random() < 0.5 ? 1 : -1;
-            let directionY = Math.random() < 0.5 ? 1 : -1;
-
-            function moveBalloon() {
-                if (balloon.classList.contains('popped')) return;
-
-                let currentX = parseFloat(balloon.style.left);
-                let currentY = parseFloat(balloon.style.top);
-                const actualBalloonWidth = parseFloat(balloon.style.width);
-                const actualBalloonHeight = parseFloat(balloon.style.height);
-
-                if (gameArea.offsetWidth === 0 || gameArea.offsetHeight === 0) { // Safety check during movement
-                    // If gameArea becomes invalid, stop moving this balloon
-                    return;
-                }
-
-                currentX += directionX * speed;
-                currentY += directionY * speed;
-
-                if (currentX + actualBalloonWidth > gameArea.offsetWidth || currentX < 0) {
-                    directionX *= -1;
-                    currentX = Math.max(0, Math.min(currentX, gameArea.offsetWidth - actualBalloonWidth));
-                }
-                if (currentY + actualBalloonHeight > gameArea.offsetHeight || currentY < 0) {
-                    directionY *= -1;
-                    currentY = Math.max(0, Math.min(currentY, gameArea.offsetHeight - actualBalloonHeight));
-                }
-
-                balloon.style.left = `${currentX}px`;
-                balloon.style.top = `${currentY}px`;
-
-                if (gameArea.contains(balloon) && !balloon.classList.contains('popped')) {
-                    requestAnimationFrame(moveBalloon);
-                }
-            }
-            requestAnimationFrame(moveBalloon);
-
-            balloon.addEventListener('click', () => {
-                if (balloon.classList.contains('popped')) return;
-
-                if (type === 'positive') {
-                    balloon.classList.add('popped');
-                    correctScore++;
-                    balloonsPopped++;
-                    correctScoreSpan.textContent = correctScore;
-                    positiveAudio.currentTime = 0;
-                    positiveAudio.play().catch(e => console.error("Erro ao tocar áudio:", e));
-
-                    if (balloonsPopped === totalPositiveBalloons) {
-                        setTimeout(() => {
-                            successOverlay.classList.add('show');
-                            let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
-                            if (!collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
-                                collectedSeals.push(SEAL_ID_FOR_THIS_GAME);
-                                localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
-                            }
-                            updatePlayerAvatarStatus();
-                        }, 500);
-                    }
-                } else {
-                    wrongScore++;
-                    wrongScoreSpan.textContent = wrongScore;
-                    negativeMessage.classList.add('show');
-                    setTimeout(() => {
-                        negativeMessage.classList.remove('show');
-                    }, 2000);
-                }
+            customConfirm('Tem certeza que deseja reiniciar a partida? Seu progresso nesta atividade será perdido.', () => {
+                createBoard(); // Reinicia o tabuleiro
             });
-        }
-
-        function initGame() {
-            gameArea.innerHTML = '<div id="negative-balloon-message">Este não é um bom comportamento!!! Tente novamente.</div>';
-            correctScore = 0;
-            wrongScore = 0;
-            balloonsPopped = 0;
-            correctScoreSpan.textContent = correctScore;
-            wrongScoreSpan.textContent = wrongScore;
-            successOverlay.classList.remove('show');
-            negativeMessage.classList.remove('show');
-
-            // Verifica se a gameArea tem dimensões válidas antes de criar balões
-            if (gameArea.offsetWidth === 0 || gameArea.offsetHeight === 0) {
-                console.warn("gameArea ainda não está pronta. Tentando iniciar o jogo novamente em 200ms...");
-                setTimeout(initGame, 200); // Tenta iniciar novamente após 200ms
-                return;
-            }
-
-            const shuffledPositive = [...positiveWords].sort(() => 0.5 - Math.random());
-            const shuffledNegative = [...negativeWords].sort(() => 0.5 - Math.random());
-
-            for (let i = 0; i < 20; i++) {
-                if (i < totalPositiveBalloons) {
-                    createBalloon('positive', shuffledPositive[i % shuffledPositive.length]);
-                } else {
-                    createBalloon('negative', shuffledNegative[(i - totalPositiveBalloons) % shuffledNegative.length]);
-                }
-            }
-            updatePlayerAvatarStatus();
-        }
-
-        function goToPreviousPage() {
-            window.location.href = `mapa.html?seal_earned=${SEAL_ID_FOR_THIS_GAME}`;
-        }
-
-        goToMapButtonGlobal.addEventListener('click', goToPreviousPage);
-        goToMapButtonOverlay.addEventListener('click', goToPreviousPage);
-        restartButton.addEventListener('click', initGame);
-
-        closeModalButton.addEventListener('click', () => {
-            instructionsModal.classList.add('hidden');
-            setTimeout(initGame, 500); // Aumentado o atraso para dar tempo de layout
         });
 
-        window.onload = () => {
-            instructionsModal.classList.remove('hidden');
-            updatePlayerAvatarStatus();
-        };
+        // Botão para fechar o modal de instruções (o jogo não começa automaticamente)
+        closeInstructionsButton.addEventListener('click', () => {
+            instructionsModal.style.display = 'none';
+        });
 
-        // Adiciona um evento para garantir que o modal não seja clicável por baixo
-        instructionsModal.addEventListener('click', (event) => {
-            if (event.target === instructionsModal) {
-                event.stopPropagation();
-            }
+        // Botão "Começar Jogo!" dentro do modal de instruções
+        startGameButton.addEventListener('click', startGame);
+
+        // Ao carregar a página, exibe o modal de instruções e carrega o avatar
+        window.addEventListener('load', () => {
+            instructionsModal.style.display = 'flex'; // Abre o modal de instruções
+
+            // Tenta carregar a imagem do avatar do jogador do localStorage, se existir.
+            // Se não houver, usa 'HPAC.png' como padrão (na mesma pasta).
+            // A classe 'unlocked' é adicionada/removida pela função updatePlayerAvatarStatus()
+            const avatarImg = playerAvatarElement.querySelector('img');
+            avatarImg.src = 'HPAC.png'; // Define a imagem padrão (ou a que você deseja para este jogo)
+            avatarImg.alt = 'Jogador';
+            avatarImg.onerror = function() {
+                this.src = 'https://placehold.co/120x120/ccc/666?text=Avatar';
+            };
+            updatePlayerAvatarStatus(); // Atualiza o status do avatar com base nos selos coletados
         });
     </script>
 </body>
