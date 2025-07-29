@@ -320,6 +320,32 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
+        /* --- NOVO ESTILO PARA O BOTÃO NO MODAL DE PARABÉNS --- */
+        .congratulations-modal-content .game-controls-button {
+            display: inline-block; /* Faz o link se comportar como um bloco inline */
+            margin-top: 20px; /* Espaçamento acima do botão */
+            padding: 15px 30px; /* Mais padding para parecer um botão maior */
+            background-color: #28a745; /* Verde vibrante */
+            color: white;
+            text-decoration: none; /* Remove sublinhado */
+            border-radius: 10px; /* Cantos mais arredondados */
+            font-size: 1.2em; /* Fonte um pouco maior */
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25); /* Sombra mais pronunciada */
+            border: 2px solid #218838; /* Uma borda sutil para "enquadrar" */
+            text-transform: uppercase; /* Texto em maiúsculas */
+            letter-spacing: 0.05em; /* Espaçamento entre letras */
+        }
+
+        .congratulations-modal-content .game-controls-button:hover {
+            background-color: #218838; /* Verde mais escuro no hover */
+            transform: translateY(-3px); /* Efeito de elevação mais forte */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35); /* Sombra ainda mais forte */
+        }
+        /* --- FIM DO NOVO ESTILO --- */
+
+
         /* Responsividade para telas menores */
         @media (max-width: 768px) {
             header {
@@ -372,6 +398,15 @@
             .return-to-map {
                 margin-top: 25px; /* Ajusta a margem superior em telas menores */
             }
+
+            .modal-content, .congratulations-modal-content {
+                padding: 25px;
+            }
+
+            .congratulations-modal-content .game-controls-button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
         }
 
         @media (max-width: 480px) {
@@ -416,7 +451,7 @@
         </aside>
 
         <main class="game-area" id="gameArea">
-            </main>
+        </main>
 
         <div class="return-to-map">
             <a href="mapa.html?seal_earned=3">Retornar ao Mapa Principal</a>
@@ -431,7 +466,7 @@
             <p>O objetivo é encontrar todos os pares de cartas idênticas. Clique em uma carta para virá-la e depois clique em outra.</p>
             <ul>
                 <li>Se as cartas forem iguais, elas permanecerão viradas e você ganha um acerto.</li>
-                <li>Se forem diferentes, elas se virarão novamente após um breve momento e você não marcará ponto!.</li>
+                <li>Se forem diferentes, elas se virarão novamente após um breve momento e você não marcará ponto!</li>
             </ul>
             <p>Seu progresso será registrado nos contadores de acertos e erros. Ao encontrar todos os 10 pares, você ganhará um selo da conquista!</p>
             <button id="startGameButton" class="game-controls-button">Começar Jogo!</button>
@@ -631,6 +666,13 @@
                     };
                     customAlert('Parabéns! Você encontrou todos os pares!', () => {
                         congratulationsModal.style.display = 'flex'; // Mostra o modal de parabéns
+                        // Adiciona o selo coletado ao localStorage
+                        let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                        if (!collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
+                            collectedSeals.push(SEAL_ID_FOR_THIS_GAME);
+                            localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
+                        }
+                        updatePlayerAvatarStatus(); // Atualiza o avatar
                     });
                 }, 800); // Pequeno atraso para a animação da carta
             }
@@ -694,8 +736,11 @@
             const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
             const avatarImg = playerAvatarElement.querySelector('img');
             if (collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
+                // Você pode adicionar um estilo visual aqui se desejar, por exemplo:
+                // avatarImg.style.border = '3px solid gold';
                 avatarImg.classList.add('unlocked'); // Adiciona uma classe para estilizar o avatar como "desbloqueado"
             } else {
+                // avatarImg.style.border = '3px solid #3498db'; // Volta ao estilo padrão
                 avatarImg.classList.remove('unlocked');
             }
         }
