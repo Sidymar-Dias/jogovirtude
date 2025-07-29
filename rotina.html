@@ -1,602 +1,544 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rotina Diária - Jogo Interativo</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- Estilos Globais e Reset Básico --- */
+        /* Estilos Globais */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 10px; /* Mais redução no padding global */
             min-height: 100vh;
-            box-sizing: border-box;
-            overflow-x: hidden;
+            color: #333;
+            overflow-x: hidden; /* Evita rolagem horizontal */
         }
 
-        /* --- Cabeçalho --- */
-        .header {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between; /* Espaçamento entre os itens */
-            align-items: center; /* Centraliza verticalmente */
-            padding: 8px 15px;
+        .header, .footer {
             background-color: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-sizing: border-box;
-            position: relative;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
         }
 
         .header-left, .header-right {
             display: flex;
             align-items: center;
-            flex-shrink: 0; /* Impede que encolham */
         }
 
-        .logo, .emblema {
-            height: 55px;
-            margin: 0 5px; /* Ajuste para menor margem entre os logos e a borda */
-            object-fit: contain;
+        .emblema {
+            height: 60px;
+            margin-right: 15px;
         }
 
-        /* Título do jogo agora dentro do header */
+        .logo {
+            height: 60px;
+            margin-left: 15px;
+        }
+
         .activity-title {
-            font-size: 2em;
-            color: #333;
+            color: #007bff;
+            font-size: 2.2em;
+            margin: 0 auto; /* Centraliza o título */
             text-align: center;
-            flex-grow: 1; /* Permite que o título ocupe o espaço restante e se centralize */
-            margin: 0; /* Remove margens extras para ajudar na centralização */
-            font-weight: bold;
+            flex-grow: 1; /* Permite que o título ocupe o espaço disponível */
         }
 
-        /* --- Container Principal do Jogo --- */
         .main-container {
             display: flex;
-            width: 100%;
-            max-width: 1200px;
-            gap: 15px; /* Mais redução no gap */
-            margin-bottom: 15px;
-            flex-grow: 1;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
             box-sizing: border-box;
-            align-items: flex-start;
+            flex-wrap: wrap; /* Permite que os painéis quebrem em telas pequenas */
+            justify-content: center; /* Centraliza os itens quando quebram */
         }
 
-        /* --- Painel Lateral Esquerdo --- */
         .side-panel-left {
-            width: 240px;
-            max-width: 100%;
             background-color: #ffffff;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            flex-shrink: 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-sizing: border-box;
+            gap: 20px;
+            flex: 0 0 250px; /* Largura fixa para o painel lateral */
+            max-width: 100%; /* Garante que não exceda em telas pequenas */
         }
 
         .player-dashboard {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            gap: 10px;
-        }
-
-        .player-info {
             text-align: center;
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .player-image {
-            width: 90px;
-            height: 90px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #007bff;
-            margin-bottom: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            transition: all 0.4s ease;
+            border: 4px solid #ddd;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
 
         .player-image.unlocked {
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
-            transform: scale(1.05);
+            border-color: gold;
+            box-shadow: 0 0 15px gold, 0 0 20px rgba(255,215,0,0.5);
+            animation: pulse-border 1.5s infinite alternate;
         }
 
-        .restart-button {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 7px 12px;
-            border-radius: 6px;
-            font-size: 0.85em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-top: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            width: auto;
-        }
-
-        .restart-button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-
-        .score-counter {
-            text-align: center;
-            font-size: 1em;
-            color: #333;
-            background-color: #f9f9f9;
-            padding: 12px;
-            border-radius: 8px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-            width: 100%;
-            box-sizing: border-box;
+        @keyframes pulse-border {
+            from { border-color: gold; box-shadow: 0 0 15px gold; }
+            to { border-color: #ffd700; box-shadow: 0 0 25px #ffd700, 0 0 30px rgba(255,215,0,0.7); }
         }
 
         .score-counter p {
-            margin: 5px 0;
-            font-size: 0.95em;
+            font-size: 1.2em;
+            margin: 8px 0;
+            font-weight: bold;
         }
 
         .score-counter .correct {
             color: #28a745;
-            font-weight: bold;
-            font-size: 1.05em;
         }
 
         .score-counter .wrong {
             color: #dc3545;
-            font-weight: bold;
-            font-size: 1.05em;
         }
 
-        /* --- Área do Jogo Principal --- */
+        .restart-button, .back-to-map-button, .modal-button, .return-button-in-message {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none; /* Para links */
+            display: inline-block; /* Para links */
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .restart-button:hover, .back-to-map-button:hover, .modal-button:hover, .return-button-in-message:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
         .game-area {
-            flex-grow: 1;
             background-color: #ffffff;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            flex: 1;
+            min-width: 300px; /* Garante um tamanho mínimo */
+            box-sizing: border-box;
+            text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
-            min-height: 290px;
-            box-sizing: border-box;
-            overflow: hidden;
+            justify-content: flex-start; /* Alinha o conteúdo ao topo */
         }
 
-        .game-area h2 {
-            font-size: 1.5em;
-            color: #444;
-            margin-bottom: 15px;
-            text-align: center;
+        .game-area h2, .timeline-wrapper h2 {
+            color: #007bff;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
 
         .image-gallery-random {
-            width: 100%;
-            min-height: 140px;
-            margin-bottom: 15px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: center;
             gap: 10px;
-            padding: 0px;
-            box-sizing: border-box;
-        }
-
-        .image-gallery-random img {
-            width: calc(100% / 7 - 8px);
-            max-width: 65px;
-            height: 65px;
-            object-fit: cover;
+            margin-bottom: 20px;
+            width: 100%; /* Ocupa a largura total disponível */
+            max-height: 250px; /* Limita a altura da galeria */
+            overflow-y: auto; /* Adiciona scroll se houver muitas imagens */
+            padding: 5px;
+            border: 1px dashed #ccc;
             border-radius: 8px;
-            border: 2px solid #eee;
-            transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .image-gallery-random img:hover {
+        /* Estilos para o container de item na galeria */
+        .image-gallery-random .gallery-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Alinha o conteúdo ao topo do item */
+            text-align: center;
+            width: calc(100% / 7 - 8px); /* Mantém a largura original da imagem */
+            max-width: 65px; /* Mantém a largura máxima original da imagem */
+            border-radius: 8px; /* Mantém o border-radius */
+            border: 2px solid #eee; /* Mantém a borda original */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Mantém a sombra original */
+            transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            padding-bottom: 5px; /* Adiciona um pequeno padding abaixo do nome */
+            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura */
+            height: auto; /* Permite que a altura se ajuste ao conteúdo */
+        }
+
+        .image-gallery-random .gallery-item:hover {
             transform: scale(1.08);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             border-color: #007bff;
         }
 
-        .image-gallery-random img.hidden {
+        .image-gallery-random .gallery-item img {
+            width: 100%; /* A imagem preenche o container */
+            height: 65px; /* Altura fixa para a imagem */
+            object-fit: cover;
+            border-radius: 6px 6px 0 0; /* Apenas as bordas superiores arredondadas */
+            border: none; /* Remove a borda da imagem, agora está no container */
+            margin-bottom: 3px; /* Espaço entre a imagem e o nome */
+        }
+
+        .image-gallery-random .gallery-item.hidden {
             display: none;
             opacity: 0;
             pointer-events: none;
         }
 
+        .image-gallery-random .image-name {
+            font-size: 0.7em; /* Tamanho da fonte para os nomes */
+            color: #555;
+            margin: 0;
+            padding: 0 2px; /* Pequeno padding horizontal para o texto */
+            word-break: break-word; /* Quebra palavras longas */
+            max-height: 2.2em; /* Limita a altura para 2 linhas de texto */
+            overflow: hidden; /* Esconde o excesso de texto */
+            line-height: 1.1em;
+        }
+
         .message-area {
-            margin-top: 15px;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-weight: bold;
-            text-align: center;
-            min-height: 45px;
-            width: 100%;
             visibility: hidden;
             opacity: 0;
-            transition: visibility 0s, opacity 0.5s ease;
-            position: relative;
-            z-index: 10;
-        }
-        .message-area.visible { visibility: visible; opacity: 1; }
-        .message-area .congratulations-message { font-size: 1.3em; margin-bottom: 8px; }
-        .message-area .seal-image { width: 100px; height: 100px; animation: bounce 0.9s infinite alternate; object-fit: contain; }
-        @keyframes bounce { from { transform: translateY(0px); } to { transform: translateY(-8px); } }
-
-        /* Novo estilo para o botão de retorno que aparece na message-area */
-        .message-area .return-button-in-message {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: bold;
-            margin-top: 10px; /* Espaço acima do botão */
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .message-area .return-button-in-message:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-
-        /* --- Novo Quadro para a Linha do Tempo --- */
-        .timeline-wrapper {
-            width: 100%;
-            max-width: 1200px;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #e9f7ef;
+            color: #28a745;
+            padding: 10px 15px;
+            border-radius: 5px;
             margin-top: 15px;
-            box-sizing: border-box;
+            font-weight: bold;
+            transition: visibility 0.5s, opacity 0.5s;
+            text-align: center;
+            position: relative; /* Para o selo */
+            z-index: 1; /* Garante que esteja acima de outros elementos durante a transição */
+            width: 90%; /* Ajusta largura */
+            max-width: 400px;
+            display: flex; /* Para centralizar o conteúdo */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px; /* Altura mínima para a mensagem */
+        }
+
+        .message-area .seal-image {
+            width: 80px;
+            height: 80px;
+            margin-top: 10px;
+            animation: bounce 0.8s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .timeline-wrapper {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+            overflow-x: auto; /* Permite rolagem horizontal se a linha do tempo for muito longa */
+            white-space: nowrap; /* Impede que os itens da timeline quebrem linha */
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .timeline-wrapper h2 {
-            font-size: 1.5em;
-            color: #444;
-            margin-bottom: 12px;
-            text-align: center;
         }
 
         .timeline-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 0;
-            border-top: none;
-            margin-top: 0;
+            width: 100%; /* Ocupa a largura total do wrapper */
+            overflow-x: auto; /* Adiciona rolagem se necessário */
+            padding-bottom: 10px; /* Para evitar corte da sombra do scrollbar */
         }
 
         .timeline {
             display: flex;
-            gap: 8px;
-            padding: 8px 0;
-            overflow-x: auto;
-            justify-content: flex-start;
-            align-items: center;
-            width: 100%;
-            scrollbar-width: thin;
-            scrollbar-color: #888 #f1f1f1;
+            gap: 10px; /* Espaçamento entre os slots */
+            padding: 10px 0; /* Padding interno */
+            align-items: flex-end; /* Alinha os slots pela base */
+            min-width: fit-content; /* Garante que a timeline não se comprima */
         }
 
-        .timeline::-webkit-scrollbar { height: 5px; }
-        .timeline::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .timeline::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
-        .timeline::-webkit-scrollbar-thumb:hover { background: #555; }
-
         .timeline-item {
+            position: relative; /* Para posicionar o nome */
+            width: 85px; /* Largura padrão dos slots */
+            height: 95px; /* Altura para acomodar imagem e nome */
+            border: 2px dashed #ccc;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            cursor: default;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            position: relative;
-            flex-shrink: 0;
-            width: 80px;
-            height: 80px;
-            border: 2px dashed #bbb;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            overflow: hidden;
+            justify-content: center; /* Centraliza conteúdo antes de preencher */
+            flex-shrink: 0; /* Impede que os itens encolham */
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            box-sizing: border-box; /* Inclui padding e border na largura/altura */
         }
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: -12px;
-            width: 8px;
-            height: 8px;
-            background-color: #ccc;
-            border-radius: 50%;
-            z-index: 1;
-            transition: background-color 0.3s ease;
+        .timeline-item.active {
+            border-color: #007bff;
+            background-color: #e6f2ff;
         }
 
-        .timeline-item.active { border-color: #28a745; box-shadow: 0 0 8px rgba(40, 167, 69, 0.6); background-color: #e6ffe6; }
-        .timeline-item.active::before { background-color: #28a745; }
-        .timeline-item.completed { border-color: #007bff; background-color: #e6f7ff; box-shadow: none; }
-        .timeline-item.completed::before { background-color: #007bff; }
+        .timeline-item.completed {
+            border-color: #28a745;
+            background-color: #f0fdf4;
+        }
+
         .timeline-item .slot-image {
-            width: 100%; height: 100%; object-fit: cover;
-            border-radius: 6px;
-            border: none; opacity: 0;
-            transform: scale(0.8); transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .timeline-item.completed .slot-image { opacity: 1; transform: scale(1); }
-
-        /* Estilos para o botão de retorno ao mapa abaixo da timeline */
-        .timeline-navigation {
             width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: center; /* Centraliza o botão */
-            margin-top: 10px; /* Margem acima do botão */
+            height: 70%; /* Imagem ocupa menos espaço para o nome */
+            object-fit: cover;
+            border-radius: 6px;
+            border: none;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        .back-to-map-button {
-            display: inline-block;
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-weight: bold;
+        .timeline-item .slot-name {
+            position: absolute;
+            bottom: 3px; /* Posição do nome abaixo da imagem */
+            left: 0;
+            right: 0;
+            font-size: 0.65em; /* Tamanho da fonte para o nome na timeline */
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0 2px;
+            word-break: break-word;
+            line-height: 1.1em;
+            max-height: 2.2em;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente para legibilidade */
+            border-radius: 0 0 8px 8px; /* Apenas as bordas inferiores arredondadas */
         }
 
-        .back-to-map-button:hover {
-            background-color: #5a6268;
-            transform: translateY(-2px);
+        .timeline-navigation {
+            margin-top: 20px;
         }
 
-
-        .footer {
-            width: 100%; text-align: center; padding: 8px 0;
-            background-color: #ffffff; box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 15px;
-            border-top-left-radius: 10px; border-top-right-radius: 10px;
-        }
-
-
-        /* --- Estilos do Modal de Instruções (existente) --- */
-        #instructionsModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7); display: none;
-            justify-content: center; align-items: center; z-index: 1000;
-        }
-        #instructionsModal .modal-content {
-            background: #fff; padding: 20px 25px;
-            border-radius: 15px;
-            text-align: center; max-width: 400px;
-            width: 90%;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3); animation: fadeIn 0.4s ease-out;
-        }
-        #instructionsModal .modal-content h2 { font-size: 1.6em; margin-bottom: 12px; }
-        #instructionsModal .modal-content p { font-size: 0.95em; line-height: 1.4; margin-bottom: 18px; }
-        #instructionsModal .modal-content button {
-            background-color: #28a745; color: white; padding: 8px 20px;
-            border: none; border-radius: 8px; font-size: 1em;
-            font-weight: bold;
-            cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        #instructionsModal .modal-content button:hover { background-color: #218838; transform: scale(1.05); }
-
-        /* --- NOVO: Estilos do Modal de Sucesso --- */
-        #successModal {
+        /* Modals */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1001;
-            animation: fadeIn 0.3s ease-out;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
         }
 
-        #successModal .modal-content {
-            background-image: linear-gradient(135deg, #e6ffe6 0%, #d4f7d4 100%);
+        .modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 10px;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             max-width: 500px;
             width: 90%;
-            box-shadow: 0 10px 30px rgba(0, 128, 0, 0.4);
             transform: scale(0.9);
+            transition: transform 0.3s ease-out;
             animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
         }
 
         @keyframes popIn {
-            from { transform: scale(0.7); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        #successModal h2 {
-            font-size: 2.2em;
-            color: #28a745;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        #successModal .modal-content {
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
         }
 
-        #successModal p {
+        .modal-content h2 {
+            color: #007bff;
+            margin-top: 0;
+            font-size: 2em;
+        }
+
+        .modal-content p {
             font-size: 1.1em;
-            color: #555;
             line-height: 1.6;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        #successModal .seal-image {
-            width: 180px; /* Tamanho do selo */
-            height: 180px;
-            object-fit: contain;
-            margin-bottom: 30px; /* Mais espaço abaixo do selo */
-            animation: bounce 1.2s infinite alternate ease-in-out; /* Animação de bounce mais suave */
-        }
-
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0); }
-        }
-
-        #successModal .modal-button {
-            display: inline-block;
-            background-color: #007bff;
+        .modal-content button {
+            background-color: #28a745;
             color: white;
-            padding: 12px 30px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        #successModal .modal-button:hover {
-            background-color: #0056b3;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+        .modal-content button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
         }
 
-        /* --- Media Queries para Responsividade --- */
+        .modal-content .seal-image {
+            width: 150px;
+            height: 150px;
+            margin: 20px 0;
+            animation: bounce 0.8s ease-out;
+        }
+
+        #successModal {
+            display: none; /* Inicia oculto */
+        }
+
+        /* Responsividade */
         @media (max-width: 992px) {
-            body { padding: 8px; }
-            .header { margin-bottom: 12px; padding: 6px 10px; }
-            .activity-title { font-size: 1.8em; margin: 0; }
-            .logo, .emblema { height: 45px; margin: 0 8px; }
-
-            .main-container { flex-direction: column; align-items: center; gap: 12px; }
-            .side-panel-left { width: 100%; max-width: 450px; order: 2; padding: 12px; }
-            .game-area { width: 100%; order: 1; min-height: 280px; padding: 12px; }
-            .game-area h2 { font-size: 1.4em; margin-bottom: 12px; }
-
-            .image-gallery-random { min-height: 130px; margin-bottom: 12px; gap: 8px; }
-            .image-gallery-random img {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header-left, .header-right {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+            .activity-title {
+                font-size: 1.8em;
+                margin-top: 10px;
+            }
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+                padding: 15px;
+            }
+            .side-panel-left {
+                flex: none;
+                width: 90%;
+                max-width: 300px; /* Limita a largura em telas menores */
+            }
+            .game-area {
+                width: 100%;
+                min-width: auto;
+                padding: 15px;
+            }
+            .image-gallery-random .gallery-item {
                 width: calc(100% / 5 - 8px);
                 max-width: 70px;
+            }
+            .image-gallery-random .gallery-item img {
                 height: 70px;
             }
-
-            .message-area .return-button-in-message {
-                padding: 6px 12px;
-                font-size: 0.8em;
+            .image-gallery-random .image-name {
+                font-size: 0.65em;
             }
 
-            .timeline-wrapper { margin-top: 12px; padding: 12px; }
-            .timeline-wrapper h2 { font-size: 1.4em; margin-bottom: 10px; }
-            .timeline { gap: 8px; padding: 8px 0; }
-            .timeline-item { width: 75px; height: 75px; }
-            .timeline-item::before { top: -10px; width: 7px; height: 7px; }
-            .timeline-navigation { margin-top: 8px; } /* Ajuste para o botão abaixo da timeline */
-            .back-to-map-button { padding: 8px 18px; font-size: 0.9em; }
-
-
-            .player-image { width: 80px; height: 80px; }
-            .score-counter { padding: 10px; font-size: 0.9em; }
-            .restart-button { padding: 6px 10px; font-size: 0.8em; }
-            .message-area { padding: 10px; min-height: 40px; margin-top: 12px; }
-            .message-area .congratulations-message { font-size: 1.2em; margin-bottom: 5px; }
-            .message-area .seal-image { width: 90px; height: 90px; }
-            .footer { padding: 6px 0; margin-top: 12px; }
-
-
-            /* Ajustes para o Modal de Sucesso em telas menores */
-            #successModal .modal-content {
-                padding: 20px;
-                border-radius: 15px;
+            .timeline-item {
+                width: 80px;
+                height: 90px;
             }
-            #successModal h2 { font-size: 1.8em; }
-            #successModal p { font-size: 1em; margin-bottom: 20px; }
-            #successModal .seal-image { width: 150px; height: 150px; margin-bottom: 25px; }
-            #successModal .modal-button { padding: 10px 25px; font-size: 1em; }
+            .timeline-item .slot-name {
+                font-size: 0.6em;
+            }
+
+            .timeline-wrapper {
+                margin: 15px;
+                padding: 15px;
+            }
         }
 
         @media (max-width: 576px) {
-            body { padding: 5px; }
-            .header { margin-bottom: 10px; padding: 5px; }
-            .activity-title { font-size: 1.3em; margin: 0; }
-            .logo, .emblema { height: 35px; margin: 0 5px; }
-
-            .main-container { gap: 10px; }
-            .side-panel-left { padding: 10px; }
-            .game-area { min-height: 250px; padding: 10px; }
-            .game-area h2 { font-size: 1.2em; margin-bottom: 10px; }
-
-            .image-gallery-random { min-height: 110px; margin-bottom: 10px; gap: 5px; }
-            .image-gallery-random img {
+            .emblema, .logo {
+                height: 50px;
+            }
+            .activity-title {
+                font-size: 1.5em;
+            }
+            .player-image {
+                width: 100px;
+                height: 100px;
+            }
+            .score-counter p {
+                font-size: 1em;
+            }
+            .restart-button, .back-to-map-button, .modal-content button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .image-gallery-random {
+                max-height: 200px; /* Reduz altura da galeria */
+            }
+            .image-gallery-random .gallery-item {
                 width: calc(100% / 4 - 5px);
                 max-width: 55px;
+            }
+            .image-gallery-random .gallery-item img {
                 height: 55px;
             }
-
-            .message-area .return-button-in-message {
-                padding: 5px 10px;
-                font-size: 0.75em;
+            .image-gallery-random .image-name {
+                font-size: 0.6em;
             }
 
-            .timeline-wrapper { margin-top: 10px; padding: 10px; }
-            .timeline-wrapper h2 { font-size: 1.2em; margin-bottom: 8px; }
-            .timeline { gap: 5px; padding: 5px 0; }
-            .timeline-item { width: 60px; height: 60px; }
-            .timeline-item::before { top: -8px; width: 6px; height: 6px; }
-            .timeline-navigation { margin-top: 5px; } /* Ajuste para o botão abaixo da timeline */
-            .back-to-map-button { padding: 6px 12px; font-size: 0.8em; }
-
-
-            .player-image { width: 70px; height: 70px; }
-            .score-counter { padding: 8px; font-size: 0.8em; }
-            .restart-button { padding: 5px 8px; font-size: 0.75em; }
-            .message-area { padding: 8px; min-height: 35px; margin-top: 10px; }
-            .message-area .congratulations-message { font-size: 1em; margin-bottom: 3px; }
-            .message-area .seal-image { width: 80px; height: 80px; }
-            .footer { padding: 5px 0; margin-top: 10px; }
-
-
-            /* Mais ajustes para o Modal de Sucesso em telas pequenas */
-            #successModal .modal-content {
-                padding: 15px;
-                border-radius: 12px;
+            .timeline-item {
+                width: 65px;
+                height: 75px;
             }
-            #successModal h2 { font-size: 1.5em; }
-            #successModal p { font-size: 0.9em; margin-bottom: 15px; }
-            #successModal .seal-image { width: 120px; height: 120px; margin-bottom: 20px; }
-            #successModal .modal-button { padding: 8px 20px; font-size: 0.9em; }
+            .timeline-item .slot-name {
+                font-size: 0.55em;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-content h2 {
+                font-size: 1.8em;
+            }
+            .modal-content p {
+                font-size: 1em;
+            }
+            .modal-content .seal-image {
+                width: 100px;
+                height: 100px;
+            }
         }
     </style>
 </head>
@@ -604,7 +546,7 @@
     <div class="header">
         <div class="header-left">
             <img src="Capa.png" alt="Emblema" class="emblema">
-            </div>
+        </div>
         <h1 class="activity-title">Rotina Diária</h1>
         <div class="header-right">
             <img src="logo.png" alt="Logo" class="logo">
@@ -645,7 +587,7 @@
     </div>
 
     <div class="footer">
-        </div>
+    </div>
 
     <div id="instructionsModal" class="modal-overlay">
         <div class="modal-content">
@@ -655,7 +597,7 @@
         </div>
     </div>
 
-    <div id="successModal">
+    <div id="successModal" class="modal-overlay">
         <div class="modal-content">
             <h2>Parabéns!</h2>
             <p>Você concluiu a atividade ROTINA com êxito e desbloqueou um novo selo!</p>
@@ -669,14 +611,22 @@
         // Define o ID do selo para este jogo
         const SEAL_ID_FOR_THIS_GAME = '1'; // Para o jogo da Rotina Diária
 
+        // CORREÇÃO: Verifique a sintaxe das strings aqui. As aspas devem fechar corretamente.
         const actions = [
-            { name: 'Acordar', image: "acordar.png" }, { name: 'Escovar dentes cedo', image: 'dentes.png' },
-            { name: 'Trocar de roupa', image: 'trocaroupa.png' }, { name: 'Tomar café', image: 'café.png' },
-            { name: 'Ir à escola', image: 'ir_escola.png' }, { name: 'Estudar (1)', image: 'estudar.png' },
-            { name: 'Almoçar na escola', image: 'almoço.png' }, { name: 'Estudar (2)', image: 'estudar.png' },
-            { name: 'Voltar da escola', image: 'volta_escola.png' }, { name: 'Tomar banho', image: 'banho.png' },
-            { name: 'Jantar', image: 'janta.png' }, { name: 'Relaxar', image: 'relaxar.png' },
-            { name: 'Escovar dentes para dormir', image: 'escova_dente2.png' }, { name: 'Dormir', image: 'dormir.png' }
+            { name: 'Acordar', image: "acordar.png" },
+            { name: 'Escovar dentes cedo', image: 'dentes.png' },
+            { name: 'Trocar de roupa', image: 'trocaroupa.png' },
+            { name: 'Tomar café', image: 'café.png' },
+            { name: 'Ir à escola', image: 'ir_escola.png' },
+            { name: 'Estudar (1)', image: 'estudar.png' },
+            { name: 'Almoçar na escola', image: 'almoço.png' },
+            { name: 'Estudar (2)', image: 'estudar.png' },
+            { name: 'Voltar da escola', image: 'volta_escola.png' },
+            { name: 'Tomar banho', image: 'banho.png' },
+            { name: 'Jantar', image: 'janta.png' },
+            { name: 'Relaxar', image: 'relaxar.png' },
+            { name: 'Escovar dentes para dormir', image: 'escova_dente2.png' },
+            { name: 'Dormir', image: 'dormir.png' }
         ];
 
         const timeline = document.getElementById('timeline');
@@ -693,10 +643,10 @@
 
         let currentActionIndex = 0, correctCount = 0, wrongCount = 0;
 
-        function showInstructionsModal() { instructionsModal.style.display = 'flex'; }
-        function hideInstructionsModal() { instructionsModal.style.display = 'none'; }
-        function showSuccessModal() { successModal.style.display = 'flex'; }
-        function hideSuccessModal() { successModal.style.display = 'none'; }
+        function showInstructionsModal() { instructionsModal.style.display = 'flex'; instructionsModal.classList.add('visible'); }
+        function hideInstructionsModal() { instructionsModal.style.display = 'none'; instructionsModal.classList.remove('visible'); }
+        function showSuccessModal() { successModal.style.display = 'flex'; successModal.classList.add('visible'); }
+        function hideSuccessModal() { successModal.style.display = 'none'; successModal.classList.remove('visible'); }
 
         /**
          * Atualiza o status visual do jogador (se o selo foi conquistado).
@@ -755,34 +705,61 @@
             imageGalleryRandom.innerHTML = '';
             const shuffledActions = [...actions].sort(() => 0.5 - Math.random());
             shuffledActions.forEach(action => {
+                const itemContainer = document.createElement('div'); // Cria um container para imagem e texto
+                itemContainer.className = 'gallery-item'; // Adicione uma classe para estilização
+
                 const img = document.createElement('img');
                 img.src = action.image;
                 img.alt = img.title = action.name;
-                img.dataset.actionName = action.name;
+                img.dataset.actionName = action.name; // Usar o nome da ação para o dataset
                 img.addEventListener('click', handleImageClick);
-                imageGalleryRandom.appendChild(img);
+
+                const nameText = document.createElement('p'); // Cria um parágrafo para o nome
+                nameText.textContent = action.name;
+                nameText.className = 'image-name'; // Adicione uma classe para estilização
+
+                itemContainer.appendChild(img);
+                itemContainer.appendChild(nameText);
+                imageGalleryRandom.appendChild(itemContainer); // Adiciona o container à galeria
             });
         }
 
         function handleImageClick(event) {
-            const clickedImage = event.target;
-            const clickedActionName = clickedImage.dataset.actionName;
-            if (currentActionIndex >= actions.length || clickedImage.classList.contains('hidden')) return;
+            // Verifica se o clique foi na imagem ou no texto dentro do item da galeria
+            const clickedElement = event.target;
+            // Percorre para cima no DOM até encontrar o '.gallery-item' ou a própria imagem
+            const clickedItemContainer = clickedElement.closest('.gallery-item') || clickedElement;
+
+            // Se o elemento clicado é a imagem, seu data-actionName está nela.
+            // Se o elemento clicado é o texto, precisamos pegar o data-actionName da imagem dentro do seu pai.
+            const clickedActionName = clickedElement.dataset.actionName || clickedItemContainer.querySelector('img')?.dataset.actionName;
+
+            if (!clickedActionName || currentActionIndex >= actions.length || clickedItemContainer.classList.contains('hidden')) return;
+
+
             const expectedActionName = actions[currentActionIndex].name;
+
             if (clickedActionName === expectedActionName) {
                 correctCount++;
                 updateScore();
                 displayMessage(`Boa! "${expectedActionName}" é a próxima ação!`, 'correct');
-                clickedImage.classList.add('hidden');
+                clickedItemContainer.classList.add('hidden'); // Esconde o container inteiro
                 const currentTimelineSlot = timeline.children[currentActionIndex];
                 if (currentTimelineSlot) {
                     currentTimelineSlot.classList.remove('active');
                     currentTimelineSlot.classList.add('completed');
                     let slotImage = document.createElement('img');
                     slotImage.className = 'slot-image';
-                    slotImage.src = clickedImage.src;
-                    slotImage.alt = clickedImage.alt;
+                    // Usar a imagem do itemContainer clicado para garantir que seja a correta
+                    slotImage.src = clickedItemContainer.querySelector('img').src;
+                    slotImage.alt = clickedItemContainer.querySelector('img').alt;
                     currentTimelineSlot.appendChild(slotImage);
+
+                    const slotName = document.createElement('p'); // Adiciona um parágrafo para o nome na timeline
+                    slotName.textContent = expectedActionName; // O nome da ação esperada
+                    slotName.className = 'slot-name'; // Adicione uma classe para estilização
+                    currentTimelineSlot.appendChild(slotName);
+
                     setTimeout(() => slotImage.style.cssText = `opacity: 1; transform: scale(1);`, 50);
                 }
                 currentActionIndex++;
@@ -801,10 +778,6 @@
         function gameComplete() {
             // Remove a mensagem de feedback temporária
             messageArea.style.cssText = `visibility: hidden; opacity: 0; z-index: 1;`;
-
-            // Não é mais necessário salvar aqui, o redirecionamento com o parâmetro fará isso no mapa.html
-            // localStorage.setItem('rotinaDiariaConcluida', 'true');
-            // localStorage.setItem('seloRotinaDiaria', 'HESP.png');
 
             // Atualiza o status do jogador para mostrar o selo no avatar
             updatePlayerSealStatus();
@@ -831,11 +804,7 @@
         }
 
         function resetGameCompletely() {
-            // Não remove mais 'rotinaDiariaConcluida' ou 'seloRotinaDiaria' aqui,
-            // pois o controle de selos é centralizado no mapa.html via 'collectedSeals'.
-            // Para "resetar" o selo, o usuário teria que reiniciar o jogo principal no mapa.html.
             setupNewRound();
-            // O updatePlayerSealStatus() é chamado na inicialização, então ele pegará o estado atual.
         }
 
         restartGameButton.addEventListener('click', resetGameCompletely);
