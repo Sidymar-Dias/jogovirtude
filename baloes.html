@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
     <style>
-        /* CSS Básico - Sem alterações críticas aqui */
+        /* Estilos básicos para o corpo da página */
         body {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
@@ -17,12 +17,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            /* `overflow-y`, `touch-action` e `pointer-events` serão gerenciados pelo JavaScript */
-            -webkit-overflow-scrolling: touch; /* Melhora a rolagem em iOS */
-            touch-action: auto; /* Padrão, será alterado via JS */
-            pointer-events: auto; /* Padrão, será alterado via JS */
+            min-height: 100vh; /* Garante que o body ocupa a altura total da viewport */
+            overflow-y: auto;
         }
+
+        /* Cabeçalho do jogo */
         .header {
             width: 100%;
             display: flex;
@@ -32,13 +31,15 @@
             box-sizing: border-box;
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex-shrink: 0;
+            flex-shrink: 0; /* Impede que o header encolha */
         }
+
         .header .logo, .header .school-emblem {
             width: 70px;
             height: 70px;
             object-fit: contain;
         }
+
         .game-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 2em;
@@ -46,22 +47,27 @@
             text-align: center;
             margin: 15px 0 5px 0;
         }
+
         .game-instructions {
             font-size: 1em;
             color: #666;
             text-align: center;
-            margin-bottom: 10px;
-            flex-shrink: 0;
+            margin-bottom: 10px; /* Reduzida para otimizar espaço */
+            flex-shrink: 0; /* Impede que as instruções encolham */
         }
+
+        /* Contêiner principal do jogo */
         .main-game-area-wrapper {
             display: flex;
             width: 90%;
             max-width: 1200px;
-            flex-grow: 1;
-            margin-bottom: 10px;
+            flex-grow: 1; /* Permite que este contêiner ocupe o espaço disponível */
+            margin-bottom: 10px; /* Reduzida para otimizar espaço */
             box-sizing: border-box;
             gap: 20px;
         }
+
+        /* Área do jogador e contador */
         .player-sidebar {
             display: flex;
             flex-direction: column;
@@ -75,6 +81,7 @@
             width: 150px;
             box-sizing: border-box;
         }
+
         .player-figure {
             width: 100px;
             height: 100px;
@@ -88,18 +95,20 @@
             font-weight: bold;
             color: white;
             overflow: hidden;
-            border: 3px solid #007bff;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            border: 3px solid #007bff; /* Borda azul para o avatar */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição para o efeito de desbloqueio */
         }
         .player-figure img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .player-figure.unlocked {
-            border-color: #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            border-color: #ffd700; /* Cor dourada para selo desbloqueado */
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7); /* Sombra dourada */
         }
+
         .score-board {
             background-color: #fff;
             padding: 10px;
@@ -111,9 +120,12 @@
             text-align: center;
             margin-bottom: 15px;
         }
+
         .score-board p {
             margin: 5px 0;
         }
+
+        /* Botão de Reiniciar */
         #restart-button {
             padding: 10px 15px;
             background-color: #28a745;
@@ -126,9 +138,12 @@
             margin-bottom: 20px;
             transition: background-color 0.2s ease;
         }
+
         #restart-button:hover {
             background-color: #218838;
         }
+
+        /* Contêiner principal do jogo (onde os balões se movem) */
         .game-container {
             background-color: #e0f7fa;
             border: 2px solid #00bcd4;
@@ -136,9 +151,11 @@
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-            flex-grow: 1;
-            min-height: 300px;
+            flex-grow: 1; /* Permite que o contêiner do jogo ocupe o espaço restante */
+            min-height: 300px; /* Altura mínima para garantir visibilidade */
         }
+
+        /* Estilo dos balões */
         .balloon {
             position: absolute;
             width: 80px;
@@ -159,27 +176,32 @@
             font-size: 0.9em;
             user-select: none;
         }
+
         .balloon.popped {
             opacity: 0;
             transform: scale(0);
             transition: all 0.3s ease-in-out;
             pointer-events: none;
         }
-        .color-1 { background-color: #FF6347; }
-        .color-2 { background-color: #4682B4; }
-        .color-3 { background-color: #32CD32; }
-        .color-4 { background-color: #FFD700; }
-        .color-5 { background-color: #9370DB; }
-        .color-6 { background-color: #FF4500; }
-        .color-7 { background-color: #1E90FF; }
-        .color-8 { background-color: #ADFF2F; }
-        .color-9 { background-color: #DAA520; }
-        .color-10 { background-color: #BA55D3; }
-        .color-11 { background-color: #FF69B4; }
-        .color-12 { background-color: #00CED1; }
-        .color-13 { background-color: #7FFF00; }
-        .color-14 { background-color: #D2B48C; }
-        .color-15 { background-color: #8A2BE2; }
+
+        /* Cores dos balões (15 cores misturadas diversas) */
+        .color-1 { background-color: #FF6347; } /* Tomato */
+        .color-2 { background-color: #4682B4; } /* SteelBlue */
+        .color-3 { background-color: #32CD32; } /* LimeGreen */
+        .color-4 { background-color: #FFD700; } /* Gold */
+        .color-5 { background-color: #9370DB; } /* MediumPurple */
+        .color-6 { background-color: #FF4500; } /* OrangeRed */
+        .color-7 { background-color: #1E90FF; } /* DodgerBlue */
+        .color-8 { background-color: #ADFF2F; } /* GreenYellow */
+        .color-9 { background-color: #DAA520; } /* GoldenRod */
+        .color-10 { background-color: #BA55D3; } /* MediumOrchid */
+        .color-11 { background-color: #FF69B4; } /* HotPink */
+        .color-12 { background-color: #00CED1; } /* DarkTurquoise */
+        .color-13 { background-color: #7FFF00; } /* Chartreuse */
+        .color-14 { background-color: #D2B48C; } /* Tan */
+        .color-15 { background-color: #8A2BE2; } /* BlueViolet */
+
+        /* Overlay de mensagem de sucesso/erro */
         .message-overlay {
             position: fixed;
             top: 0;
@@ -195,10 +217,12 @@
             opacity: 0;
             transition: visibility 0s, opacity 0.3s linear;
         }
+
         .message-overlay.show {
             visibility: visible;
             opacity: 1;
         }
+
         .message-box {
             background-color: #fff;
             padding: 40px;
@@ -210,16 +234,19 @@
             flex-direction: column;
             align-items: center;
         }
+
         .message-box h2 {
             color: #28a745;
             font-size: 2.5em;
             margin-bottom: 20px;
         }
+
         .message-box p {
             font-size: 1.3em;
             color: #555;
             margin-bottom: 30px;
         }
+
         .seal-image {
             width: 120px;
             height: 120px;
@@ -229,6 +256,8 @@
             margin: 0 auto 20px auto;
             display: block;
         }
+
+        /* Mensagem de erro para balões negativos */
         #negative-balloon-message {
             position: absolute;
             top: 50%;
@@ -245,11 +274,14 @@
             visibility: hidden;
             transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
         }
+
         #negative-balloon-message.show {
             opacity: 1;
             visibility: visible;
             transition: opacity 0.3s ease-in;
         }
+
+        /* Botão de voltar ao mapa (posição global) */
         #go-to-map-button-global {
             padding: 12px 25px;
             background-color: #007bff;
@@ -260,13 +292,16 @@
             font-size: 1.2em;
             font-weight: bold;
             transition: background-color 0.2s ease;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            flex-shrink: 0;
+            margin-top: 10px; /* Reduzida para otimizar espaço */
+            margin-bottom: 10px; /* Reduzida para otimizar espaço */
+            flex-shrink: 0; /* Impede que o botão encolha */
         }
+
         #go-to-map-button-global:hover {
             background-color: #0056b3;
         }
+
+        /* Estilo para o botão de voltar ao mapa no overlay de sucesso */
         #go-to-map-button-overlay {
             padding: 10px 20px;
             background-color: #007bff;
@@ -279,23 +314,36 @@
             margin-top: 20px;
             transition: background-color 0.2s ease;
         }
+
         #go-to-map-button-overlay:hover {
             background-color: #0056b3;
         }
+
+        /* Estilos do Modal de Instruções */
         .modal {
             position: fixed;
-            z-index: 99999; /* Z-index muito alto */
+            z-index: 1002; /* Acima de outros overlays */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
+            overflow: auto; /* Permite rolagem se o conteúdo for muito grande */
             background-color: rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Garante que o modal não tenha rolagem própria */
-            pointer-events: auto; /* Permite cliques dentro do modal */
+            /* HIDDEN BY DEFAULT: These lines are crucial for the initial state */
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s linear 0.4s, opacity 0.4s ease;
         }
+
+        .modal.show { /* New class to show the modal */
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.4s ease;
+        }
+
         .modal-content {
             background-color: #fefefe;
             margin: auto;
@@ -306,27 +354,27 @@
             max-width: 600px;
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
             text-align: center;
-            animation-name: animatemodal;
-            animation-duration: 0.4s;
-            overflow-y: auto; /* Permite rolagem *apenas* se o conteúdo interno do modal for grande */
-            max-height: 90vh; /* Limita a altura para se ajustar à tela mobile */
-            -webkit-overflow-scrolling: touch; /* Melhora a rolagem em iOS dentro do modal */
-            pointer-events: auto; /* Garante que o conteúdo do modal também receba eventos */
+            /* Animation properties (can be adjusted for smoother entry) */
+            transform: translateY(-50px); /* Start slightly above for animation */
+            transition: transform 0.4s ease;
         }
-        @keyframes animatemodal {
-            from {top: -300px; opacity: 0}
-            to {top: 0; opacity: 1}
+
+        .modal.show .modal-content { /* Animate when shown */
+            transform: translateY(0);
         }
+
         .modal-content h2 {
             font-family: 'Montserrat', sans-serif;
             color: #4CAF50;
             margin-bottom: 20px;
         }
+
         .modal-content p {
             font-size: 1.1em;
             line-height: 1.6;
             margin-bottom: 20px;
         }
+
         .modal-content button {
             background-color: #4CAF50;
             color: white;
@@ -337,8 +385,87 @@
             font-size: 1em;
             transition: background-color 0.3s;
         }
+
         .modal-content button:hover {
             background-color: #45a049;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 10px;
+            }
+            .header .logo, .header .school-emblem {
+                width: 50px;
+                height: 50px;
+            }
+            .game-title {
+                font-size: 1.5em;
+                margin: 10px 0;
+            }
+            .main-game-area-wrapper {
+                flex-direction: column;
+                width: 95%;
+                gap: 10px;
+            }
+            .player-sidebar {
+                width: 100%;
+                flex-direction: row; /* Align items horizontally in sidebar for mobile */
+                justify-content: space-around;
+                align-items: center;
+                padding: 10px 0;
+            }
+            .player-figure {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 0;
+            }
+            .score-board {
+                width: auto;
+                margin-bottom: 0;
+            }
+            #restart-button {
+                margin-bottom: 0;
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+            .game-container {
+                min-height: 250px; /* Slightly reduce min-height for mobile */
+            }
+            .balloon {
+                width: 70px;
+                height: 70px;
+                font-size: 0.8em;
+            }
+            .message-box {
+                padding: 20px;
+                width: 90%;
+            }
+            .message-box h2 {
+                font-size: 1.8em;
+            }
+            .message-box p {
+                font-size: 1em;
+            }
+            .seal-image {
+                width: 100px;
+                height: 100px;
+            }
+            #negative-balloon-message {
+                font-size: 1.1em;
+                padding: 10px 20px;
+            }
+            .modal-content {
+                width: 90%;
+                padding: 20px;
+            }
+            .modal-content h2 {
+                font-size: 1.5em;
+            }
+            .modal-content p {
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -346,9 +473,10 @@
     <header class="header">
         <img src="Capa.png" alt="Emblema da Escola" class="school-emblem">
         <h1 class="game-title">Estoure os Balões</h1>
-        <img src="logo.png" alt="Logo do Jogo" class="logo">         
+        <img src="logo.png" alt="Logo do Jogo" class="logo">        
     </header>
-    <p class="game-instructions">Clique apenas nos balões com comportamentos positivos para ganhar pontos!</p>
+        <p class="game-instructions">Clique apenas nos balões com comportamentos positivos para ganhar pontos!</p>
+
     <div class="main-game-area-wrapper">
         <div class="player-sidebar">
             <div class="player-figure">
@@ -360,11 +488,14 @@
             </div>
             <button id="restart-button">Reiniciar Jogo</button>
         </div>
+
         <div class="game-container" id="game-area">
             <div id="negative-balloon-message">Este não é um bom comportamento!!! Tente novamente.</div>
         </div>
     </div>
+
     <button id="go-to-map-button-global">Retornar ao Mapa Principal</button>
+
     <div class="message-overlay" id="success-overlay">
         <div class="message-box">
             <h2>Você conseguiu!! Parabéns!!</h2>
@@ -374,6 +505,7 @@
             <button id="go-to-map-button-overlay">Retornar ao Mapa Principal</button>
         </div>
     </div>
+
     <div id="instructions-modal" class="modal">
         <div class="modal-content">
             <h2>Bem-vindo ao Jogo Estoure os Balões!</h2>
@@ -384,7 +516,9 @@
             <button id="close-modal-button">Começar o Jogo</button>
         </div>
     </div>
+
     <audio id="positive-audio" src="som1.mp3"></audio>
+
     <script>
         const gameArea = document.getElementById('game-area');
         const correctScoreSpan = document.getElementById('correct-score');
@@ -398,20 +532,32 @@
         const newSealImage = document.getElementById('new-seal-image');
         const instructionsModal = document.getElementById('instructions-modal');
         const closeModalButton = document.getElementById('close-modal-button');
-        const playerFigure = document.querySelector('.player-figure');
+        const playerFigure = document.querySelector('.player-figure'); // Obtém a div do player-figure
+
         let correctScore = 0;
         let wrongScore = 0;
         let balloonsPopped = 0;
-        const totalPositiveBalloons = 10;
+        const totalPositiveBalloons = 10; // Metade dos balões serão positivos (20 balões no total)
+
+        // Lista de palavras positivas e negativas
         const positiveWords = ["Amor", "Paz", "Alegria", "Esperança", "Felicidade", "Gentileza", "Gratidão", "Sucesso", "Sabedoria", "Respeito", "Colaboração", "União", "Empatia", "Generosidade", "Harmonia", "Verdade", "Coragem", "Perdão", "Paciência", "Confiança"];
         const negativeWords = ["Ódio", "Tristeza", "Raiva", "Medo", "Fracasso", "Violência", "Inveja", "Preguiça", "Desrespeito", "Briga", "Egoísmo", "Mentira", "Preconceito", "Ganância", "Dúvida", "Pânico", "Timidez", "Crueldade", "Desespero"];
+
         const balloonColors = [
             'color-1', 'color-2', 'color-3', 'color-4', 'color-5',
             'color-6', 'color-7', 'color-8', 'color-9', 'color-10',
             'color-11', 'color-12', 'color-13', 'color-14', 'color-15'
         ];
-        const SEAL_ID_FOR_THIS_GAME = '5';
+        
+        // *** IMPORTANTE: ID DO SELO QUE ESTE JOGO CONQUISTA NO MAPA GERAL ***
+        // Este ID deve corresponder ao 'data-seal-id' da porta que leva a 'baloes.html' no seu mapa.html
+        const SEAL_ID_FOR_THIS_GAME = '5'; // Selo de Autocontrole
+        // *******************************************************************
 
+        /**
+         * Atualiza o status visual do avatar do jogador.
+         * Adiciona a classe 'unlocked' se o selo correspondente foi conquistado.
+         */
         function updatePlayerAvatarStatus() {
             const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
             if (collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
@@ -420,6 +566,7 @@
                 playerFigure.classList.remove('unlocked');
             }
         }
+
 
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -430,20 +577,22 @@
             balloon.classList.add('balloon', type);
             balloon.classList.add(balloonColors[getRandomInt(0, balloonColors.length - 1)]);
             balloon.textContent = word;
+
             balloon.id = `balloon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
             let x, y;
             let overlapping;
-            const balloonSize = 80;
-            const padding = 10;
+            const balloonSize = 80; // Largura/altura do balão
+
+            // Tenta encontrar uma posição que não se sobreponha
             do {
                 overlapping = false;
-                x = getRandomInt(padding, gameArea.offsetWidth - balloonSize - padding);
-                y = getRandomInt(padding, gameArea.offsetHeight - balloonSize - padding);
+                x = getRandomInt(0, gameArea.offsetWidth - balloonSize);
+                y = getRandomInt(0, gameArea.offsetHeight - balloonSize);
 
                 const tempRect = { left: x, top: y, right: x + balloonSize, bottom: y + balloonSize };
-                const existingBalloons = gameArea.querySelectorAll('.balloon:not(.popped)');
 
+                const existingBalloons = gameArea.querySelectorAll('.balloon:not(.popped)');
                 for (const existingBalloon of existingBalloons) {
                     const currentBalloonRect = {
                         left: parseFloat(existingBalloon.style.left),
@@ -452,10 +601,11 @@
                         bottom: parseFloat(existingBalloon.style.top) + balloonSize
                     };
 
-                    if (!(tempRect.right < currentBalloonRect.left - padding ||
-                            tempRect.left > currentBalloonRect.right + padding ||
-                            tempRect.bottom < currentBalloonRect.top - padding ||
-                            tempRect.top > currentBalloonRect.bottom + padding)) {
+                    // Verifica se há sobreposição
+                    if (!(tempRect.right < currentBalloonRect.left ||
+                            tempRect.left > currentBalloonRect.right ||
+                            tempRect.bottom < currentBalloonRect.top ||
+                            tempRect.top > currentBalloonRect.bottom)) {
                         overlapping = true;
                         break;
                     }
@@ -466,6 +616,7 @@
             balloon.style.top = `${y}px`;
             gameArea.appendChild(balloon);
 
+            // Animação de movimento
             const speed = getRandomInt(1, 2);
             let directionX = Math.random() < 0.5 ? 1 : -1;
             let directionY = Math.random() < 0.5 ? 1 : -1;
@@ -479,23 +630,27 @@
                 currentX += directionX * speed;
                 currentY += directionY * speed;
 
+                // Checa colisão com as bordas do gameArea
                 if (currentX + balloonSize > gameArea.offsetWidth || currentX < 0) {
                     directionX *= -1;
-                    currentX = Math.max(0, Math.min(currentX, gameArea.offsetWidth - balloonSize));
+                    currentX = Math.max(0, Math.min(currentX, gameArea.offsetWidth - balloonSize)); // Ajusta a posição
                 }
                 if (currentY + balloonSize > gameArea.offsetHeight || currentY < 0) {
                     directionY *= -1;
-                    currentY = Math.max(0, Math.min(currentY, gameArea.offsetHeight - balloonSize));
+                    currentY = Math.max(0, Math.min(currentY, gameArea.offsetHeight - balloonSize)); // Ajusta a posição
                 }
 
                 balloon.style.left = `${currentX}px`;
                 balloon.style.top = `${currentY}px`;
 
-                requestAnimationFrame(moveBalloon);
+                // Only request animation frame if the balloon is still visible and not popped
+                if (gameArea.contains(balloon) && !balloon.classList.contains('popped')) {
+                    requestAnimationFrame(moveBalloon);
+                }
             }
             requestAnimationFrame(moveBalloon);
 
-            function handleBalloonPop() {
+            balloon.addEventListener('click', () => {
                 if (balloon.classList.contains('popped')) return;
 
                 if (type === 'positive') {
@@ -504,17 +659,18 @@
                     balloonsPopped++;
                     correctScoreSpan.textContent = correctScore;
                     positiveAudio.currentTime = 0;
-                    positiveAudio.play().catch(e => { /* Autoplay foi impedido */ });
+                    positiveAudio.play().catch(e => console.error("Erro ao tocar áudio:", e));
 
                     if (balloonsPopped === totalPositiveBalloons) {
                         setTimeout(() => {
                             successOverlay.classList.add('show');
+                            // Adiciona o selo ao localStorage
                             let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
                             if (!collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
                                 collectedSeals.push(SEAL_ID_FOR_THIS_GAME);
                                 localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
                             }
-                            updatePlayerAvatarStatus();
+                            updatePlayerAvatarStatus(); // Atualiza o avatar para refletir o selo ganho
                         }, 500);
                     }
                 } else {
@@ -525,14 +681,12 @@
                         negativeMessage.classList.remove('show');
                     }, 2000);
                 }
-            }
-            balloon.addEventListener('click', handleBalloonPop);
+            });
         }
 
         function initGame() {
-            const currentBalloons = gameArea.querySelectorAll('.balloon');
-            currentBalloons.forEach(b => b.remove());
-
+            // Limpa a área do jogo de balões anteriores
+            gameArea.innerHTML = '<div id="negative-balloon-message">Este não é um bom comportamento!!! Tente novamente.</div>';
             correctScore = 0;
             wrongScore = 0;
             balloonsPopped = 0;
@@ -541,9 +695,11 @@
             successOverlay.classList.remove('show');
             negativeMessage.classList.remove('show');
 
+            // Embaralha as palavras
             const shuffledPositive = [...positiveWords].sort(() => 0.5 - Math.random());
             const shuffledNegative = [...negativeWords].sort(() => 0.5 - Math.random());
 
+            // Cria 10 balões positivos e 10 negativos
             for (let i = 0; i < 20; i++) {
                 if (i < totalPositiveBalloons) {
                     createBalloon('positive', shuffledPositive[i % shuffledPositive.length]);
@@ -551,61 +707,28 @@
                     createBalloon('negative', shuffledNegative[(i - totalPositiveBalloons) % shuffledNegative.length]);
                 }
             }
-            updatePlayerAvatarStatus();
+            updatePlayerAvatarStatus(); // Atualiza o status do avatar ao iniciar o jogo
         }
 
+        // Função para retornar à página do mapa, passando o ID do selo.
         function goToPreviousPage() {
             window.location.href = `mapa.html?seal_earned=${SEAL_ID_FOR_THIS_GAME}`;
         }
 
+        // Adiciona eventos de clique aos botões
         goToMapButtonGlobal.addEventListener('click', goToPreviousPage);
         goToMapButtonOverlay.addEventListener('click', goToPreviousPage);
         restartButton.addEventListener('click', initGame);
-
-        // --- FUNÇÕES DE CONTROLE DO MODAL ---
-        function openInstructionsModal() {
-            instructionsModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Impede rolagem
-            document.body.style.touchAction = 'none'; // Impede rolagem e zoom em toda a página
-            document.body.style.pointerEvents = 'none'; // Impede todos os eventos de ponteiro no body
-            instructionsModal.style.pointerEvents = 'auto'; // Garante que o modal receba eventos
-            closeModalButton.style.pointerEvents = 'auto'; // Garante que o botão do modal receba eventos
-        }
-
-        function closeInstructionsModal() {
-            instructionsModal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restaura rolagem
-            document.body.style.touchAction = 'auto'; // Restaura rolagem e zoom
-            document.body.style.pointerEvents = 'auto'; // Restaura eventos de ponteiro no body
-            initGame(); // Inicia o jogo quando o modal é fechado
-        }
-
-        // --- LISTENERS DO BOTÃO ---
-        // Listener para o botão de fechar o modal (para desktop)
-        closeModalButton.addEventListener('click', function(event) {
-            console.log("Evento CLICK no botão 'Começar o Jogo'");
-            closeInstructionsModal();
+        closeModalButton.addEventListener('click', () => {
+            instructionsModal.classList.remove('show'); // Hide modal using the 'show' class
+            initGame(); // Inicia o jogo após fechar o modal de instruções
         });
-        
-        // Listener de touchstart direto no botão (para mobile)
-        closeModalButton.addEventListener('touchstart', function(event) {
-            console.log("Evento TOUCHSTART no botão 'Começar o Jogo'");
-            event.preventDefault(); // Impede o comportamento padrão de toque
-            event.stopPropagation(); // Impede que o evento se propague
-            closeInstructionsModal(); // Chama a função para fechar o modal e iniciar o jogo
-        }, { passive: false });
 
-        // --- INICIALIZAÇÃO ---
-        window.onload = openInstructionsModal;
-
-        // **Opcional: Adicionar um listener de 'touchend' também para robustez em alguns navegadores.**
-        // closeModalButton.addEventListener('touchend', function(event) {
-        //     console.log("Evento TOUCHEND no botão 'Começar o Jogo'");
-        //     event.preventDefault(); // Impede o comportamento padrão do toque (clique fantasma)
-        //     event.stopPropagation(); // Impede a propagação
-        //     // Não chame closeInstructionsModal() aqui novamente para evitar duplo acionamento
-        //     // O touchstart já cuidou disso.
-        // }, { passive: false });
+        // Exibe o modal de instruções ao carregar a página
+        window.onload = () => {
+            instructionsModal.classList.add('show'); // Show modal using the 'show' class
+            updatePlayerAvatarStatus(); // Atualiza o status do avatar ao carregar
+        };
     </script>
 </body>
 </html>
