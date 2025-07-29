@@ -152,7 +152,7 @@
             overflow: hidden;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
             flex-grow: 1;
-            min-height: 300px;
+            min-height: 300px; /* Garante que a área do jogo tenha uma altura mínima */
         }
 
         /* Estilo dos balões */
@@ -532,7 +532,7 @@
         const restartButton = document.getElementById('restart-button');
         const newSealImage = document.getElementById('new-seal-image');
         const instructionsModal = document.getElementById('instructions-modal');
-        const closeModalButton = document = document.getElementById('close-modal-button');
+        const closeModalButton = document.getElementById('close-modal-button'); // Corrigido aqui
         const playerFigure = document.querySelector('.player-figure');
 
         let correctScore = 0;
@@ -571,36 +571,42 @@
             balloon.textContent = word;
             balloon.id = `balloon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-            // Adiciona o balão à área do jogo primeiro para que ele possa ser renderizado e medido
-            gameArea.appendChild(balloon);
+            gameArea.appendChild(balloon); // Adiciona o balão à área do jogo primeiro
 
-            // Ajusta o tamanho da fonte com base na largura do texto vs. largura atual do balão
-            // A largura inicial do balão será a min-width (80px) ou a largura do texto se for maior.
+            // Mede a largura do conteúdo e ajusta o balão
             const minBalloonWidth = 80;
-            const maxBalloonWidth = 200; // Limite máximo para a largura do balão
-            const padding = 20; // 10px de cada lado
+            const maxBalloonWidth = 200;
+            const padding = 20;
 
-            // Mede a largura real do conteúdo do balão APÓS ele ser adicionado
             let contentWidth = balloon.scrollWidth;
-
-            // Define a largura do balão para acomodar o conteúdo, respeitando min/max
             let finalBalloonWidth = Math.max(minBalloonWidth, contentWidth + padding);
-            finalBalloonWidth = Math.min(finalBalloonWidth, maxBalloonWidth); // Limita a largura máxima
+            finalBalloonWidth = Math.min(finalBalloonWidth, maxBalloonWidth);
 
             balloon.style.width = `${finalBalloonWidth}px`;
             balloon.style.height = `${finalBalloonWidth}px`; // Mantém circular
 
-            // Ajusta a fonte se o conteúdo ainda for muito grande para a largura final do balão
             if (contentWidth > finalBalloonWidth - padding) {
                 let newFontSize = parseFloat(getComputedStyle(balloon).fontSize) * ((finalBalloonWidth - padding) / contentWidth);
-                newFontSize = Math.max(newFontSize, 10); // Fonte mínima de 10px para legibilidade
-                balloon.style.fontSize = `${newFontSize / 16}em`; // Convertendo de px para em
+                newFontSize = Math.max(newFontSize, 10);
+                balloon.style.fontSize = `${newFontSize / 16}em`;
             }
 
             // --- Lógica de Posicionamento e Movimento ---
+            // Garante que a gameArea tenha dimensões válidas antes de posicionar
+            if (gameArea.offsetWidth === 0 || gameArea.offsetHeight === 0) {
+                console.warn("gameArea ainda não tem dimensões válidas. Tentando novamente em breve.");
+                // Remove o balão e tenta criar novamente após um pequeno atraso
+                gameArea.removeChild(balloon);
+                setTimeout(() => createBalloon(type, word), 100);
+                return; // Sai da função atual
+            }
+
             let x, y;
             let overlapping;
-            const currentBalloonSize = finalBalloonWidth; // Usa o tamanho final do balão para posicionamento
+            const currentBalloonSize = finalBalloonWidth;
+
+            let attempts = 0;
+            const maxAttempts = 50; // Limite de tentativas para evitar loop infinito em layouts apertados
 
             do {
                 overlapping = false;
@@ -611,25 +617,25 @@
 
                 const existingBalloons = gameArea.querySelectorAll('.balloon:not(.popped)');
                 for (const existingBalloon of existingBalloons) {
-                    // Ignora o balão atual para o cálculo de sobreposição
                     if (existingBalloon.id === balloon.id) continue;
 
-                    const currentBalloonRect = {
-                        left: parseFloat(existingBalloon.style.left),
-                        top: parseFloat(existingBalloon.style.top),
-                        right: parseFloat(existingBalloon.style.left) + parseFloat(existingBalloon.style.width),
-                        bottom: parseFloat(existingBalloon.style.top) + parseFloat(existingBalloon.style.height)
-                    };
+                    const existingRect = existingBalloon.getBoundingClientRect(); // Use getBoundingClientRect para dimensões renderizadas
 
-                    if (!(tempRect.right < currentBalloonRect.left ||
-                            tempRect.left > currentBalloonRect.right ||
-                            tempRect.bottom < currentBalloonRect.top ||
-                            tempRect.top > currentBalloonRect.bottom)) {
+                    if (!(tempRect.right < existingRect.left ||
+                            tempRect.left > existingRect.right ||
+                            tempRect.bottom < existingRect.top ||
+                            tempRect.top > existingRect.bottom)) {
                         overlapping = true;
                         break;
                     }
                 }
-            } while (overlapping);
+                attempts++;
+            } while (overlapping && attempts < maxAttempts);
+
+            // Se excedeu as tentativas, ainda adiciona o balão, mas pode haver sobreposição
+            if (attempts >= maxAttempts) {
+                console.warn("Excedido o número máximo de tentativas para posicionar o balão sem sobreposição. Pode haver balões sobrepostos.");
+            }
 
             balloon.style.left = `${x}px`;
             balloon.style.top = `${y}px`;
@@ -645,6 +651,11 @@
                 let currentY = parseFloat(balloon.style.top);
                 const actualBalloonWidth = parseFloat(balloon.style.width);
                 const actualBalloonHeight = parseFloat(balloon.style.height);
+
+                if (gameArea.offsetWidth === 0 || gameArea.offsetHeight === 0) { // Safety check during movement
+                    // If gameArea becomes invalid, stop moving this balloon
+                    return;
+                }
 
                 currentX += directionX * speed;
                 currentY += directionY * speed;
@@ -710,6 +721,13 @@
             successOverlay.classList.remove('show');
             negativeMessage.classList.remove('show');
 
+            // Verifica se a gameArea tem dimensões válidas antes de criar balões
+            if (gameArea.offsetWidth === 0 || gameArea.offsetHeight === 0) {
+                console.warn("gameArea ainda não está pronta. Tentando iniciar o jogo novamente em 200ms...");
+                setTimeout(initGame, 200); // Tenta iniciar novamente após 200ms
+                return;
+            }
+
             const shuffledPositive = [...positiveWords].sort(() => 0.5 - Math.random());
             const shuffledNegative = [...negativeWords].sort(() => 0.5 - Math.random());
 
@@ -733,7 +751,7 @@
 
         closeModalButton.addEventListener('click', () => {
             instructionsModal.classList.add('hidden');
-            setTimeout(initGame, 400); // Inicia o jogo após a transição do modal
+            setTimeout(initGame, 500); // Aumentado o atraso para dar tempo de layout
         });
 
         window.onload = () => {
@@ -744,7 +762,6 @@
         // Adiciona um evento para garantir que o modal não seja clicável por baixo
         instructionsModal.addEventListener('click', (event) => {
             if (event.target === instructionsModal) {
-                // Impede que cliques no fundo do modal o fechem
                 event.stopPropagation();
             }
         });
