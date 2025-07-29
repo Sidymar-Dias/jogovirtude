@@ -160,13 +160,190 @@
         }
     </style>
 </head>
-<body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desenvolvimento do Projeto - Despertando Virtudes</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+        }
+        header .logo {
+            max-height: 60px; /* Ajuste o tamanho das logos conforme necessário */
+            width: auto;
+        }
+        header .logo-center {
+            max-height: 80px; /* Logo central um pouco maior */
+            width: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            padding: 20px 0;
+            margin-top: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .section h2 {
+            color: #0056b3;
+            margin-top: 0;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .section h3 {
+            color: #007bff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .section p, .section ul {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify; /* Alinhamento justificado para o texto */
+        }
+        .section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            text-align: left; /* Listas geralmente ficam melhor sem justificar */
+        }
+        .section ul li {
+            margin-bottom: 5px;
+        }
+        .section img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Garante que a imagem ocupe a largura total disponível */
+            margin: 15px auto; /* Centraliza a imagem */
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .anexos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 250px mínimo, ajusta para colunas iguais */
+            gap: 20px; /* Espaço entre as imagens */
+            margin-top: 20px;
+            justify-items: center; /* Centraliza itens na grid */
+        }
+        /* Estilo para a tag <figure> que envolve imagem e legenda */
+        .anexos-grid figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            /* Estilos da imagem original na grid, aplicados ao figure para conter tudo */
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin: 0; /* Reseta margin da regra geral de img */
+        }
+        .anexos-grid figure img {
+            margin: 0 0 5px 0; /* Ajusta a margem da imagem dentro da figure */
+            padding: 0; /* Remove padding extra que pode ter sido aplicado globalmente */
+            box-shadow: none; /* Remove sombra extra, já que o figure já tem uma */
+            border-radius: 0; /* Remove border-radius extra */
+        }
+        .anexos-grid figcaption {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
+            padding: 0 5px; /* Adiciona um pequeno padding lateral para a legenda */
+        }
+        .back-to-home {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: fit-content; /* Ajusta a largura ao conteúdo */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .back-to-home:hover {
+            background-color: #0056b3;
+        }
 
+        /* Media Queries para responsividade */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            header .logo, header .logo-center {
+                margin-bottom: 10px;
+            }
+            header .logo:first-child {
+                order: 1;
+            }
+            header .logo-center {
+                order: 2;
+            }
+            header .logo:last-child {
+                order: 3;
+            }
+            .anexos-grid {
+                grid-template-columns: 1fr; /* Uma coluna em telas menores */
+            }
+        }
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 15px;
+            }
+            h1 {
+                font-size: 24px;
+                padding: 15px 0;
+            }
+            .container {
+                padding: 15px;
+                width: 95%;
+            }
+            .section h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
     <header>
         <img src="Capa.png" alt="Emblema Esquerdo" class="logo">
-        
         <img src="logo1.png" alt="Logo SME" class="logo-center">
-        
         <img src="logo.png" alt="Logo CENAM" class="logo">
     </header>
 
@@ -175,7 +352,7 @@
     <div class="container">
         <div class="section">
             <h2>Identificação do Projeto</h2>
-             <ul>
+            <ul>
                 <li><strong>Nome da escola:</strong> CENAM – Centro de Atendimento Multidisciplinar Hebert de Souza</li>
                 <li><strong>Diretora:</strong> Karla Pinto Chaves Oliveira</li>
                 <li><strong>Diretora Adjunta:</strong> Karina Diniz Guerra França</li>
@@ -188,7 +365,7 @@
 
         <div class="section">
             <h2>Justificativa</h2>
-            <p>Nos dias atuais, percebemos que muitos comportamentos inadequados entre os estudantes têm impactado negativamente o ambiente escolar, dificultando o processo de aprendizagem e prejudicando a convivência harmoniosa. Muitas dessas atitudes refletem a ausência de valores e virtudes imprescindíveis para a formação de cidadãos responsáveis, respeitosos e empáticos.</p>
+            <p>Nos dias atuais, percebemos que muitos comportamentos inadequados entre os estudantes têm impactado negativamente o ambiente escolar, dificultando o processo de aprendizagem e prejudicando a convivência harmoniosa.</p>
             <p>Diante desse cenário, este projeto tem como objetivo promover o desenvolvimento de virtudes essenciais para o convívio em sociedade. Acreditamos que, ao valorizar e ensinar esses princípios aos estudantes, podemos transformar atitudes e construir uma cultura escolar mais positiva, onde o respeito mútuo e a convivência pacífica sejam prioridades.</p>
             <p>A implementação de ações educativas voltadas às virtudes justifica-se pela necessidade de fortalecer o caráter moral dos estudantes, contribuindo para a redução de comportamentos inadequados e criando um ambiente mais harmonioso, acolhedor e estimulante para todos. Assim, buscamos não apenas melhorar o comportamento, mas também formar indivíduos mais conscientes de seus papéis na sociedade, capazes de agir com ética, responsabilidade e integridade. Ao incentivar atitudes positivas, pretendemos contribuir para o desenvolvimento de habilidades sociais que serão fundamentais ao longo da vida.</p>
             <p>Para consolidar esses aprendizados de forma divertida e envolvente, o projeto também prevê a criação de um jogo virtual que reforçará as virtudes e valores abordados. O objetivo é que o jogo simule situações do cotidiano, ajudando os estudantes a compreenderem a importância de manter comportamentos positivos de maneira interativa, educativa e permanente. Assim, a tecnologia se torna uma aliada poderosa na transformação de conceitos essenciais em experiências agradáveis e memoráveis.</p>
@@ -257,7 +434,7 @@
             
             <h3>Feira do Empreendedorismo 2025</h3>
             <p>Ao final do processo, está prevista a realização da Feira do Empreendedorismo, um evento de grande destaque promovido pela Prefeitura Municipal de Ipatinga em parceria com o SEBRAE. Essa feira tem como propósito divulgar as ações realizadas nas escolas municipais que fomentaram a autonomia e o protagonismo infantil e juvenil no campo do empreendedorismo, celebrando o potencial criativo e inovador de nossos estudantes. Para participar, nossos alunos passarão por um processo de seleção, com o objetivo de representar a nossa escola neste importante evento. Os selecionados terão a oportunidade de realizar uma apresentação-piloto na escola, na qual terão a chance de expor o projeto diante de uma banca de avaliadores. Essa etapa servirá como uma oportunidade de aprimoramento, pois os avaliadores farão uma análise detalhada das informações apresentadas, oferecendo sugestões construtivas para fortalecer a comunicação e a qualidade da apresentação. Este momento não apenas valoriza o esforço e a criatividade dos nossos estudantes, mas também promove uma experiência enriquecedora de aprendizado, estimulando o desenvolvimento de habilidades essenciais para o futuro.</p>
-            </div>
+        </div>
 
         <div class="section">
             <h2>Resultados Esperados</h2>
@@ -383,7 +560,7 @@
                 <li>Treino da oratória: apresentação dos alunos para a banca examinadora.</li>
                 <li>Exposição do projeto na Feira do Empreendedorismo.</li>
             </ul>
-            </div>
+        </div>
 
         <div class="section">
             <h2>Abrangência</h2>
@@ -408,53 +585,107 @@
         <div class="section">
             <h2>Indicadores de Resultados</h2>
             <p>Nesta seção, serão inseridos gráficos, depoimentos, registros e outras evidências que demonstrem o impacto e o sucesso do projeto.</p>
-            </div>
+        </div>
 
         <div class="section">
             <h2>Orçamento</h2>
             <p>Detalhes sobre o orçamento do projeto serão incluídos nesta seção.</p>
-            </div>
-
-        ---
+        </div>
 
         <div class="section">
             <h2>Anexos e Registros Visuais</h2>
             <p>Esta seção ilustra as diferentes etapas do projeto "Despertando Virtudes" por meio de registros fotográficos. As imagens abaixo representam momentos chave, atividades e resultados alcançados durante o desenvolvimento.</p>
             <div class="anexos-grid">
-                <img src="anexo1.png" alt="Anexo1">
-                <img src="anexo2.png" alt="Anexo2">
-                <img src="anexo3.png" alt="Anexo3">
-                <img src="anexo4.png" alt="Anexo4">
-                <img src="anexo5.png" alt="Anexo5"> 
-                <img src="Foto1.jpg" alt="Sorteio Nome do Projeto">
-                <img src="Foto2.jpg" alt="Sorteio Nome do Projeto">
-                <img src="Foto3.jpg" alt="Desejo dos Heróis no Grupo">
-                <img src="Foto4.jpg" alt="Eleição dos Desenhos dos Heróis">
-                <img src="Foto5.jpg" alt="Resultado da Eleição dos Desenho dos Heróis">
-                <img src="Foto6.jpg" alt="Vencedora do Desenho dos Heróis - Respeito">
-                <img src="Foto7.jpg" alt="Resultado da Eleição dos Desenho dos Heróis">
-                <img src="Foto8.jpg" alt="Confeção dos Cartazes">
-                <img src="Foto9.jpg" alt="Confeção dos Cartazes">
-                <img src="Foto10.jpg" alt="Confeção dos Cartazes">
-                <img src="Foto11.jpg" alt="Confeção dos Cartazes">
-                <img src="Foto12.jpg" alt="Confeção dos Cartazes">
-                <img src="Foto13.jpg" alt="Confeção dos Cartazes">
-                <img src="Foto14.jpg" alt="Quadro de Conquista Coletiva">
-                <img src="Foto15.jpg" alt="Quadro de Conquista Coletiva">
-              
+                <figure>
+                    <img src="anexo1.png" alt="Anexo1">
+                    <figcaption>Anexo 1: Detalhes do Canvas do projeto.</figcaption>
+                </figure>
+                <figure>
+                    <img src="anexo2.png" alt="Anexo2">
+                    <figcaption>Anexo 2: Virtudes e superpoderes dos heróis.</figcaption>
+                </figure>
+                <figure>
+                    <img src="anexo3.png" alt="Anexo3">
+                    <figcaption>Anexo 3: Modelo para criação dos personagens-heróis pelos alunos.</figcaption>
+                </figure>
+                <figure>
+                    <img src="anexo4.png" alt="Anexo4">
+                    <figcaption>Anexo 4: Quadro "Conquista Individual" para registro de comportamentos exemplares.</figcaption>
+                </figure>
+                <figure>
+                    <img src="anexo5.png" alt="Anexo5"> 
+                    <figcaption>Anexo 5: Tabela de organização das cinco semanas dedicadas às virtudes.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto1.jpg" alt="Sorteio Nome do Projeto">
+                    <figcaption>Alunos participando do sorteio para escolha do nome do projeto.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto2.jpg" alt="Sorteio Nome do Projeto">
+                    <figcaption>Momento de sorteio do nome oficial do projeto "Despertando Virtudes".</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto3.jpg" alt="Desejo dos Heróis no Grupo">
+                    <figcaption>Criando a identidade: Alunos desenham seus heróis, representando virtudes.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto4.jpg" alt="Eleição dos Desenhos dos Heróis">
+                    <figcaption>Comunidade escolar votando para eleger os melhores desenhos dos heróis.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto5.jpg" alt="Resultado da Eleição dos Desenho dos Heróis">
+                    <figcaption>O resultado da eleição, revelando os personagens que integrarão a equipe de heróis.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto6.jpg" alt="Vencedora do Desenho dos Heróis - Respeito">
+                    <figcaption>A aluna vencedora do desenho do herói da virtude do Respeito.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto7.jpg" alt="Resultado da Eleição dos Desenho dos Heróis">
+                    <figcaption>Exposição dos resultados da votação dos desenhos dos heróis.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto8.jpg" alt="Confeção dos Cartazes">
+                    <figcaption>Alunos empenhados na confecção dos cartazes com as virtudes.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto9.jpg" alt="Confeção dos Cartazes">
+                    <figcaption>Trabalho em grupo: Detalhes da criação dos cartazes educativos.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto10.jpg" alt="Confeção dos Cartazes">
+                    <figcaption>Colaboração e criatividade na elaboração de materiais visuais.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto11.jpg" alt="Confeção dos Cartazes">
+                    <figcaption>Mais um registro da dedicação dos alunos na produção de cartazes.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto12.jpg" alt="Confeção dos Cartazes">
+                    <figcaption>Mostra de alguns cartazes concluídos, prontos para exibição.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto13.jpg" alt="Confeção dos Cartazes">
+                    <figcaption>Alunos finalizando os últimos toques nos cartazes temáticos.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto14.jpg" alt="Quadro de Conquista Coletiva">
+                    <figcaption>O "Quadro de Conquista Coletiva", onde os progressos são celebrados.</figcaption>
+                </figure>
+                <figure>
+                    <img src="Foto15.jpg" alt="Quadro de Conquista Coletiva">
+                    <figcaption>Detalhe do "Quadro de Conquista Coletiva" com os adesivos dos heróis.</figcaption>
+                </figure>
+            </div>
         </div>
 
         <a href="index.html" class="back-to-home">Voltar à Página Inicial</a>
     </div>
 
     <script>
-        // Script JavaScript (exemplo simples, não essencial para este layout)
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Página de Desenvolvimento do Projeto carregada!');
-            // Você pode adicionar interatividade aqui, se precisar.
-            // Por exemplo, um efeito de "scroll suave" para as seções.
         });
     </script>
-
 </body>
 </html>
