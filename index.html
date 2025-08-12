@@ -202,6 +202,15 @@
             background-color: #2980b9;
         }
 
+        /* Estilos para o vídeo dentro da sidebar */
+        .sidebar-right video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
         /* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
 
         /* Para telas menores que 768px (tablets e smartphones) */
@@ -335,10 +344,11 @@
         <div class="sidebar">
             <h2>Saiba mais...</h2>
             <ul>
-                <li><a href="cenam.html">Conhecendo o  CENAM</a></li>
-                <li><a href="atividades.html">Conheça o Projeto </a></li>
+                <li><a href="cenam.html">Conhecendo o CENAM</a></li>
+                <li><a href="atividades.html">Conheça o Projeto</a></li>
                 <li><a href="virtude.html">Os Jogos e Suas Virtudes</a></li>
-                
+                <li><a href="ebook.html">Ebook - Virtudes</a></li>
+                <li><a href="creditos.html">Colaboradores</a></li>
             </ul>
         </div>
 
@@ -361,12 +371,11 @@
         </div>
 
         <div class="sidebar-right">
-            <h2>Outras Informações</h2>
-            <ul>
-                <li><a href="acessibilidade.html">Acessibilidade</a></li>
-                <li><a href="ebook.html">Ebook - Virtudes </a></li>
-                <li><a href="creditos.html">Colaboradores</a></li>
-            </ul>
+            <h2>Acessibilidade</h2>
+            <video controls>
+                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
         </div>
     </div>
 </body>

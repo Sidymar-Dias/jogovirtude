@@ -357,6 +357,13 @@
             text-align: center;
             transform: translateY(0);
             transition: transform 0.4s ease;
+            max-height: 90vh; /* Limita a altura do modal a 90% da altura da viewport */
+            overflow-y: auto; /* Adiciona rolagem vertical se o conteúdo exceder max-height */
+            display: flex; /* Transforma em um container flexível */
+            flex-direction: column; /* Organiza os itens internos em coluna */
+            align-items: center; /* Centraliza os itens horizontalmente */
+            justify-content: flex-start; /* Alinha os itens ao topo do modal */
+            box-sizing: border-box; /* Inclui padding na altura total */
         }
 
         .modal.hidden .modal-content {
@@ -384,10 +391,21 @@
             cursor: pointer;
             font-size: 1em;
             transition: background-color 0.3s;
+            margin-top: auto; /* Empurra o botão para o final do conteúdo flexível */
         }
 
         .modal-content button:hover {
             background-color: #45a049;
+        }
+
+        /* Estilos do vídeo dentro do modal de informações */
+        .modal-content video {
+            width: 100%;
+            max-width: 500px; /* Limita a largura do vídeo */
+            height: auto;
+            margin: 0 auto 20px; /* Centraliza e adiciona margem abaixo */
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         /* Ajustes responsivos para telas menores */
@@ -510,10 +528,15 @@
     <div id="instructions-modal" class="modal">
         <div class="modal-content">
             <h2>Bem-vindo ao Jogo Estoure os Balões!</h2>
+            <!-- Vídeo de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
+            <video id="instructionVideo" controls>
+                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
             <p>Seu objetivo é clicar apenas nos balões que contêm palavras de comportamentos positivos.</p>
             <p>🎈 Cada balão positivo que você estourar aumentará sua pontuação.</p>
             <p>💥 Se você clicar em um balão com um comportamento negativo, perderá pontos.</p>
-            <p>Complete o desafio estourando todos os balões positivos para ganhar um selo!</p>
+            <p>Assista ao vídeo para entender as regras do jogo.</p>
             <button id="close-modal-button">Começar o Jogo</button>
         </div>
     </div>
@@ -532,16 +555,17 @@
         const restartButton = document.getElementById('restart-button');
         const newSealImage = document.getElementById('new-seal-image');
         const instructionsModal = document.getElementById('instructions-modal');
-        const closeModalButton = document.getElementById('close-modal-button'); // Corrigido aqui
+        const closeModalButton = document.getElementById('close-modal-button');
         const playerFigure = document.querySelector('.player-figure');
+        const instructionVideo = document.getElementById('instructionVideo'); // Referência ao elemento de vídeo
 
         let correctScore = 0;
         let wrongScore = 0;
         let balloonsPopped = 0;
         const totalPositiveBalloons = 10;
 
-        const positiveWords = ["AMOR", "PAZ", "ALEGRIA", "ESPERANÇA", "FELICIDADE", "GENTILEZA", "GRATIDÃO", "SUCESSO", "SABEDORIA", "RESPEITO", "COLABORAÇÃO", "UNIÃO", "EMPATIA", "GENEROSIDADE", "HARMONIA", "VERDADE", "CORAGEM", "PERDÃO", "PACIÊNCIA", "CONFIANÇA"];
-        const negativeWords = ["ÓDIO", "TRISTEZA", "RAIVA", "MEDO", "FRACASSO", "VIOLÊNCIA", "INVEJA", "PREGUIÇA", "DESRESPEITO", "BRIGAS", "EGOÍSMO", "MENTIRA", "PRECONCEITO", "GANÂNCIA", "DÚVIDA", "PÂNICO", "TIMIDEZ", "CRUELDADE", "DESESPERO"];
+        const positiveWords = ["AMOR", "PAZ", "ALEGRIA", "ESPERANÇA", "FELICIDADE", "GENTILEZA", "GRATIDÃO", "SUCESSO", "SABEDORIA", "RESPEITO", "COLABORAÇÃO", "UNÃO", "EMPATIA", "GENEROSIDADE", "HARMONIA", "VERDADE", "CORAGEM", "PERDÃO", "PACIÊNCIA", "CONFIANÇA"];
+        const negativeWords = ["ÓDIO", "TRISTEZA", "RAIVA", "MEDO", "FRACASSO", "VIOLÊNCIA", "INVEJA", "PREGUIÇA", "DESRESPEITO", "BRIGA", "EGOÍSMO", "MENTIRA", "PRECOCEITO", "GANANCIA", "DÚVIDA", "PÂNICO", "TIMIDEZ", "CRUELDADE", "DESESPERO"];
 
         const balloonColors = [
             'color-1', 'color-2', 'color-3', 'color-4', 'color-5',
@@ -751,11 +775,19 @@
 
         closeModalButton.addEventListener('click', () => {
             instructionsModal.classList.add('hidden');
+            if (instructionVideo) {
+                instructionVideo.pause(); // Pausa o vídeo ao fechar o modal
+                instructionVideo.currentTime = 0; // Volta o vídeo para o início
+            }
             setTimeout(initGame, 500); // Aumentado o atraso para dar tempo de layout
         });
 
         window.onload = () => {
             instructionsModal.classList.remove('hidden');
+            if (instructionVideo) {
+                instructionVideo.pause(); // Pausa o vídeo ao abrir o modal para evitar auto-play indesejado
+                instructionVideo.currentTime = 0; // Volta o vídeo para o início
+            }
             updatePlayerAvatarStatus();
         };
 
@@ -767,5 +799,4 @@
         });
     </script>
 </body>
-
 </html>

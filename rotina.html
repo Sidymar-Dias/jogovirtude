@@ -16,7 +16,7 @@
             flex-direction: column;
             min-height: 100vh;
             color: #333;
-            overflow-x: hidden; /* Evita rolagem horizontal */
+            overflow-x: hidden;
         }
 
         .header, .footer {
@@ -26,7 +26,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+            flex-wrap: wrap;
         }
 
         .header-left, .header-right {
@@ -47,32 +47,32 @@
         .activity-title {
             color: #007bff;
             font-size: 2.2em;
-            margin: 0 auto; /* Centraliza o título */
+            margin: 0 auto;
             text-align: center;
-            flex-grow: 1; /* Permite que o título ocupe o espaço disponível */
+            flex-grow: 1;
         }
 
         .main-container {
             display: flex;
             flex: 1;
-            padding: 20px;
-            gap: 20px;
+            padding: 10px; /* Reduzido para economizar espaço */
+            gap: 15px; /* Reduzido para economizar espaço */
             box-sizing: border-box;
-            flex-wrap: wrap; /* Permite que os painéis quebrem em telas pequenas */
-            justify-content: center; /* Centraliza os itens quando quebram */
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .side-panel-left {
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 20px;
+            padding: 15px; /* Reduzido para economizar espaço */
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            flex: 0 0 250px; /* Largura fixa para o painel lateral */
-            max-width: 100%; /* Garante que não exceda em telas pequenas */
+            gap: 15px; /* Reduzido para economizar espaço */
+            flex: 0 0 200px; /* Largura ajustada */
+            max-width: 100%;
         }
 
         .player-dashboard {
@@ -81,8 +81,8 @@
         }
 
         .player-image {
-            width: 120px;
-            height: 120px;
+            width: 160px; /* Aumentado */
+            height: 160px; /* Aumentado */
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid #ddd;
@@ -102,8 +102,8 @@
         }
 
         .score-counter p {
-            font-size: 1.2em;
-            margin: 8px 0;
+            font-size: 1.4em; /* Aumentado */
+            margin: 10px 0; /* Ajustado */
             font-weight: bold;
         }
 
@@ -118,16 +118,16 @@
         .restart-button, .back-to-map-button, .modal-button, .return-button-in-message {
             background-color: #007bff;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 25px; /* Aumentado */
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.2em; /* Aumentado */
             transition: background-color 0.3s ease, transform 0.2s ease;
-            text-decoration: none; /* Para links */
-            display: inline-block; /* Para links */
+            text-decoration: none;
+            display: inline-block;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px; /* Ajustado */
         }
 
         .restart-button:hover, .back-to-map-button:hover, .modal-button:hover, .return-button-in-message:hover {
@@ -139,21 +139,21 @@
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 20px;
+            padding: 15px;
             flex: 1;
-            min-width: 300px; /* Garante um tamanho mínimo */
+            min-width: 300px;
             box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Alinha o conteúdo ao topo */
+            justify-content: flex-start;
         }
 
         .game-area h2, .timeline-wrapper h2 {
             color: #007bff;
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .image-gallery-random {
@@ -161,32 +161,29 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 20px;
-            width: 100%; /* Ocupa a largura total disponível */
-            max-height: 250px; /* Limita a altura da galeria */
-            overflow-y: auto; /* Adiciona scroll se houver muitas imagens */
+            margin-bottom: 15px;
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
             padding: 5px;
             border: 1px dashed #ccc;
             border-radius: 8px;
         }
 
-        /* Estilos para o container de item na galeria */
         .image-gallery-random .gallery-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Alinha o conteúdo ao topo do item */
             text-align: center;
-            width: calc(100% / 7 - 8px); /* Mantém a largura original da imagem */
-            max-width: 65px; /* Mantém a largura máxima original da imagem */
-            border-radius: 8px; /* Mantém o border-radius */
-            border: 2px solid #eee; /* Mantém a borda original */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Mantém a sombra original */
+            width: calc(50% - 15px); 
+            max-width: 160px;
+            border-radius: 8px;
+            border: 2px solid #eee;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
             cursor: pointer;
-            padding-bottom: 5px; /* Adiciona um pequeno padding abaixo do nome */
-            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura */
-            height: auto; /* Permite que a altura se ajuste ao conteúdo */
+            padding-bottom: 5px;
+            box-sizing: border-box;
         }
 
         .image-gallery-random .gallery-item:hover {
@@ -196,12 +193,12 @@
         }
 
         .image-gallery-random .gallery-item img {
-            width: 100%; /* A imagem preenche o container */
-            height: 65px; /* Altura fixa para a imagem */
+            width: 100%;
+            height: 120px;
             object-fit: cover;
-            border-radius: 6px 6px 0 0; /* Apenas as bordas superiores arredondadas */
-            border: none; /* Remove a borda da imagem, agora está no container */
-            margin-bottom: 3px; /* Espaço entre a imagem e o nome */
+            border-radius: 6px 6px 0 0;
+            border: none;
+            margin-bottom: 3px;
         }
 
         .image-gallery-random .gallery-item.hidden {
@@ -211,13 +208,13 @@
         }
 
         .image-gallery-random .image-name {
-            font-size: 0.7em; /* Tamanho da fonte para os nomes */
+            font-size: 0.7em;
             color: #555;
             margin: 0;
-            padding: 0 2px; /* Pequeno padding horizontal para o texto */
-            word-break: break-word; /* Quebra palavras longas */
-            max-height: 2.2em; /* Limita a altura para 2 linhas de texto */
-            overflow: hidden; /* Esconde o excesso de texto */
+            padding: 0 2px;
+            word-break: break-word;
+            max-height: 2.2em;
+            overflow: hidden;
             line-height: 1.1em;
         }
 
@@ -232,15 +229,15 @@
             font-weight: bold;
             transition: visibility 0.5s, opacity 0.5s;
             text-align: center;
-            position: relative; /* Para o selo */
-            z-index: 1; /* Garante que esteja acima de outros elementos durante a transição */
-            width: 90%; /* Ajusta largura */
+            position: relative;
+            z-index: 1;
+            width: 90%;
             max-width: 400px;
-            display: flex; /* Para centralizar o conteúdo */
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 50px; /* Altura mínima para a mensagem */
+            min-height: 50px;
         }
 
         .message-area .seal-image {
@@ -251,58 +248,52 @@
         }
 
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-20px);
-            }
-            60% {
-                transform: translateY(-10px);
-            }
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
         }
 
         .timeline-wrapper {
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin: 20px;
+            padding: 15px;
+            margin: 15px;
             text-align: center;
-            overflow-x: auto; /* Permite rolagem horizontal se a linha do tempo for muito longa */
-            white-space: nowrap; /* Impede que os itens da timeline quebrem linha */
+            overflow-x: auto;
+            white-space: nowrap;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .timeline-container {
-            width: 100%; /* Ocupa a largura total do wrapper */
-            overflow-x: auto; /* Adiciona rolagem se necessário */
-            padding-bottom: 10px; /* Para evitar corte da sombra do scrollbar */
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 10px;
         }
 
         .timeline {
             display: flex;
-            gap: 10px; /* Espaçamento entre os slots */
-            padding: 10px 0; /* Padding interno */
-            align-items: flex-end; /* Alinha os slots pela base */
-            min-width: fit-content; /* Garante que a timeline não se comprima */
+            gap: 10px;
+            padding: 10px 0;
+            align-items: flex-end;
+            min-width: fit-content;
         }
 
         .timeline-item {
-            position: relative; /* Para posicionar o nome */
-            width: 85px; /* Largura padrão dos slots */
-            height: 95px; /* Altura para acomodar imagem e nome */
+            position: relative;
+            width: 85px;
+            height: 95px;
             border: 2px dashed #ccc;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Centraliza conteúdo antes de preencher */
-            flex-shrink: 0; /* Impede que os itens encolham */
+            justify-content: center;
+            flex-shrink: 0;
             transition: border-color 0.3s ease, background-color 0.3s ease;
-            box-sizing: border-box; /* Inclui padding e border na largura/altura */
+            box-sizing: border-box;
         }
 
         .timeline-item.active {
@@ -317,7 +308,7 @@
 
         .timeline-item .slot-image {
             width: 100%;
-            height: 70%; /* Imagem ocupa menos espaço para o nome */
+            height: 70%;
             object-fit: cover;
             border-radius: 6px;
             border: none;
@@ -328,10 +319,10 @@
 
         .timeline-item .slot-name {
             position: absolute;
-            bottom: 3px; /* Posição do nome abaixo da imagem */
+            bottom: 3px;
             left: 0;
             right: 0;
-            font-size: 0.65em; /* Tamanho da fonte para o nome na timeline */
+            font-size: 0.65em;
             color: #333;
             text-align: center;
             margin: 0;
@@ -340,12 +331,12 @@
             line-height: 1.1em;
             max-height: 2.2em;
             overflow: hidden;
-            background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente para legibilidade */
-            border-radius: 0 0 8px 8px; /* Apenas as bordas inferiores arredondadas */
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 0 0 8px 8px;
         }
 
         .timeline-navigation {
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         /* Modals */
@@ -378,17 +369,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             max-width: 500px;
             width: 90%;
-            transform: scale(0.9);
-            transition: transform 0.3s ease-out;
-            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        #successModal .modal-content {
             animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
         }
 
@@ -427,118 +407,60 @@
             animation: bounce 0.8s ease-out;
         }
 
+        /* Video styles in modal */
+        .modal-content video {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
         #successModal {
-            display: none; /* Inicia oculto */
+            display: none;
         }
 
         /* Responsividade */
         @media (max-width: 992px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .header-left, .header-right {
-                width: 100%;
-                justify-content: center;
-                margin-bottom: 10px;
-            }
-            .activity-title {
-                font-size: 1.8em;
-                margin-top: 10px;
-            }
-            .main-container {
-                flex-direction: column;
-                align-items: center;
-                padding: 15px;
-            }
-            .side-panel-left {
-                flex: none;
-                width: 90%;
-                max-width: 300px; /* Limita a largura em telas menores */
-            }
-            .game-area {
-                width: 100%;
-                min-width: auto;
-                padding: 15px;
-            }
+            .header { flex-direction: column; text-align: center; }
+            .header-left, .header-right { width: 100%; justify-content: center; margin-bottom: 10px; }
+            .activity-title { font-size: 1.8em; margin-top: 10px; }
+            .main-container { flex-direction: column; align-items: center; padding: 15px; }
+            .side-panel-left { flex: none; width: 90%; max-width: 300px; }
+            .player-image { width: 140px; height: 140px; }
+            .score-counter p { font-size: 1.3em; margin: 8px 0; }
+            .restart-button { padding: 10px 20px; font-size: 1.1em; margin-top: 10px; }
+            .game-area { width: 100%; min-width: auto; padding: 15px; }
             .image-gallery-random .gallery-item {
-                width: calc(100% / 5 - 8px);
-                max-width: 70px;
+                width: calc(50% - 15px);
             }
-            .image-gallery-random .gallery-item img {
-                height: 70px;
-            }
-            .image-gallery-random .image-name {
-                font-size: 0.65em;
-            }
-
-            .timeline-item {
-                width: 80px;
-                height: 90px;
-            }
-            .timeline-item .slot-name {
-                font-size: 0.6em;
-            }
-
-            .timeline-wrapper {
-                margin: 15px;
-                padding: 15px;
-            }
+            .image-gallery-random .gallery-item img { height: 100px; }
+            .image-gallery-random .image-name { font-size: 0.65em; }
+            .timeline-item { width: 80px; height: 90px; }
+            .timeline-item .slot-name { font-size: 0.6em; }
+            .timeline-wrapper { margin: 15px; padding: 15px; }
         }
 
         @media (max-width: 576px) {
-            .emblema, .logo {
-                height: 50px;
-            }
-            .activity-title {
-                font-size: 1.5em;
-            }
-            .player-image {
-                width: 100px;
-                height: 100px;
-            }
-            .score-counter p {
-                font-size: 1em;
-            }
-            .restart-button, .back-to-map-button, .modal-content button {
-                padding: 8px 15px;
-                font-size: 0.9em;
-            }
-            .image-gallery-random {
-                max-height: 200px; /* Reduz altura da galeria */
-            }
+            .emblema, .logo { height: 50px; }
+            .activity-title { font-size: 1.5em; }
+            .player-image { width: 120px; height: 120px; }
+            .score-counter p { font-size: 1.2em; margin: 6px 0; }
+            .restart-button, .back-to-map-button, .modal-content button { padding: 8px 18px; font-size: 1em; margin-top: 8px; }
+            .image-gallery-random { max-height: 300px; }
             .image-gallery-random .gallery-item {
-                width: calc(100% / 4 - 5px);
-                max-width: 55px;
+                width: calc(50% - 10px);
+                max-width: 150px;
             }
-            .image-gallery-random .gallery-item img {
-                height: 55px;
-            }
-            .image-gallery-random .image-name {
-                font-size: 0.6em;
-            }
-
-            .timeline-item {
-                width: 65px;
-                height: 75px;
-            }
-            .timeline-item .slot-name {
-                font-size: 0.55em;
-            }
-
-            .modal-content {
-                padding: 20px;
-            }
-            .modal-content h2 {
-                font-size: 1.8em;
-            }
-            .modal-content p {
-                font-size: 1em;
-            }
-            .modal-content .seal-image {
-                width: 100px;
-                height: 100px;
-            }
+            .image-gallery-random .gallery-item img { height: 80px; }
+            .image-gallery-random .image-name { font-size: 0.6em; }
+            .timeline-item { width: 65px; height: 75px; }
+            .timeline-item .slot-name { font-size: 0.55em; }
+            .modal-content { padding: 20px; }
+            .modal-content h2 { font-size: 1.8em; }
+            .modal-content p { font-size: 1em; }
+            .modal-content .seal-image { width: 100px; height: 100px; }
         }
     </style>
 </head>
@@ -591,8 +513,19 @@
 
     <div id="instructionsModal" class="modal-overlay">
         <div class="modal-content">
-            <h2>Como Jogar?</h2>
-            <p>Sua missão é colocar as ações do dia a dia na ordem certa. Clique nas imagens na parte de cima para preencher a linha do tempo abaixo. Acerte a sequência para ganhar!</p>
+            <h2>COMO JOGAR?</h2>
+            <!-- Video de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
+            <video id="instructionVideo" controls>
+                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
+            <p>
+                SUA MISSÃO É COLOCA AS AÇÕES DA ROTINA DIÁRIA NA ORDEM CERTA!
+                <br>CLIQUE NAS IMAGENS NA PARTE DE CIMA PARA PREENCHER A LINHA DO TEMPO ABAIXO.
+                <br>ACERTE A SEQUÊNCIA PARA GANHAR!
+                <br>
+                <br> ASSISTA AO VÍDEO PARA ENTENDER AS REGRAS DO JOGO.
+            </p>
             <button id="startGameFromModalButton">JOGAR!</button>
         </div>
     </div>
@@ -608,25 +541,23 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Define o ID do selo para este jogo
-        const SEAL_ID_FOR_THIS_GAME = '1'; // Para o jogo da Rotina Diária
+        const SEAL_ID_FOR_THIS_GAME = '1';
 
-        // CORREÇÃO: Verifique a sintaxe das strings aqui. As aspas devem fechar corretamente.
         const actions = [
             { name: 'Acordar', image: "acordar.png" },
             { name: 'Escovar dentes cedo', image: 'dentes.png' },
             { name: 'Trocar de roupa', image: 'trocaroupa.png' },
             { name: 'Tomar café', image: 'café.png' },
             { name: 'Ir à escola', image: 'ir_escola.png' },
-            { name: 'Estudar (1)', image: 'estudar.png' },
+            { name: 'Estudar de manhã', image: 'estudar.png' },
             { name: 'Almoçar na escola', image: 'almoço.png' },
-            { name: 'Estudar (2)', image: 'estudar.png' },
+            { name: 'Estudar de tarde', image: 'estudar.png' },
             { name: 'Voltar da escola', image: 'volta_escola.png' },
             { name: 'Tomar banho', image: 'banho.png' },
             { name: 'Jantar', image: 'janta.png' },
             { name: 'Relaxar', image: 'relaxar.png' },
             { name: 'Escovar dentes para dormir', image: 'escova_dente2.png' },
-            { name: 'Dormir', image: 'Dormir.png' }
+            { name: 'Dormir', image: 'dormir.png' }
         ];
 
         const timeline = document.getElementById('timeline');
@@ -639,19 +570,29 @@
         const startGameFromModalButton = document.getElementById('startGameFromModalButton');
         const playerImage = document.getElementById('playerImage');
         const successModal = document.getElementById('successModal');
-        const returnToMapAfterCompletion = document.getElementById('returnToMapAfterCompletion'); // Novo elemento
+        const returnToMapAfterCompletion = document.getElementById('returnToMapAfterCompletion');
 
         let currentActionIndex = 0, correctCount = 0, wrongCount = 0;
 
-        function showInstructionsModal() { instructionsModal.style.display = 'flex'; instructionsModal.classList.add('visible'); }
-        function hideInstructionsModal() { instructionsModal.style.display = 'none'; instructionsModal.classList.remove('visible'); }
+        function showInstructionsModal() { 
+            instructionsModal.style.display = 'flex'; 
+            instructionsModal.classList.add('visible'); 
+            // Pausa o vídeo quando o modal é aberto (se estiver tocando)
+            const video = document.getElementById('instructionVideo');
+            if (video) video.pause();
+        }
+
+        function hideInstructionsModal() { 
+            instructionsModal.style.display = 'none'; 
+            instructionsModal.classList.remove('visible'); 
+            // Pausa o vídeo quando o modal é fechado
+            const video = document.getElementById('instructionVideo');
+            if (video) video.pause();
+        }
+        
         function showSuccessModal() { successModal.style.display = 'flex'; successModal.classList.add('visible'); }
         function hideSuccessModal() { successModal.style.display = 'none'; successModal.classList.remove('visible'); }
 
-        /**
-         * Atualiza o status visual do jogador (se o selo foi conquistado).
-         * Verifica o localStorage para a lista de selos coletados.
-         */
         function updatePlayerSealStatus() {
             const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
             if (collectedSeals.includes(SEAL_ID_FOR_THIS_GAME)) {
@@ -671,11 +612,10 @@
             messageArea.style.cssText = `visibility: visible; opacity: 1; color: ${type === 'correct' ? '#28a745' : '#dc3545'}; background-color: ${type === 'correct' ? '#e9f7ef' : '#f8d7da'}; z-index: 10;`;
 
             if (showReturnButton) {
-                // Adiciona a imagem do selo e o botão apenas quando o jogo é completo
                 messageArea.innerHTML += `<br><img src="HESP.png" alt="Selo de Conquista da Rotina Diária" class="seal-image">`;
-                returnToMapAfterCompletion.style.display = 'block'; // Mostra o botão abaixo da message-area
+                returnToMapAfterCompletion.style.display = 'block';
             } else {
-                returnToMapAfterCompletion.style.display = 'none'; // Esconde o botão
+                returnToMapAfterCompletion.style.display = 'none';
                 setTimeout(() => { messageArea.style.cssText = `visibility: hidden; opacity: 0; z-index: 1;`; }, 3000);
             }
         }
@@ -705,37 +645,31 @@
             imageGalleryRandom.innerHTML = '';
             const shuffledActions = [...actions].sort(() => 0.5 - Math.random());
             shuffledActions.forEach(action => {
-                const itemContainer = document.createElement('div'); // Cria um container para imagem e texto
-                itemContainer.className = 'gallery-item'; // Adicione uma classe para estilização
+                const itemContainer = document.createElement('div');
+                itemContainer.className = 'gallery-item';
 
                 const img = document.createElement('img');
                 img.src = action.image;
                 img.alt = img.title = action.name;
-                img.dataset.actionName = action.name; // Usar o nome da ação para o dataset
+                img.dataset.actionName = action.name;
                 img.addEventListener('click', handleImageClick);
 
-                const nameText = document.createElement('p'); // Cria um parágrafo para o nome
+                const nameText = document.createElement('p');
                 nameText.textContent = action.name;
-                nameText.className = 'image-name'; // Adicione uma classe para estilização
+                nameText.className = 'image-name';
 
                 itemContainer.appendChild(img);
                 itemContainer.appendChild(nameText);
-                imageGalleryRandom.appendChild(itemContainer); // Adiciona o container à galeria
+                imageGalleryRandom.appendChild(itemContainer);
             });
         }
 
         function handleImageClick(event) {
-            // Verifica se o clique foi na imagem ou no texto dentro do item da galeria
             const clickedElement = event.target;
-            // Percorre para cima no DOM até encontrar o '.gallery-item' ou a própria imagem
             const clickedItemContainer = clickedElement.closest('.gallery-item') || clickedElement;
-
-            // Se o elemento clicado é a imagem, seu data-actionName está nela.
-            // Se o elemento clicado é o texto, precisamos pegar o data-actionName da imagem dentro do seu pai.
             const clickedActionName = clickedElement.dataset.actionName || clickedItemContainer.querySelector('img')?.dataset.actionName;
 
             if (!clickedActionName || currentActionIndex >= actions.length || clickedItemContainer.classList.contains('hidden')) return;
-
 
             const expectedActionName = actions[currentActionIndex].name;
 
@@ -743,21 +677,20 @@
                 correctCount++;
                 updateScore();
                 displayMessage(`Boa! "${expectedActionName}" é a próxima ação!`, 'correct');
-                clickedItemContainer.classList.add('hidden'); // Esconde o container inteiro
+                clickedItemContainer.classList.add('hidden');
                 const currentTimelineSlot = timeline.children[currentActionIndex];
                 if (currentTimelineSlot) {
                     currentTimelineSlot.classList.remove('active');
                     currentTimelineSlot.classList.add('completed');
                     let slotImage = document.createElement('img');
                     slotImage.className = 'slot-image';
-                    // Usar a imagem do itemContainer clicado para garantir que seja a correta
                     slotImage.src = clickedItemContainer.querySelector('img').src;
                     slotImage.alt = clickedItemContainer.querySelector('img').alt;
                     currentTimelineSlot.appendChild(slotImage);
 
-                    const slotName = document.createElement('p'); // Adiciona um parágrafo para o nome na timeline
-                    slotName.textContent = expectedActionName; // O nome da ação esperada
-                    slotName.className = 'slot-name'; // Adicione uma classe para estilização
+                    const slotName = document.createElement('p');
+                    slotName.textContent = expectedActionName;
+                    slotName.className = 'slot-name';
                     currentTimelineSlot.appendChild(slotName);
 
                     setTimeout(() => slotImage.style.cssText = `opacity: 1; transform: scale(1);`, 50);
@@ -776,16 +709,9 @@
         }
 
         function gameComplete() {
-            // Remove a mensagem de feedback temporária
             messageArea.style.cssText = `visibility: hidden; opacity: 0; z-index: 1;`;
-
-            // Atualiza o status do jogador para mostrar o selo no avatar
             updatePlayerSealStatus();
-
-            // Mostra a mensagem de parabéns na área de mensagem e o botão de retorno
-            displayMessage(`Parabéns! Você completou a Rotina Diária!`, 'correct', true); // Usa o displayMessage com showReturnButton = true
-
-            // Exibe o modal de sucesso para uma celebração mais visual
+            displayMessage(`Parabéns! Você completou a Rotina Diária!`, 'correct', true);
             showSuccessModal();
         }
 
@@ -796,7 +722,7 @@
             updateScore();
             messageArea.style.cssText = `visibility: hidden; opacity: 0; z-index: 1;`;
             messageArea.textContent = '';
-            returnToMapAfterCompletion.style.display = 'none'; // Garante que o botão esteja oculto no início
+            returnToMapAfterCompletion.style.display = 'none';
             renderTimelineSlots();
             renderRandomImageGallery();
             highlightCurrentTimelineSlot();
@@ -811,7 +737,7 @@
         startGameFromModalButton.addEventListener('click', hideInstructionsModal);
 
         function initializeGame() {
-            updatePlayerSealStatus(); // Verifica o status do selo no início
+            updatePlayerSealStatus();
             setupNewRound();
             showInstructionsModal();
         }
@@ -820,7 +746,4 @@
     });
     </script>
 </body>
-
 </html>
-
-

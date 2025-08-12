@@ -681,7 +681,7 @@
                 </div>
             </div>
             <div id="back-to-map-link">
-                <a href="mapa.html?seal_earned=2">Voltar ao Mapa</a>
+                <a href="mapa.html?seal_earned=2">Retornar ao Mapa Principal</a>
             </div>
         </div>
     </div>
@@ -691,7 +691,7 @@
             <p>Você conseguiu!! Organizou todos os alunos na fila, agora o ônibus já poderá ir embora!</p>
             <div id="completion-seal">
                 </div>
-            <button onclick="goToMapaPage()">Voltar à Página Anterior</button>
+            <button onclick="goToMapaPage()">Retornar ao Mapa Principal</button>
         </div>
     </div>
 
@@ -710,8 +710,20 @@
     <div id="instructions-modal">
         <div class="modal-content">
             <h2>Bem-vindo(a) ao Jogo de Organização de Alunos!</h2>
-            <p><strong>Instruções do Jogo:</strong> Arraste os alunos do pátio da escola para as filas de ônibus. É importante observar que cada aluno tem o número do seu ônibus e seu lugar na fila. Mova os alunos na ordem correta para o ônibus certo. Evite "cortar fila" ou colocar alunos no ônibus errado!</p>
-            <p>Seja rápido e organize as filas para que os ônibus possam partir em segurança!</p>
+            <!-- Video de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
+            <video id="instructionVideo" controls>
+                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
+            
+                <br>**INSTRUÇÕES DO JOGO:**
+                <br>Sua missão é colocar os alunos do pátio da escola nas filas de ônibus.
+                <br>É importante observar que cada aluno tem o número do seu ônibus e seu lugar na fila.
+                <br>Mova os alunos na ordem correta para o ônibus certo. <strong> NÃO PODE </strong> cortar fila ou colocar alunos no ônibus errado!
+                <br>
+                <br>Seja rápido e organize as filas para que os ônibus possam partir em segurança!
+                <p>Assista ao vídeo para entender as regras do jogo.</p>
+            </p>
             <button onclick="closeInstructionsModal()">Começar Jogo</button>
         </div>
     </div>
@@ -1246,7 +1258,6 @@
                 cancelBtn.onclick = () => { document.body.removeChild(overlay); if (onCancel) onCancel(); };
 
                 btnContainer.appendChild(confirmBtn);
-                btnContainer.appendChild(cancelBtn);
                 box.appendChild(msg);
                 box.appendChild(btnContainer);
                 overlay.appendChild(box);

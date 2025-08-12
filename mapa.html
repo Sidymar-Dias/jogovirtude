@@ -68,6 +68,11 @@
             backdrop-filter: blur(5px);
         }
 
+        /* OCULTA O OVERLAY FINAL POR PADRÃO VIA CSS */
+        #final-congrats-overlay {
+            display: none;
+        }
+
         #player-id-box, #instructions-box, #final-congrats-box { /* Combined box styles */
             background-color: var(--color-white);
             padding: var(--spacing-xl); /* Ajustado para ser um pouco menor */
@@ -78,11 +83,23 @@
             max-width: 380px; /* Ajustado para ser menor */
             width: 90%;
             box-sizing: border-box;
+            /* Flexbox para centralizar conteúdo verticalmente em caso de rolagem */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         #instructions-box {
-            max-width: 550px; /* Larger max-width for instructions */
+            max-width: 800px; /* Largura ampliada para as instruções */
             padding: var(--spacing-xl);
+            box-sizing: border-box; /* Garante que padding está incluído na largura */
+            /* NOVOS ESTILOS PARA ROLAGEM E CONTEÚDO */
+            max-height: 90vh; /* Limita a altura do modal a 90% da altura da viewport */
+            overflow-y: auto; /* Adiciona rolagem vertical se o conteúdo exceder max-height */
+            display: flex; /* Transforma em um container flexível */
+            flex-direction: column; /* Organiza os itens internos em coluna */
+            align-items: center; /* Centraliza os itens horizontalmente */
+            justify-content: flex-start; /* Alinha os itens ao topo do modal */
         }
 
         #final-congrats-box {
@@ -101,32 +118,45 @@
         }
 
         #final-congrats-box img {
-            max-width: 80%; /* Ajustado para ser menor */
+            max-width: 90%; /* AUMENTADO PARA DESTAQUE */
             height: auto;
             border-radius: var(--border-radius-md);
-            margin-top: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
+            margin: var(--spacing-lg) auto; /* CENTRALIZA A IMAGEM E ADICIONA MARGEM */
+            display: block; /* NECESSÁRIO PARA MARGIN AUTO FUNCIONAR EM IMAGENS */
         }
 
-        #instructions-box p, #final-congrats-box p {
-            text-align: left;
+        #instructions-box p, #final-congrats-box p, #player-id-box p {
+            text-align: left; /* Alinha o texto à esquerda */
             color: var(--color-dark);
             line-height: 1.6;
             margin-bottom: var(--spacing-lg);
+            width: 100%; /* Ocupa toda a largura disponível */
+            max-width: 100%; /* Garante que o texto não transborde */
+            box-sizing: border-box;
+            padding: 0; /* Remove padding horizontal, confiando no padding do pai */
+            margin-left: auto; /* Centraliza o texto */
+            margin-right: auto; /* Centraliza o texto */
         }
+        /* Ajuste para centralizar o último parágrafo em player-id-box */
+        #player-id-box p:last-of-type {
+            text-align: center;
+        }
+
 
         #instructions-box ul {
             text-align: left;
             list-style: none; /* Remove default bullet points */
-            padding: 0;
-            margin-bottom: var(--spacing-xl);
+            padding: 0; /* Remove padding horizontal */
+            margin: 0 auto var(--spacing-lg); /* Centralizado e com margem inferior */
+            width: 100%; /* Garante que ocupa a largura total disponível */
+            max-width: 100%; /* Segurança para não transbordar */
+            box-sizing: border-box; /* Inclui padding na largura */
         }
 
         #instructions-box ul li {
             margin-bottom: var(--spacing-sm);
             color: var(--color-dark);
             position: relative;
-            padding-left: 0; /* Ajustado para remover o padding extra */
         }
 
 
@@ -422,6 +452,26 @@
             background-color: var(--color-secondary-hover);
         }
 
+        /* Estilos para vídeos em modais */
+        .modal-video {
+            width: 100%;
+            max-width: min(100%, 600px); /* Ajustado para ser responsivo e não quebrar o layout, agora mais largo */
+            height: auto;
+            margin: var(--spacing-lg) auto;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        .modal-video-label {
+            font-size: 0.9em;
+            color: var(--color-medium);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+            width: 100%; /* Garante que ocupe a largura total e centralize */
+            box-sizing: border-box;
+            padding: 0; /* Remove padding, confiando no padding do pai */
+        }
+
+
         /* Media Queries para Responsividade */
         @media (max-width: 992px) {
             header .header-logo {
@@ -466,6 +516,12 @@
                 margin-bottom: 3px;
                 padding: 6px var(--spacing-lg);
                 font-size: 0.85em;
+            }
+
+            /* Ajuste para o modal de instruções em telas menores */
+            #instructions-box {
+                max-width: 90%; /* Volta a ser 90% para tablets */
+                padding: var(--spacing-lg);
             }
         }
 
@@ -635,9 +691,14 @@
     </style>
 </head>
 <body>
-    <div id="player-id-overlay">
+    <div id="player-id-overlay" style="display: none;">
         <div id="player-id-box">
             <h2>Bem-vindo(a) ao CENAM!</h2>
+            <video id="playerIdVideo" controls class="modal-video">
+                <source src="seu_video_audiodescricao_id.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
+            <p class="modal-video-label">Assista ao vídeo para uma audiodescrição.</p>
             <p>Para começar sua aventura, por favor, digite seu nome:</p>
             <input type="text" id="player-name-input" placeholder="Seu nome">
             <button id="start-game-button">Começar Jogo</button>
@@ -647,11 +708,16 @@
     <div id="instructions-overlay">
         <div id="instructions-box">
             <h2>Como Jogar</h2>
+            <video id="instructionsVideo" controls class="modal-video">
+                <source src="seu_video_audiodescricao_regras.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
+            <p class="modal-video-label">Assista ao vídeo para uma audiodescrição das regras.</p>
             <p>Olá, <span id="player-name-in-instructions"></span>! Boas-vindas à **AVENTURA DAS VIRTUDES**! Seu objetivo é explorar o mapa e coletar os <strong>Selos da Virtude</strong>. Cada selo está em uma porta que leva a uma atividade divertida. Ao concluir a atividade, você ganhará o selo correspondente!</p>
             <ul>
                 <li><strong>Movimentação:</strong> Use as <strong>setas do teclado</strong> (↑ ↓ ← →) para mover seu avatar pelo mapa.</li>
                 <li><strong>Interação:</strong> Use as <strong>setas do teclado</strong> para se mover até as <strong>portas</strong>, ou clique diretamente nelas. Ao se aproximar/clicar, você será levado(a) à atividade da virtude.</li>
-                <li><strong>Progresso:</strong> Acompanhe seus selos coletados na <strong>barra lateral à direita</strong>. Quando todos os selos forem seus, uma surpresa final te aguarda!</li>
+                <li><strong>Progresso:</strong> Acompanhe seus selos coletados na <strong>barra lateral</strong>. Quando todos os selos forem conquistados uma surpresa final te aguarda!</li>
             </ul>
             <p>Boa sorte e divirta-se!</p>
             <button id="understand-button">Entendi!</button>
@@ -661,7 +727,8 @@
     <div id="final-congrats-overlay">
         <div id="final-congrats-box">
             <h2 id="final-congrats-title"></h2>
-            <img src="puzzle.png" alt="Herói Final">
+            <!-- IMAGEM FINAL DA CONQUISTA ATUALIZADA AQUI: -->
+            <img src="final.png" alt="Herói Final">
             <p id="final-congrats-message"></p>
             <button id="congrats-button">Continuar</button>
         </div>
@@ -733,6 +800,11 @@
             const finalCongratsMessage = document.getElementById('final-congrats-message'); // Novo elemento
             const playerNameInInstructions = document.getElementById('player-name-in-instructions'); // Novo elemento para o nome no modal de instruções
 
+            // Novos elementos de vídeo
+            const playerIdVideo = document.getElementById('playerIdVideo');
+            const instructionsVideo = document.getElementById('instructionsVideo');
+
+
             // Configurações do Jogo
             const PLAYER_SPEED = 1.5;
             const AUTO_MOVE_SPEED = 0.8;
@@ -770,6 +842,10 @@
             // Função para lidar com o fechamento do modal de instruções
             const handleCloseInstructions = () => {
                 instructionsOverlay.style.display = 'none';
+                if (instructionsVideo) {
+                    instructionsVideo.pause();
+                    instructionsVideo.currentTime = 0;
+                }
                 localStorage.setItem('instructionsShown', 'true');
                 document.removeEventListener('keydown', handleInstructionsEnterKey); // Remove o listener do Enter
                 initGame(localStorage.getItem('playerName')); // Inicia o jogo
@@ -984,26 +1060,29 @@
                 // Garante que o array está limpo de valores nulos/indefinidos e transforma em string para comparação
                 collectedSeals = collectedSeals.filter(id => id && SEAL_DATA[id]).map(String);
 
-                console.log('checkGameCompletion called.');
-                console.log('Collected Seals:', collectedSeals);
+                console.log('--- checkGameCompletion START ---');
+                console.log('Collected Seals (inside function):', collectedSeals);
                 console.log('Number of Collected Seals:', collectedSeals.length);
                 console.log('Total Seals Required:', TOTAL_SEALS);
                 console.log('Final Congrats Shown Flag:', localStorage.getItem('finalCongratsShown'));
 
                 if (collectedSeals.length === TOTAL_SEALS) {
-                    console.log('All seals collected!');
+                    console.log('CONDITION MET: All seals collected!');
                     if (!localStorage.getItem('finalCongratsShown')) {
-                        console.log('Displaying final congrats modal!');
+                        console.log('ACTION: Displaying final congrats modal for the first time!');
                         finalCongratsTitle.textContent = `Parabéns, ${playerName}!`;
                         finalCongratsMessage.textContent = `Você coletou todos os Selos da Virtude e se tornou um(a) verdadeiro(a) Herói(na) na Aventura das Virtudes! Sua jornada de aprendizado e crescimento é uma inspiração para todos.`;
-                        finalCongratsOverlay.style.display = 'flex';
+                        finalCongratsOverlay.style.display = 'flex'; // Torna o modal visível
                         localStorage.setItem('finalCongratsShown', 'true');
                     } else {
-                        console.log('Final congrats modal already shown.');
+                        console.log('INFO: Final congrats modal already shown previously.');
                     }
                 } else {
-                    console.log('Not all seals collected yet.');
+                    console.log('CONDITION NOT MET: Not all seals collected yet. Current:', collectedSeals.length, 'Required:', TOTAL_SEALS);
+                    // Garante que o overlay esteja oculto se a condição não for atendida
+                    finalCongratsOverlay.style.display = 'none'; // Mantém o modal oculto
                 }
+                console.log('--- checkGameCompletion END ---');
             }
 
             /**
@@ -1079,8 +1158,9 @@
             const earnedSealId = urlParams.get('seal_earned');
 
             // Verifica se um selo foi ganho E se ele ainda não está na lista
-            if (earnedSealId && SEAL_DATA[earnedSealId] && !collectedSeals.includes(earnedSealId)) {
-                collectedSeals.push(earnedSealId);
+            // Garante que earnedSealId é uma string antes de verificar
+            if (earnedSealId && SEAL_DATA[earnedSealId] && !collectedSeals.includes(String(earnedSealId))) {
+                collectedSeals.push(String(earnedSealId));
                 localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
                 // Remove o parâmetro da URL para evitar adicionar o selo novamente se a página for recarregada
                 window.history.replaceState({}, document.title, window.location.pathname);
@@ -1090,17 +1170,24 @@
             const playerName = localStorage.getItem('playerName');
             const instructionsShown = localStorage.getItem('instructionsShown');
 
-            // Esconde todos os overlays por padrão, e mostramos apenas o necessário.
-            playerOverlay.style.display = 'none';
+            // Esconde os overlays que não devem estar visíveis por padrão
+            // (finalCongratsOverlay já está hidden por CSS)
+            // IMPORTANTE: playerOverlay agora tem display: none; no HTML
+            // playerOverlay.style.display = 'none'; // Esta linha é agora redundante
             instructionsOverlay.style.display = 'none';
-            finalCongratsOverlay.style.display = 'none';
+            if (playerIdVideo) playerIdVideo.pause();
+            if (instructionsVideo) instructionsVideo.pause();
+
 
             if (!playerName) { // Se o nome do jogador NÃO está salvo
                 playerOverlay.style.display = 'flex'; // Mostra o modal de identificação
+                if (playerIdVideo) {
+                    playerIdVideo.currentTime = 0;
+                    playerIdVideo.play().catch(e => console.log("Auto-play de vídeo impedido no modal de ID:", e)); // Tenta dar play
+                }
                 const handleStartGame = () => {
                     const enteredName = nameInput.value.trim();
                     if (enteredName === '') {
-                        // Substituído alert() por uma mensagem customizada
                         const customAlert = (message) => {
                             const overlay = document.createElement('div');
                             overlay.style.cssText = `
@@ -1139,9 +1226,17 @@
                     }
                     localStorage.setItem('playerName', enteredName);
                     playerOverlay.style.display = 'none'; // Esconde o modal de identificação
+                    if (playerIdVideo) playerIdVideo.pause(); // Pausa o vídeo de identificação
+
                     playerNameInInstructions.textContent = enteredName; // Define o nome no modal de instruções
                     instructionsOverlay.style.display = 'flex'; // Mostra o modal de instruções
+                    if (instructionsVideo) {
+                        instructionsVideo.currentTime = 0;
+                        instructionsVideo.play().catch(e => console.log("Auto-play de vídeo impedido no modal de instruções:", e)); // Tenta dar play
+                    }
+
                     understandButton.addEventListener('click', handleCloseInstructions); // Adiciona o listener de clique
+                    nameInput.removeEventListener('keydown', handleStartGame); // Remove o listener do Enter no input para evitar duplicidade
                     document.addEventListener('keydown', handleInstructionsEnterKey); // Adiciona o listener para Enter
                 };
 
@@ -1155,6 +1250,10 @@
             } else if (!instructionsShown) { // Se o nome está salvo, mas as instruções NÃO foram mostradas
                 playerNameInInstructions.textContent = playerName; // Define o nome no modal de instruções
                 instructionsOverlay.style.display = 'flex'; // Mostra o modal de instruções
+                if (instructionsVideo) {
+                    instructionsVideo.currentTime = 0;
+                    instructionsVideo.play().catch(e => console.log("Auto-play de vídeo impedido no modal de instruções:", e)); // Tenta dar play
+                }
                 understandButton.addEventListener('click', handleCloseInstructions); // Adiciona o listener de clique
                 document.addEventListener('keydown', handleInstructionsEnterKey); // Adiciona o listener para Enter
 
@@ -1166,9 +1265,6 @@
             // Event listener para o botão "Continuar" do modal de parabéns final
             congratsButton.addEventListener('click', () => {
                 finalCongratsOverlay.style.display = 'none';
-                // Após fechar o modal de parabéns, o jogo continua no mapa.
-                // Se desejar redirecionar para uma tela final ou início, faça aqui:
-                // window.location.href = 'pagina_final.html';
             });
         });
     </script>

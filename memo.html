@@ -345,6 +345,15 @@
         }
         /* --- FIM DO NOVO ESTILO --- */
 
+        /* Estilo para o vídeo no modal */
+        .modal-content video {
+            width: 100%;
+            max-width: 400px; /* Limita a largura do vídeo */
+            height: auto;
+            margin: 20px auto; /* Centraliza e adiciona margem */
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
 
         /* Responsividade para telas menores */
         @media (max-width: 768px) {
@@ -462,17 +471,22 @@
         <div class="modal-content">
             <span class="close-button" id="closeInstructions">&times;</span>
             <h2>Como Jogar</h2>
-            <p>Seja bem-vindo(a) ao Jogo da Memória!</p>
-            <p>O objetivo é encontrar todos os pares de cartas idênticas. Clique em uma carta para virá-la e depois clique em outra.</p>
-            <ul>
-                <li>Se as cartas forem iguais, elas permanecerão viradas e você ganha um acerto.</li>
-                <li>Se forem diferentes, elas se virarão novamente após um breve momento e você não marcará ponto!</li>
-            </ul>
-            <p>Seu progresso será registrado nos contadores de acertos e erros. Ao encontrar todos os 10 pares, você ganhará um selo da conquista!</p>
+            <!-- Vídeo de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
+            <video id="instructionVideo" controls>
+                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
+            <p>
+                INSTRUÇÕES DO JOGO:
+                <br>
+                <br>Sua missão é encontrar todos os pares de cartas idênticas. Clique em uma carta para virá-la e depois clique em outra.
+                <br>Se as cartas forem iguais, elas permanecerão viradas e você ganha um acerto.
+                <br>Se forem diferentes, elas se virarão novamente após um breve momento e você não marcará ponto!
+                <br>Assista ao vídeo para entender as regras do jogo.
+            </p>
             <button id="startGameButton" class="game-controls-button">Começar Jogo!</button>
         </div>
     </div>
-
     <div id="congratulationsModal" class="congratulations-modal">
         <div class="congratulations-modal-content">
             <h2>Parabéns pela Conquista!</h2>
@@ -808,6 +822,9 @@
         // Botão para fechar o modal de instruções (o jogo não começa automaticamente)
         closeInstructionsButton.addEventListener('click', () => {
             instructionsModal.style.display = 'none';
+            // Pausa o vídeo quando o modal é fechado
+            const video = document.getElementById('instructionVideo');
+            if (video) video.pause();
         });
 
         // Botão "Começar Jogo!" dentro do modal de instruções
@@ -827,6 +844,10 @@
                 this.src = 'https://placehold.co/120x120/ccc/666?text=Avatar';
             };
             updatePlayerAvatarStatus(); // Atualiza o status do avatar com base nos selos coletados
+
+            // Pausa o vídeo quando o modal é aberto (para evitar auto-play indesejado se já estiver tocando)
+            const video = document.getElementById('instructionVideo');
+            if (video) video.pause();
         });
     </script>
 </body>

@@ -277,7 +277,7 @@
             100% { transform: scale(1); }
         }
 
-        /* Estilos para o Modal de Boas-Vindas */
+        /* Estilos para o Modal de Boas-Vindas (incluindo vídeo) */
         .modal-info {
             position: fixed;
             top: 0;
@@ -285,7 +285,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
+            display: none; /* Alterado para none por padrão, será ativado pelo JS */
             justify-content: center;
             align-items: center;
             z-index: 1001; /* Maior que o modal de conclusão */
@@ -300,41 +300,52 @@
             width: 600px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             border: 2px solid #007bff;
+            /* ADIÇÃO CRÍTICA PARA ROLAGEM E CONTEÚDO */
+            max-height: 90vh; /* Limita a altura do modal a 90% da altura da viewport */
+            overflow-y: auto; /* Adiciona rolagem vertical se o conteúdo exceder max-height */
+            display: flex; /* Transforma em um container flexível */
+            flex-direction: column; /* Organiza os itens internos em coluna */
+            align-items: center; /* Centraliza os itens horizontalmente */
+            justify-content: flex-start; /* Alinha os itens ao topo do modal */
+            box-sizing: border-box; /* Inclui padding na altura total */
         }
-        .conteudo-modal-info h2 {
-            color: #007bff;
-            font-size: 2em;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        .conteudo-modal-info p {
-            color: #333;
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 20px;
+        /* Garantir que parágrafos e listas preencham a largura */
+        .conteudo-modal-info p,
+        .conteudo-modal-info ul {
+            width: 100%;
+            max-width: 500px; /* Opcional: limita a largura do texto para leitura */
+            box-sizing: border-box;
+            text-align: center; /* Centraliza o texto */
         }
         .conteudo-modal-info ul {
-            text-align: left;
+            text-align: left; /* Mantém listas alinhadas à esquerda dentro do seu max-width */
             margin: 0 auto 20px;
             padding-left: 25px;
-            max-width: 80%;
-            color: #444;
         }
-        .conteudo-modal-info ul li {
-            margin-bottom: 10px;
-        }
+
         .botao-fechar-modal {
             background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
+            cursor: pointer; /* Adicionado cursor pointer */
             font-size: 1em;
             transition: background-color 0.3s ease;
+            margin-top: auto; /* Empurra o botão para o final do conteúdo flexível */
         }
         .botao-fechar-modal:hover {
             background-color: #0056b3;
+        }
+
+        /* Estilos do vídeo dentro do modal de informações */
+        .conteudo-modal-info video {
+            width: 100%;
+            max-width: 500px; /* Limita a largura do vídeo */
+            height: auto;
+            margin: 0 auto 20px; /* Centraliza e adiciona margem abaixo */
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         /* Responsividade com Media Queries aprimoradas */
@@ -531,15 +542,20 @@
     <div id="modal-boas-vindas" class="modal-info">
         <div class="conteudo-modal-info">
             <h2>Bem-vindo à Aventura!</h2>
-            <p>Sua missão é recriar a imagem, colocando cada peça no seu devido lugar. Prepare-se para um desafio que testará sua atenção e raciocínio!</p>
+            <!-- Vídeo de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
+            <video id="instructionVideo" controls>
+                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
+            <p>Sua missão é recriar a imagem, colocando cada peça no seu devido lugar.</p>
             <h3>Regras do Jogo:</h3>
             <ul>
                 <li>Arraste e Solte: Clique e arraste as peças da área inferior para os espaços vazios no tabuleiro principal.</li>
                 <li>Encaixe Perfeito: Cada peça tem um lugar certo. Se a peça não se encaixar no espaço, ela não será fixada, e um "erro" será contabilizado.</li>
                 <li>Imagem Guia: Use a imagem de referência na barra lateral para te ajudar a montar o quebra-cabeça.</li>
                 <li>Pontuação: Seu placar de acertos e erros será atualizado. Tente minimizar os erros!</li>
-                <li>Selo de Conquista: Complete o quebra-cabeça para ganhar um selo exclusivo e avançar em sua jornada!</li>
-            </ul>
+                <p>Assista ao vídeo para entender as regras do jogo.</p>
+            </ul>  
             <button id="botao-comecar-jogo" class="botao-fechar-modal">Começar Jogo</button>
         </div>
     </div>
@@ -586,6 +602,7 @@
             const botaoComecarJogo = document.getElementById('botao-comecar-jogo');
             const somErro = document.getElementById('som-erro');
             const playerAvatar = document.getElementById('playerAvatar');
+            const instructionVideo = document.getElementById('instructionVideo'); // Referência ao elemento de vídeo
 
             // --- ESTADO DO JOGO ---
             let acertos = 0;
@@ -727,7 +744,7 @@
                 }
             }
 
-            // --- EVENTOS ---
+            // --- Eventos ---
             botaoReiniciar.addEventListener('click', () => {
                 const customConfirm = (message, onConfirm, onCancel) => {
                     const overlay = document.createElement('div');
@@ -787,12 +804,21 @@
             // Evento para fechar o modal de boas-vindas
             botaoComecarJogo.addEventListener('click', () => {
                 modalBoasVindas.style.display = 'none';
+                if (instructionVideo) {
+                    instructionVideo.pause(); // Pausa o vídeo ao fechar o modal
+                    instructionVideo.currentTime = 0; // Volta o vídeo para o início
+                }
                 inicializarJogo(); // Inicia o jogo após fechar o modal
             });
 
             // --- INICIAR O JOGO QUANDO A PÁGINA CARREGAR ---
             // Exibe o modal de boas-vindas ao carregar
-            modalBoasVindas.style.display = 'flex';
+            modalBoasVindas.style.display = 'flex'; // Agora ele é mostrado via JS
+            if (instructionVideo) {
+                // Pausa o vídeo ao abrir o modal para evitar auto-play indesejado
+                instructionVideo.pause();
+                instructionVideo.currentTime = 0; // Volta o vídeo para o início
+            }
             // Atualiza o status do avatar na carga inicial
             updatePlayerAvatarStatus();
         });
