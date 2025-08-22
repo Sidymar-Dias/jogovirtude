@@ -141,11 +141,9 @@
             border: 1px solid #ccc;
         }
         #container-pecas {
-            /* ALTERAÇÃO AQUI: */
-            /* Ajustado para um container flexível com alinhamento */
             display: flex;
-            flex-wrap: wrap; /* Permite que as peças quebrem para a próxima linha */
-            gap: 8px; /* Espaçamento entre as peças */
+            flex-wrap: wrap;
+            gap: 8px;
             padding: 10px;
             background-color: #e0e0e0;
             border-radius: 8px;
@@ -155,17 +153,12 @@
             flex-grow: 1;
             max-width: 400px;
             width: min(90vw, 400px);
-            max-height: 500px;
+            /* ALTERAÇÃO CRÍTICA AQUI: Removido max-height para permitir que o conteúdo defina a altura */
             overflow-y: auto;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             align-self: flex-start;
         }
         .peca-quebra-cabeca {
-            /* ALTERAÇÃO AQUI: */
-            /* A largura e a altura da peça serão calculadas dinamicamente via JS */
-            /* As peças no container de peças agora serão redimensionadas para o tamanho certo */
-            /* O JS vai ajustar o tamanho da peça com base na largura do tabuleiro */
-            /* Removido `width: 100%` e `padding-bottom: 100%` do CSS, pois o JS irá definir o tamanho exato */
             border: 1px solid #000;
             cursor: grab;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -312,6 +305,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+        /* Ajustes para telas menores */
         @media (max-width: 1024px) {
             .info-bar {
                 flex-direction: row;
@@ -343,8 +337,7 @@
             #container-pecas {
                 width: 95vw;
                 max-width: 700px;
-                max-height: 40vh;
-                /* Removido o grid-template-columns daqui */
+                /* Removido max-height */
             }
             .game-title {
                 font-size: 1.8em;
@@ -394,8 +387,7 @@
                 width: 98vw;
                 padding: 8px;
                 gap: 6px;
-                /* Removido o grid-template-columns daqui */
-                max-height: 35vh;
+                /* Removido max-height */
             }
             .conteudo-modal-info h2, .conteudo-modal h2 {
                 font-size: 1.8em;
@@ -444,8 +436,7 @@
                 width: 98vw;
                 padding: 8px;
                 gap: 5px;
-                /* Removido o grid-template-columns daqui */
-                max-height: 30vh;
+                /* Removido max-height */
             }
             .conteudo-modal-info h2, .conteudo-modal h2 {
                 font-size: 1.5em;
@@ -584,28 +575,28 @@
                 pecas.sort(() => Math.random() - 0.5);
                 pecas.forEach(p => containerPecas.appendChild(p));
                 
-                // ALTERAÇÃO CRÍTICA AQUI:
-                // Adiciona um evento para redimensionar as peças quando o tabuleiro muda de tamanho
                 window.addEventListener('resize', redimensionarPecas);
                 redimensionarPecas(); // Chama a função uma vez para definir o tamanho inicial
 
                 updatePlayerAvatarStatus();
             }
 
-            // FUNÇÃO ADICIONADA:
             function redimensionarPecas() {
-                const espacos = document.querySelectorAll('.espaco-peca');
-                if (espacos.length > 0) {
-                    const larguraPeca = espacos[0].offsetWidth;
-                    const alturaPeca = espacos[0].offsetHeight;
+                // Atrasamos a execução para garantir que o tabuleiro já foi renderizado
+                setTimeout(() => {
+                    const espacos = document.querySelectorAll('.espaco-peca');
+                    if (espacos.length > 0) {
+                        const larguraPeca = espacos[0].offsetWidth;
+                        const alturaPeca = espacos[0].offsetHeight;
 
-                    const pecasLivres = document.querySelectorAll('#container-pecas .peca-quebra-cabeca');
-                    pecasLivres.forEach(peca => {
-                        peca.style.width = `${larguraPeca}px`;
-                        peca.style.height = `${alturaPeca}px`;
-                        peca.style.backgroundSize = `${tabuleiro.offsetWidth}px ${tabuleiro.offsetHeight}px`;
-                    });
-                }
+                        const pecasLivres = document.querySelectorAll('#container-pecas .peca-quebra-cabeca');
+                        pecasLivres.forEach(peca => {
+                            peca.style.width = `${larguraPeca}px`;
+                            peca.style.height = `${alturaPeca}px`;
+                            peca.style.backgroundSize = `${tabuleiro.offsetWidth}px ${tabuleiro.offsetHeight}px`;
+                        });
+                    }
+                }, 100);
             }
 
             function atualizarPlacar() {
@@ -627,13 +618,10 @@
                 pecaArrastada.style.opacity = '1';
                 const espacoAlvo = evento.target;
                 
-                // Verifica se o alvo é um espaço vazio
                 if (espacoAlvo.classList.contains('espaco-peca') && !espacoAlvo.hasChildNodes()) {
                     if (pecaArrastada.dataset.id === espacoAlvo.dataset.id) {
-                        // Acertou
                         espacoAlvo.appendChild(pecaArrastada);
                         
-                        // Garante que a peça montada tenha o tamanho exato do espaço
                         pecaArrastada.style.width = '100%';
                         pecaArrastada.style.height = '100%';
 
@@ -642,14 +630,12 @@
                         acertos++;
                         verificarVitoria();
                     } else {
-                        // Errou
                         erros++;
                         somErro.currentTime = 0;
                         somErro.play();
                     }
                     atualizarPlacar();
                 } else {
-                    // Soltou em um local inválido (outra peça ou fora do tabuleiro)
                     erros++;
                     somErro.currentTime = 0;
                     somErro.play();
@@ -665,11 +651,11 @@
                     if (!collectedSeals.includes(ID_SELO)) {
                         collectedSeals.push(ID_SELO);
                         localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
-                        console.log(`Selo ${ID_SELO} adicionado aos selos coletados.`); // DEBUG
+                        console.log(`Selo ${ID_SELO} adicionado aos selos coletados.`);
                     } else {
-                        console.log(`Selo ${ID_SELO} já está coletado.`); // DEBUG
+                        console.log(`Selo ${ID_SELO} já está coletado.`);
                     }
-                    updatePlayerAvatarStatus(); // Atualiza o avatar para refletir o selo ganho
+                    updatePlayerAvatarStatus();
                 }
             }
             
@@ -677,10 +663,10 @@
                 const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
                 if (collectedSeals.includes(ID_SELO)) {
                     playerAvatar.classList.add('unlocked');
-                    console.log('Avatar atualizado: selo desbloqueado.'); // DEBUG
+                    console.log('Avatar atualizado: selo desbloqueado.');
                 } else {
                     playerAvatar.classList.remove('unlocked');
-                    console.log('Avatar atualizado: selo não desbloqueado.'); // DEBUG
+                    console.log('Avatar atualizado: selo não desbloqueado.');
                 }
             }
             
@@ -746,9 +732,8 @@
             
             modalBoasVindas.style.display = 'flex'; // Agora ele é mostrado via JS
             if (instructionVideo) {
-                // Pausa o vídeo ao abrir o modal para evitar auto-play indesejado
                 instructionVideo.pause();
-                instructionVideo.currentTime = 0; // Volta o vídeo para o início
+                instructionVideo.currentTime = 0;
             }
             updatePlayerAvatarStatus();
         });
