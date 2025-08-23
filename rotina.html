@@ -513,23 +513,24 @@
 
     <div id="instructionsModal" class="modal-overlay">
         <div class="modal-content">
-            <h2>COMO JOGAR?</h2>
-            <!-- Video de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
-            <video id="instructionVideo" controls>
-                <source src="porta1.mp4" type="video/mp4">
-                Seu navegador não suporta a tag de vídeo.
-            </video>
+            <h2>Jogo da Rotina</h2>
+                <video id="instructionVideo" controls>
+                    <source src="PORTA1-LIBRAS.mp4" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video><br>
+                   Assista ao vídeo em LIBRAS ou ouça a audiodescrição das e regras e como jogar.<br>
+                 <audio id="instructionAudio" controls>
+                    <source src="Porta1.mp3" type="audio/mpeg">
+                    Seu navegador não suporta a tag de áudio.
+                </audio>
             <p>
-                SUA MISSÃO É COLOCAR AS AÇÕES DA ROTINA DIÁRIA NA ORDEM CERTA!
-                <br>CLIQUE NAS IMAGENS NA PARTE DE CIMA PARA PREENCHER A LINHA DO TEMPO ABAIXO.
-                <br>ACERTE A SEQUÊNCIA PARA GANHAR!
-                <br>
-                <br> ASSISTA AO VÍDEO PARA ENTENDER AS REGRAS DO JOGO.
+                Sua missão é colocar as ações da rotina diária na ordem certa!
+                <br>Clique nas imagens na parte de cima para preencher a linha do tempo abaixo.
+                <br>Acerte a sequência para ganhar!
             </p>
             <button id="startGameFromModalButton">JOGAR!</button>
         </div>
     </div>
-
     <div id="successModal" class="modal-overlay">
         <div class="modal-content">
             <h2>Parabéns!</h2>
@@ -734,7 +735,15 @@
         }
 
         restartGameButton.addEventListener('click', resetGameCompletely);
-        startGameFromModalButton.addEventListener('click', hideInstructionsModal);
+        startGameFromModalButton.addEventListener('click', () => {
+            hideInstructionsModal();
+            // Pausa e reseta o áudio ao fechar o modal
+            const instructionAudio = document.getElementById('instructionAudio');
+            if (instructionAudio) {
+                instructionAudio.pause();
+                instructionAudio.currentTime = 0;
+            }
+        });
 
         function initializeGame() {
             updatePlayerSealStatus();

@@ -695,11 +695,15 @@
         <div id="player-id-box">
             <h2>Bem-vindo(a) ao CENAM!</h2>
             <video id="playerIdVideo" controls class="modal-video">
-                <source src="seu_video_audiodescricao_id.mp4" type="video/mp4">
+                <source src="video1boasvindas.mp4" type="video/mp4">
                 Seu navegador não suporta a tag de vídeo.
             </video>
-            <p class="modal-video-label">Assista ao vídeo para uma audiodescrição.</p>
-            <p>Para começar sua aventura, por favor, digite seu nome:</p>
+            <p class="modal-video-label">Assista ao vídeo em LIBRAS ou ouça a audiodescrição</p>
+                <audio id="playerAudio" controls>
+                    <source src="benvindomapa.mp3" type="audio/mpeg">
+                    Seu navegador não suporta a tag de áudio.
+                </audio>
+            <p><strong>Para começar sua aventura, por favor, digite seu nome: </strong></p>
             <input type="text" id="player-name-input" placeholder="Seu nome">
             <button id="start-game-button">Começar Jogo</button>
         </div>
@@ -709,10 +713,14 @@
         <div id="instructions-box">
             <h2>Como Jogar</h2>
             <video id="instructionsVideo" controls class="modal-video">
-                <source src="seu_video_audiodescricao_regras.mp4" type="video/mp4">
+                <source src="ComoJogar - LIBRAS.mp4" type="video/mp4">
                 Seu navegador não suporta a tag de vídeo.
             </video>
-            <p class="modal-video-label">Assista ao vídeo para uma audiodescrição das regras.</p>
+            <p class="modal-video-label">Assista ao vídeo para uma explicação em LIBRAS ou ouça a audiodescrição das regras.</p>
+                    <audio id="instructionsAudio" controls>
+                    <source src="instruçõesmapa.mp3" type="audio/mpeg">
+                    Seu navegador não suporta a tag de áudio.
+                </audio>
             <p>Olá, <span id="player-name-in-instructions"></span>! Boas-vindas à **AVENTURA DAS VIRTUDES**! Seu objetivo é explorar o mapa e coletar os <strong>Selos da Virtude</strong>. Cada selo está em uma porta que leva a uma atividade divertida. Ao concluir a atividade, você ganhará o selo correspondente!</p>
             <ul>
                 <li><strong>Movimentação:</strong> Use as <strong>setas do teclado</strong> (↑ ↓ ← →) para mover seu avatar pelo mapa.</li>
@@ -803,6 +811,9 @@
             // Novos elementos de vídeo
             const playerIdVideo = document.getElementById('playerIdVideo');
             const instructionsVideo = document.getElementById('instructionsVideo');
+            // Novos elementos de áudio
+            const playerAudio = document.getElementById('playerAudio');
+            const instructionsAudio = document.getElementById('instructionsAudio');
 
 
             // Configurações do Jogo
@@ -846,9 +857,13 @@
                     instructionsVideo.pause();
                     instructionsVideo.currentTime = 0;
                 }
+                if (instructionsAudio) {
+                    instructionsAudio.pause();
+                    instructionsAudio.currentTime = 0;
+                }
                 localStorage.setItem('instructionsShown', 'true');
-                document.removeEventListener('keydown', handleInstructionsEnterKey); // Remove o listener do Enter
-                initGame(localStorage.getItem('playerName')); // Inicia o jogo
+                document.removeEventListener('keydown', handleInstructionsEnterKey);
+                initGame(localStorage.getItem('playerName'));
             };
 
             // Função para lidar com a tecla Enter no modal de instruções
@@ -1185,6 +1200,10 @@
                     playerIdVideo.currentTime = 0;
                     playerIdVideo.play().catch(e => console.log("Auto-play de vídeo impedido no modal de ID:", e)); // Tenta dar play
                 }
+                if (playerAudio) {
+                    playerAudio.currentTime = 0;
+                    playerAudio.play().catch(e => {});
+                }
                 const handleStartGame = () => {
                     const enteredName = nameInput.value.trim();
                     if (enteredName === '') {
@@ -1227,14 +1246,20 @@
                     localStorage.setItem('playerName', enteredName);
                     playerOverlay.style.display = 'none'; // Esconde o modal de identificação
                     if (playerIdVideo) playerIdVideo.pause(); // Pausa o vídeo de identificação
-
+                    if (playerAudio) {
+                        playerAudio.pause();
+                        playerAudio.currentTime = 0;
+                    }
                     playerNameInInstructions.textContent = enteredName; // Define o nome no modal de instruções
                     instructionsOverlay.style.display = 'flex'; // Mostra o modal de instruções
                     if (instructionsVideo) {
                         instructionsVideo.currentTime = 0;
-                        instructionsVideo.play().catch(e => console.log("Auto-play de vídeo impedido no modal de instruções:", e)); // Tenta dar play
+                        instructionsVideo.play().catch(e => {});
                     }
-
+                    if (instructionsAudio) {
+                        instructionsAudio.currentTime = 0;
+                        instructionsAudio.play().catch(e => {});
+                    }
                     understandButton.addEventListener('click', handleCloseInstructions); // Adiciona o listener de clique
                     nameInput.removeEventListener('keydown', handleStartGame); // Remove o listener do Enter no input para evitar duplicidade
                     document.addEventListener('keydown', handleInstructionsEnterKey); // Adiciona o listener para Enter
@@ -1252,7 +1277,11 @@
                 instructionsOverlay.style.display = 'flex'; // Mostra o modal de instruções
                 if (instructionsVideo) {
                     instructionsVideo.currentTime = 0;
-                    instructionsVideo.play().catch(e => console.log("Auto-play de vídeo impedido no modal de instruções:", e)); // Tenta dar play
+                    instructionsVideo.play().catch(e => {});
+                }
+                if (instructionsAudio) {
+                    instructionsAudio.currentTime = 0;
+                    instructionsAudio.play().catch(e => {});
                 }
                 understandButton.addEventListener('click', handleCloseInstructions); // Adiciona o listener de clique
                 document.addEventListener('keydown', handleInstructionsEnterKey); // Adiciona o listener para Enter

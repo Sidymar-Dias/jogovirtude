@@ -141,19 +141,18 @@
             border: 1px solid #ccc;
         }
         #container-pecas {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 colunas fixas */
             gap: 8px;
             padding: 10px;
             background-color: #e0e0e0;
             border-radius: 8px;
             align-items: flex-start;
-            justify-content: center;
+            justify-items: center;
             flex-shrink: 1;
             flex-grow: 1;
             max-width: 400px;
             width: min(90vw, 400px);
-            /* ALTERAÇÃO CRÍTICA AQUI: Removido max-height para permitir que o conteúdo defina a altura */
             overflow-y: auto;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             align-self: flex-start;
@@ -392,7 +391,7 @@
             .conteudo-modal-info h2, .conteudo-modal h2 {
                 font-size: 1.8em;
             }
-            .conteudo-modal-info p, .conteudo-modal p {
+            .conteudo-modal_info p, .conteudo-modal p {
                 font-size: 1em;
             }
             .selo-ganho {
@@ -483,11 +482,18 @@
     </footer>
     <div id="modal-boas-vindas" class="modal-info">
         <div class="conteudo-modal-info">
-            <h2>Bem-vindo à Aventura!</h2>
-            <video id="instructionVideo" controls>
-                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
-                Seu navegador não suporta a tag de vídeo.
-            </video>
+            <h2>Quebra Cabeça</h2>
+                <video id="instructionVideo" controls>
+                    <source src="PORTA 4 - LIBRAS.mp4" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+                <p>
+                    Assista ao vídeo em LIBRAS ou ouça a audiodescrição regras.
+                </p>
+                <audio id="instructionAudio" controls>
+                    <source src="Porta4.mp3" type="audio/mpeg">
+                    Seu navegador não suporta a tag de áudio.
+                </audio>
             <p>Sua missão é recriar a imagem, colocando cada peça no seu devido lugar.</p>
             <h3>Regras do Jogo:</h3>
             <ul>
@@ -495,7 +501,6 @@
                 <li>Encaixe Perfeito: Cada peça tem um lugar certo. Se a peça não se encaixar no espaço, ela não será fixada e um "erro" será contabilizado.</li>
                 <li>Imagem Guia: Use a imagem de referência na barra lateral para te ajudar a montar o quebra-cabeça.</li>
                 <li>Pontuação: Seu placar de acertos e erros será atualizado. Tente minimizar os erros!</li>
-                <p>Assista ao vídeo para entender as regras do jogo.</p>
             </ul>
             <button id="botao-comecar-jogo" class="botao-fechar-modal">Começar Jogo</button>
         </div>
@@ -646,16 +651,44 @@
             function verificarVitoria() {
                 if (acertos === TOTAL_PECAS) {
                     somAplauso.play();
-                    modalConclusao.style.display = 'flex';
-                    let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
-                    if (!collectedSeals.includes(ID_SELO)) {
-                        collectedSeals.push(ID_SELO);
-                        localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
-                        console.log(`Selo ${ID_SELO} adicionado aos selos coletados.`);
-                    } else {
-                        console.log(`Selo ${ID_SELO} já está coletado.`);
-                    }
-                    updatePlayerAvatarStatus();
+
+                    // Exibe o quebra-cabeça completo por 6 segundos antes do modal final
+                    // Remove as bordas das peças e dos espaços para mostrar a imagem limpa
+                    const espacos = document.querySelectorAll('.espaco-peca');
+                    espacos.forEach(espaco => {
+                        espaco.style.border = 'none';
+                        if (espaco.firstChild) {
+                            espaco.firstChild.style.border = 'none';
+                            espaco.firstChild.style.boxShadow = 'none';
+                        }
+                    });
+
+                    // Desabilita interações durante a exibição
+                    tabuleiro.style.pointerEvents = 'none';
+                    containerPecas.style.display = 'none';
+
+                    setTimeout(() => {
+                        modalConclusao.style.display = 'flex';
+                        let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                        if (!collectedSeals.includes(ID_SELO)) {
+                            collectedSeals.push(ID_SELO);
+                            localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
+                            console.log(`Selo ${ID_SELO} adicionado aos selos coletados.`);
+                        } else {
+                            console.log(`Selo ${ID_SELO} já está coletado.`);
+                        }
+                        updatePlayerAvatarStatus();
+                        // Restaura as bordas para uma nova partida
+                        espacos.forEach(espaco => {
+                            espaco.style.border = '';
+                            if (espaco.firstChild) {
+                                espaco.firstChild.style.border = '';
+                                espaco.firstChild.style.boxShadow = '';
+                            }
+                        });
+                        tabuleiro.style.pointerEvents = '';
+                        containerPecas.style.display = '';
+                    }, 6000); // 6 segundos
                 }
             }
             
@@ -726,6 +759,12 @@
                 if (instructionVideo) {
                     instructionVideo.pause(); // Pausa o vídeo ao fechar o modal
                     instructionVideo.currentTime = 0; // Volta o vídeo para o início
+                }
+                // Pausa e reseta o áudio ao fechar o modal
+                const instructionAudio = document.getElementById('instructionAudio');
+                if (instructionAudio) {
+                    instructionAudio.pause();
+                    instructionAudio.currentTime = 0;
                 }
                 inicializarJogo(); // Inicia o jogo após fechar o modal
             });

@@ -528,15 +528,20 @@
     <div id="instructions-modal" class="modal">
         <div class="modal-content">
             <h2>Bem-vindo ao Jogo Estoure os Balões!</h2>
-            <!-- Vídeo de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
-            <video id="instructionVideo" controls>
-                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
-                Seu navegador não suporta a tag de vídeo.
-            </video>
+                <video id="instructionVideo" controls>
+                    <source src="PORTA 5 - LIBRAS.mp4" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+                <p>
+                   Assista ao vídeo em LIBRAS ou ouça a audiodescrição das regras.
+                </p>
+                <audio id="instructionAudio" controls>
+                    <source src="Porta5.mp3" type="audio/mpeg">
+                    Seu navegador não suporta a tag de áudio.
+                </audio>
             <p>Seu objetivo é clicar apenas nos balões que contêm palavras de comportamentos positivos.</p>
             <p>🎈 Cada balão positivo que você estourar aumentará sua pontuação.</p>
             <p>💥 Se você clicar em um balão com um comportamento negativo, perderá pontos.</p>
-            <p>Assista ao vídeo para entender as regras do jogo.</p>
             <button id="close-modal-button">Começar o Jogo</button>
         </div>
     </div>
@@ -778,6 +783,12 @@
             if (instructionVideo) {
                 instructionVideo.pause(); // Pausa o vídeo ao fechar o modal
                 instructionVideo.currentTime = 0; // Volta o vídeo para o início
+            }
+            // Pausa e reseta o áudio ao fechar o modal
+            const instructionAudio = document.getElementById('instructionAudio');
+            if (instructionAudio) {
+                instructionAudio.pause();
+                instructionAudio.currentTime = 0;
             }
             setTimeout(initGame, 500); // Aumentado o atraso para dar tempo de layout
         });

@@ -630,6 +630,16 @@
                 padding: 8px 15px;
             }
         }
+
+        #instructions-modal video {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -710,19 +720,24 @@
     <div id="instructions-modal">
         <div class="modal-content">
             <h2>Bem-vindo(a) ao Jogo de Organização de Alunos!</h2>
-            <!-- Video de instruções com audiodescrição. Substitua 'seu_video_audiodescricao.mp4' pelo nome do seu arquivo. -->
-            <video id="instructionVideo" controls>
-                <source src="seu_video_audiodescricao.mp4" type="video/mp4">
-                Seu navegador não suporta a tag de vídeo.
-            </video>
-            
+                <video id="instructionVideo" controls>
+                    <source src="PORTA 2 - LIBRAS.mp4" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+                <p>
+                    Para a experiência completa, assista ao vídeo em LIBRAS, ou ouça a audiodescrição das regras.
+                </p>
+                <audio id="instructionAudio" controls>
+                    <source src="Porta2.mp3" type="audio/mpeg">
+                    Seu navegador não suporta a tag de áudio.
+                </audio>
                 <br>**INSTRUÇÕES DO JOGO:**
                 <br>Sua missão é colocar os alunos do pátio da escola nas filas de ônibus.
                 <br>É importante observar que cada aluno tem o número do seu ônibus e seu lugar na fila.
                 <br>Mova os alunos na ordem correta para o ônibus certo. <strong> NÃO PODE </strong> cortar fila ou colocar alunos no ônibus errado!
                 <br>
                 <br>Seja rápido e organize as filas para que os ônibus possam partir em segurança!
-                <p>Assista ao vídeo para entender as regras do jogo.</p>
+               
             </p>
             <button onclick="closeInstructionsModal()">Começar Jogo</button>
         </div>
@@ -1309,6 +1324,12 @@
          */
         function closeInstructionsModal() {
             instructionsModal.style.display = 'none';
+            // Pausa e reseta o áudio ao fechar o modal de instruções
+            const instructionAudio = document.getElementById('instructionAudio');
+            if (instructionAudio) {
+                instructionAudio.pause();
+                instructionAudio.currentTime = 0;
+            }
             // Inicia o timer quando o modal de instruções é fechado
             startTimer();
         }
