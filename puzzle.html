@@ -541,6 +541,7 @@
             let acertos = 0;
             let erros = 0;
             let pecaArrastada = null;
+            let espacoAlvoToque = null;
 
             function inicializarJogo() {
                 acertos = 0;
@@ -556,8 +557,7 @@
                     espaco.classList.add('espaco-peca');
                     espaco.dataset.id = i;
                     tabuleiro.appendChild(espaco);
-                    espaco.addEventListener('dragover', aoArrastarSobre);
-                    espaco.addEventListener('drop', aoSoltar);
+                    adicionarEventosSoltarToque(espaco);
 
                     const peca = document.createElement('div');
                     peca.classList.add('peca-quebra-cabeca');
@@ -569,11 +569,9 @@
                     const pecaLarguraOriginal = ORIGINAL_IMAGE_WIDTH / COLUNAS;
                     const pecaAlturaOriginal = ORIGINAL_IMAGE_HEIGHT / LINHAS;
 
-                    peca.style.backgroundImage = `url('${NOME_IMAGEM_QUEBRA_CABECAS}')`;
-                    peca.style.backgroundSize = `${ORIGINAL_IMAGE_WIDTH}px ${ORIGINAL_IMAGE_HEIGHT}px`;
-                    peca.style.backgroundPosition = `-${col * pecaLarguraOriginal}px -${lin * pecaAlturaOriginal}px`;
+                    corrigirFundoPecasMobile(peca, col, lin, pecaLarguraOriginal, pecaAlturaOriginal);
 
-                    peca.addEventListener('dragstart', aoArrastar);
+                    adicionarEventosArrastarToque(peca);
                     pecas.push(peca);
                 }
 
@@ -620,16 +618,14 @@
             
             function aoSoltar(evento) {
                 evento.preventDefault();
+                if (!pecaArrastada) return;
                 pecaArrastada.style.opacity = '1';
                 const espacoAlvo = evento.target;
-                
                 if (espacoAlvo.classList.contains('espaco-peca') && !espacoAlvo.hasChildNodes()) {
                     if (pecaArrastada.dataset.id === espacoAlvo.dataset.id) {
                         espacoAlvo.appendChild(pecaArrastada);
-                        
                         pecaArrastada.style.width = '100%';
                         pecaArrastada.style.height = '100%';
-
                         pecaArrastada.draggable = false;
                         pecaArrastada.style.cursor = 'default';
                         acertos++;
@@ -646,63 +642,85 @@
                     somErro.play();
                     atualizarPlacar();
                 }
+                pecaArrastada = null;
             }
 
-            function verificarVitoria() {
-                if (acertos === TOTAL_PECAS) {
-                    somAplauso.play();
+            // Eventos para toque (mobile)
+            function aoToqueIniciar(event) {
+                event.preventDefault();
+                pecaArrastada = event.target;
+                pecaArrastada.style.opacity = '0.5';
+                document.body.addEventListener('touchmove', aoToqueMover, { passive: false });
+                document.body.addEventListener('touchend', aoToqueSoltar, { passive: false });
+            }
 
-                    // Exibe o quebra-cabeça completo por 6 segundos antes do modal final
-                    // Remove as bordas das peças e dos espaços para mostrar a imagem limpa
-                    const espacos = document.querySelectorAll('.espaco-peca');
-                    espacos.forEach(espaco => {
-                        espaco.style.border = 'none';
-                        if (espaco.firstChild) {
-                            espaco.firstChild.style.border = 'none';
-                            espaco.firstChild.style.boxShadow = 'none';
-                        }
-                    });
-
-                    // Desabilita interações durante a exibição
-                    tabuleiro.style.pointerEvents = 'none';
-                    containerPecas.style.display = 'none';
-
-                    setTimeout(() => {
-                        modalConclusao.style.display = 'flex';
-                        let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
-                        if (!collectedSeals.includes(ID_SELO)) {
-                            collectedSeals.push(ID_SELO);
-                            localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
-                            console.log(`Selo ${ID_SELO} adicionado aos selos coletados.`);
-                        } else {
-                            console.log(`Selo ${ID_SELO} já está coletado.`);
-                        }
-                        updatePlayerAvatarStatus();
-                        // Restaura as bordas para uma nova partida
-                        espacos.forEach(espaco => {
-                            espaco.style.border = '';
-                            if (espaco.firstChild) {
-                                espaco.firstChild.style.border = '';
-                                espaco.firstChild.style.boxShadow = '';
-                            }
-                        });
-                        tabuleiro.style.pointerEvents = '';
-                        containerPecas.style.display = '';
-                    }, 6000); // 6 segundos
+            function aoToqueMover(event) {
+                event.preventDefault();
+                const touch = event.touches[0];
+                const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (elem && elem.classList.contains('espaco-peca') && !elem.hasChildNodes()) {
+                    espacoAlvoToque = elem;
+                    elem.style.backgroundColor = '#b2f7b2';
+                } else if (espacoAlvoToque) {
+                    espacoAlvoToque.style.backgroundColor = '';
+                    espacoAlvoToque = null;
                 }
             }
-            
-            function updatePlayerAvatarStatus() {
-                const collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
-                if (collectedSeals.includes(ID_SELO)) {
-                    playerAvatar.classList.add('unlocked');
-                    console.log('Avatar atualizado: selo desbloqueado.');
-                } else {
-                    playerAvatar.classList.remove('unlocked');
-                    console.log('Avatar atualizado: selo não desbloqueado.');
+
+            function aoToqueSoltar(event) {
+                event.preventDefault();
+                if (pecaArrastada && espacoAlvoToque) {
+                    espacoAlvoToque.style.backgroundColor = '';
+                    if (pecaArrastada.dataset.id === espacoAlvoToque.dataset.id) {
+                        espacoAlvoToque.appendChild(pecaArrastada);
+                        pecaArrastada.style.width = '100%';
+                        pecaArrastada.style.height = '100%';
+                        pecaArrastada.draggable = false;
+                        pecaArrastada.style.cursor = 'default';
+                        acertos++;
+                        verificarVitoria();
+                    } else {
+                        erros++;
+                        somErro.currentTime = 0;
+                        somErro.play();
+                    }
+                    atualizarPlacar();
+                } else if (pecaArrastada) {
+                    erros++;
+                    somErro.currentTime = 0;
+                    somErro.play();
+                    atualizarPlacar();
                 }
+                if (pecaArrastada) pecaArrastada.style.opacity = '1';
+                pecaArrastada = null;
+                espacoAlvoToque = null;
+                document.body.removeEventListener('touchmove', aoToqueMover);
+                document.body.removeEventListener('touchend', aoToqueSoltar);
             }
-            
+
+            // Corrige o fundo branco das peças no mobile
+            function corrigirFundoPecasMobile(peca, col, lin, largura, altura) {
+                peca.style.backgroundImage = `url('${NOME_IMAGEM_QUEBRA_CABECAS}')`;
+                peca.style.backgroundSize = `${tabuleiro.offsetWidth}px ${tabuleiro.offsetHeight}px`;
+                peca.style.backgroundPosition = `-${col * largura}px -${lin * altura}px`;
+                peca.style.backgroundColor = '#f0f0f0';
+            }
+
+            function adicionarEventosArrastarToque(peca) {
+                // Eventos de mouse
+                peca.addEventListener('dragstart', aoArrastar);
+                // Eventos de toque
+                peca.addEventListener('touchstart', aoToqueIniciar, { passive: false });
+            }
+
+            function adicionarEventosSoltarToque(espaco) {
+                espaco.addEventListener('dragover', aoArrastarSobre);
+                espaco.addEventListener('drop', aoSoltar);
+                // Eventos de toque
+                espaco.addEventListener('touchmove', aoToqueMover, { passive: false });
+                espaco.addEventListener('touchend', aoToqueSoltar, { passive: false });
+            }
+
             botaoReiniciar.addEventListener('click', () => {
                 const customConfirm = (message, onConfirm, onCancel) => {
                     const overlay = document.createElement('div');
