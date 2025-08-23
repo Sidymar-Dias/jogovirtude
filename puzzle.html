@@ -577,26 +577,45 @@
 
                 pecas.sort(() => Math.random() - 0.5);
                 pecas.forEach(p => containerPecas.appendChild(p));
-                
-                window.addEventListener('resize', redimensionarPecas);
-                redimensionarPecas(); // Chama a função uma vez para definir o tamanho inicial
-
+                setTimeout(redimensionarPecas, 200); // Garante ajuste após renderização
                 updatePlayerAvatarStatus();
             }
 
+            // Mostra o modal de boas-vindas imediatamente (corrige o áudio no mobile)
+            modalBoasVindas.style.display = 'flex';
+
+            // Garante que o áudio seja carregado e visível no mobile
+            const instructionAudio = document.getElementById('instructionAudio');
+            if (instructionAudio) {
+                instructionAudio.load();
+                instructionAudio.style.display = 'block';
+            }
+
+            // Função para corrigir o fundo das peças SEMPRE que redimensionar
+            function corrigirFundoPecasMobile(peca, col, lin, largura, altura) {
+                peca.style.backgroundImage = `url('${NOME_IMAGEM_QUEBRA_CABECAS}')`;
+                // Usa o tamanho atual do tabuleiro para o background-size
+                peca.style.backgroundSize = `${tabuleiro.offsetWidth}px ${tabuleiro.offsetHeight}px`;
+                peca.style.backgroundPosition = `-${col * largura}px -${lin * altura}px`;
+                peca.style.backgroundColor = '#f0f0f0';
+            }
+
+            // Redefine o fundo das peças livres ao redimensionar
             function redimensionarPecas() {
-                // Atrasamos a execução para garantir que o tabuleiro já foi renderizado
                 setTimeout(() => {
                     const espacos = document.querySelectorAll('.espaco-peca');
                     if (espacos.length > 0) {
                         const larguraPeca = espacos[0].offsetWidth;
                         const alturaPeca = espacos[0].offsetHeight;
-
                         const pecasLivres = document.querySelectorAll('#container-pecas .peca-quebra-cabeca');
-                        pecasLivres.forEach(peca => {
+                        pecasLivres.forEach((peca, idx) => {
+                            // Calcula col/lin baseado no id da peça
+                            const id = parseInt(peca.dataset.id, 10);
+                            const col = id % COLUNAS;
+                            const lin = Math.floor(id / COLUNAS);
+                            corrigirFundoPecasMobile(peca, col, lin, larguraPeca, alturaPeca);
                             peca.style.width = `${larguraPeca}px`;
                             peca.style.height = `${alturaPeca}px`;
-                            peca.style.backgroundSize = `${tabuleiro.offsetWidth}px ${tabuleiro.offsetHeight}px`;
                         });
                     }
                 }, 100);
@@ -701,6 +720,7 @@
             // Corrige o fundo branco das peças no mobile
             function corrigirFundoPecasMobile(peca, col, lin, largura, altura) {
                 peca.style.backgroundImage = `url('${NOME_IMAGEM_QUEBRA_CABECAS}')`;
+                // Usa o tamanho atual do tabuleiro para o background-size
                 peca.style.backgroundSize = `${tabuleiro.offsetWidth}px ${tabuleiro.offsetHeight}px`;
                 peca.style.backgroundPosition = `-${col * largura}px -${lin * altura}px`;
                 peca.style.backgroundColor = '#f0f0f0';
