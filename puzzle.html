@@ -683,11 +683,14 @@
                 event.preventDefault();
                 const touch = event.touches[0];
                 const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+
+                // Remove o destaque de todos os espaços antes de destacar o atual
+                document.querySelectorAll('.espaco-peca').forEach(e => e.style.backgroundColor = '');
+
                 if (elem && elem.classList.contains('espaco-peca') && !elem.hasChildNodes()) {
                     espacoAlvoToque = elem;
                     elem.style.backgroundColor = '#b2f7b2';
-                } else if (espacoAlvoToque) {
-                    espacoAlvoToque.style.backgroundColor = '';
+                } else {
                     espacoAlvoToque = null;
                 }
             }
