@@ -814,6 +814,48 @@
             }
             updatePlayerAvatarStatus();
         });
+        function verificarVitoria() {
+            if (acertos === LINHAS * COLUNAS) {
+                somAplauso.currentTime = 0;
+                somAplauso.play();
+
+                // Exibe o quebra-cabeça completo por 6 segundos antes do modal final
+                const espacos = document.querySelectorAll('.espaco-peca');
+                espacos.forEach(espaco => {
+                    espaco.style.border = 'none';
+                    if (espaco.firstChild) {
+                        espaco.firstChild.style.border = 'none';
+                        espaco.firstChild.style.boxShadow = 'none';
+                    }
+                });
+
+                // Desabilita interações durante a exibição
+                tabuleiro.style.pointerEvents = 'none';
+                containerPecas.style.display = 'none';
+
+                setTimeout(() => {
+                    modalConclusao.style.display = 'flex';
+                    // Salva o selo no localStorage
+                    let collectedSeals = JSON.parse(localStorage.getItem('collectedSeals')) || [];
+                    if (!collectedSeals.includes(ID_SELO)) {
+                        collectedSeals.push(ID_SELO);
+                        localStorage.setItem('collectedSeals', JSON.stringify(collectedSeals));
+                    }
+                    updatePlayerAvatarStatus();
+
+                    // Restaura as bordas para uma nova partida
+                    espacos.forEach(espaco => {
+                        espaco.style.border = '';
+                        if (espaco.firstChild) {
+                            espaco.firstChild.style.border = '';
+                            espaco.firstChild.style.boxShadow = '';
+                        }
+                    });
+                    tabuleiro.style.pointerEvents = '';
+                    containerPecas.style.display = '';
+                }, 6000); // 6 segundos
+            }
+        }
     </script>
 </body>
 </html>
